@@ -2,6 +2,11 @@
 # Exits non-zero if the model fails to load or any severity-3 rule is violated.
 param([Parameter(Mandatory)][string]$TabularEditor)
 
+if (-not (Test-Path $TabularEditor -PathType Leaf)) {
+    Write-Error "Tabular Editor not found at '$TabularEditor'"
+    exit 1
+}
+
 $model = Join-Path $PSScriptRoot "../StorePerformance.SemanticModel/definition/database.tmdl"
 foreach ($rules in "microsoft-rules.json", "project-rules.json") {
     Write-Host "== BPA: $rules"
