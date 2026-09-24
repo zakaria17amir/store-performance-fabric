@@ -11,4 +11,6 @@ Helper queries (`fn_*`, `src_*`) have load disabled.
 | `WorkspaceId` | GUID of the `Retail Data` workspace |
 | `LakehouseId` | GUID of the lakehouse |
 
+Note: src_WeatherAttempts is referenced by two loaded queries, so each refresh calls the weather API about twice per store city (a few dozen calls). That's acceptable for this project.
+
 Weather data: Open-Meteo.com (CC BY 4.0).

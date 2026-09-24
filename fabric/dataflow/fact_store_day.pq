@@ -13,12 +13,14 @@ let
         {{"dk", "date_key"}, {"sk", "store_key"}}),
     // keep only this lakehouse's stores and dates (the ERP holds targets for all 54 stores and all years)
     DateKeys = src_Lakehouse("dim_date")[date_key],
-    InDateRange = Table.SelectRows(Tidy, each [date_key] >= List.Min(DateKeys) and [date_key] <= List.Max(DateKeys)),
+    MinDateKey = List.Min(DateKeys),
+    MaxDateKey = List.Max(DateKeys),
+    InDateRange = Table.SelectRows(Tidy, each [date_key] >= MinDateKey and [date_key] <= MaxDateKey),
     Cities = Table.SelectColumns(src_Lakehouse("stg_store"), {"store_key", "city"}),
     WithCity = Table.ExpandTableColumn(
         Table.NestedJoin(InDateRange, {"store_key"}, Cities, {"store_key"}, "c", JoinKind.Inner), "c", {"city"}),
     Succeeded = Table.SelectRows(src_WeatherAttempts, each not [attempt][HasError]),
-    WeatherTables = Table.TransformColumns(Table.SelectColumns(Succeeded, {"city", "attempt"}), {"attempt", each [Value]}),
+    WeatherTables = Table.TransformColumns(Table.SelectColumns(Succeeded, {"city", "attempt"}), {{"attempt", each [Value]}}),
     Weather = Table.ExpandTableColumn(WeatherTables, "attempt", {"date", "rain_mm", "temp_max_c"}),
     WeatherKeyed = Table.RemoveColumns(Table.AddColumn(Weather, "date_key", each DateKey([date]), Int64.Type), {"date"}),
     WithWeather = Table.ExpandTableColumn(
