@@ -30,6 +30,13 @@ def test_opening_date_uses_full_receipt_history(sample_warehouse):
         "SELECT opening_date FROM gold.stg_store WHERE store_key = 2").fetchone()[0] == date(2015, 6, 1)
 
 
+def test_opening_date_null_when_trading_since_data_start(sample_warehouse):
+    # store 1's first receipt (2015-01-01) IS the fixture's first transactions date, so it
+    # was already trading when the data starts: opening_date is unknown, not left-censored.
+    assert sample_warehouse.execute(
+        "SELECT opening_date FROM gold.stg_store WHERE store_key = 1").fetchone()[0] is None
+
+
 def test_stg_item_perishable_flag(warehouse):
     assert warehouse.execute(
         "SELECT family, is_perishable FROM gold.stg_item WHERE item_key = 102").fetchone() == ("PRODUCE", True)
