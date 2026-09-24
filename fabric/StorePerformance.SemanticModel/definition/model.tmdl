@@ -15,3 +15,4 @@ ref table Item
 ref table Sales
 ref table 'Store Day'
 ref table 'Stock-out Risk'
+ref table 'Time Calc'

@@ -1,0 +1,45 @@
+/// Time intelligence for any measure: Actual, MTD, YTD, PY, PY YTD, YoY Δ, YoY %. Use Show As in a slicer, column or filter.
+table 'Time Calc'
+
+	calculationGroup
+
+		calculationItem Actual = SELECTEDMEASURE()
+			ordinal: 0
+
+		calculationItem MTD = CALCULATE(SELECTEDMEASURE(), DATESMTD('Date'[Date]))
+			ordinal: 1
+
+		calculationItem YTD = CALCULATE(SELECTEDMEASURE(), DATESYTD('Date'[Date]))
+			ordinal: 2
+
+		calculationItem PY = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
+			ordinal: 3
+
+		calculationItem 'PY YTD' = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])))
+			ordinal: 4
+
+		calculationItem 'YoY Δ' =
+				VAR ThisPeriod = SELECTEDMEASURE()
+				VAR PriorYear = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
+				RETURN IF(NOT ISBLANK(ThisPeriod) && NOT ISBLANK(PriorYear), ThisPeriod - PriorYear)
+			ordinal: 5
+
+		calculationItem 'YoY %' =
+				VAR ThisPeriod = SELECTEDMEASURE()
+				VAR PriorYear = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
+				RETURN IF(NOT ISBLANK(ThisPeriod), DIVIDE(ThisPeriod - PriorYear, PriorYear))
+			ordinal: 6
+			formatStringDefinition = "#,0.0%;-#,0.0%;#,0.0%"
+
+	column 'Show As'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordinal
+
+	column Ordinal
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: Ordinal
