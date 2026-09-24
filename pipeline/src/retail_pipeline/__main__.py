@@ -19,6 +19,11 @@ def main(argv: list[str] | None = None) -> None:
     e.add_argument("--src", type=Path, default=Path("data/download"))
     e.add_argument("--dest", type=Path, default=Path("data/raw"))
 
+    s = sub.add_parser("erp-seed", help="gold warehouse → synthetic ERP CSVs")
+    s.add_argument("--warehouse", type=Path, required=True)
+    s.add_argument("--out", type=Path, required=True)
+    s.add_argument("--seed", type=int, default=42)
+
     args = parser.parse_args(argv)
     if args.command == "build":
         cfg = sample_config(args.raw, args.out) if args.sample else BuildConfig(args.raw, args.out)
@@ -27,6 +32,9 @@ def main(argv: list[str] | None = None) -> None:
         from .extract import extract_archives
         for path in extract_archives(args.src, args.dest):
             print(path)
+    if args.command == "erp-seed":
+        from .erp_seed import write_erp_seed
+        print(json.dumps(write_erp_seed(args.warehouse, args.out, args.seed), indent=2))
 
 
 if __name__ == "__main__":
