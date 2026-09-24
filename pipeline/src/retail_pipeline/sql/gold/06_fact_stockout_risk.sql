@@ -3,7 +3,7 @@ WITH pairs AS (
     -- only items that could reach λ ≥ threshold are worth a daily spine
     SELECT store_nbr, item_nbr, min(date) AS first_sale, max(date) AS last_sale
     FROM silver.sales
-    WHERE date >= DATE '$stockout_from' - INTERVAL '$lookback_days days'
+    WHERE date >= DATE '$stockout_from' - INTERVAL '$lookback_days days' * 2
     GROUP BY store_nbr, item_nbr
     HAVING sum(units) >= $min_expected_units * $lookback_days
 ),

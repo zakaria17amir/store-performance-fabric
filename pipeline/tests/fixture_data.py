@@ -14,7 +14,9 @@ STORES = [
 ITEMS = [(101, "GROCERY I", 1001, 0), (102, "PRODUCE", 2001, 1)]
 PROMO_DAYS = {date(2016, 1, 10), date(2016, 1, 11), date(2016, 1, 12)}
 # store 1 / item 101 sells 5/day except these days (no row at all):
-GAPS_101_STORE1 = {date(2015, 12, 15), date(2016, 2, 10)}
+GAPS_101_STORE1 = {date(2015, 12, 15), date(2016, 1, 1), date(2016, 2, 10)}
+# store 1 is closed (no transactions row) on this date, so it drops out of the stock-out spine:
+STORE1_CLOSURE = date(2015, 12, 25)
 RETURN_DAY = date(2016, 1, 5)  # store 2 / item 101 has unit_sales = -1
 HOLIDAYS = [
     (date(2016, 1, 1), "Holiday", "National", "Ecuador", "Primer dia del ano", "False"),
@@ -72,7 +74,8 @@ def write_fixture(raw_dir: Path, *, extra_store_column: bool = False) -> Path:
     _write(
         raw_dir / "transactions.csv",
         ["date", "store_nbr", "transactions"],
-        [(d.isoformat(), s, n) for s, (a, b, n) in TRANSACTION_SPANS.items() for d in days(a, b)],
+        [(d.isoformat(), s, n) for s, (a, b, n) in TRANSACTION_SPANS.items() for d in days(a, b)
+         if not (s == 1 and d == STORE1_CLOSURE)],
     )
     header = ["store_nbr", "city", "state", "type", "cluster"]
     rows = STORES
