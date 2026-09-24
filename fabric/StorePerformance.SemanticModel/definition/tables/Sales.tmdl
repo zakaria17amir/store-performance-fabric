@@ -54,12 +54,13 @@ table Sales
 		formatString: \$#,0
 		displayFolder: Like-for-like
 
-	/// Like-for-like sales value in the same period last year, for the same store set.
+	/// Helper for LFL Growth %: like-for-like sales value in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Sales PY' =
 			VAR PeriodStart = MIN('Date'[Date])
 			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
 		formatString: \$#,0
 		displayFolder: Like-for-like
+		isHidden
 
 	/// Like-for-like sales growth vs. the same period last year.
 	measure 'LFL Growth %' = DIVIDE([LFL Sales] - [LFL Sales PY], [LFL Sales PY])

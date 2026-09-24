@@ -28,12 +28,13 @@ table 'Store Day'
 		formatString: #,0
 		displayFolder: Like-for-like
 
-	/// Like-for-like receipts in the same period last year, for the same store set.
+	/// Helper for LFL Footfall Growth %: like-for-like receipts in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Receipts PY' =
 			VAR PeriodStart = MIN('Date'[Date])
 			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
 		formatString: #,0
 		displayFolder: Like-for-like
+		isHidden
 
 	/// Like-for-like footfall growth vs. the same period last year.
 	measure 'LFL Footfall Growth %' = DIVIDE([LFL Receipts] - [LFL Receipts PY], [LFL Receipts PY])
