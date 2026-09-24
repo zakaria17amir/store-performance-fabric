@@ -8,21 +8,23 @@ def row(con, date_key, store=1, item=102):
 
 
 def test_baseline_on_first_promo_day(warehouse):
-    # 28 prior days all non-promo at 2/day → 56 / 28
+    # 27 trading days before 2016-01-10 (28 calendar days minus the 12-25 closure);
+    # 26 rows sell (12-20 is a genuine zero-sale trading day) × 2 units → 52 / 27
     on_promo, post, baseline = row(warehouse, 20160110)
     assert on_promo is True and post is False
-    assert baseline == pytest.approx(2.0)
+    assert baseline == pytest.approx(52 / 27)
 
 
 def test_baseline_excludes_promo_days(warehouse):
-    # 2016-01-11: one promo day in the lookback → 27 × 2 / (28 − 1)
-    assert row(warehouse, 20160111)[2] == pytest.approx(2.0)
+    # 2016-01-11: 27 trading days − 1 promo day; 25 non-promo rows × 2 → 50 / 26
+    assert row(warehouse, 20160111)[2] == pytest.approx(50 / 26)
 
 
 def test_post_promo_window(warehouse):
     on_promo, post, baseline = row(warehouse, 20160113)
     assert (on_promo, post) == (False, True)
-    assert baseline == pytest.approx(2.0)  # 25 non-promo days × 2 / (28 − 3)
+    # 27 trading days − 3 promo days; 23 non-promo rows × 2 → 46 / 24
+    assert baseline == pytest.approx(46 / 24)
 
 
 def test_no_baseline_outside_promo_windows(warehouse):
