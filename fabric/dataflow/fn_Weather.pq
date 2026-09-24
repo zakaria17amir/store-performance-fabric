@@ -20,8 +20,8 @@ let
     Json = if Status = 200 then Json.Document(Response)
            else error Error.Record("WeatherApiError", "HTTP " & Text.From(Status)),
     Daily = Json[daily],
-    Result = Table.FromColumns(
+    Result = Table.Buffer(Table.FromColumns(
         {List.Transform(Daily[time], Date.FromText), Daily[precipitation_sum], Daily[temperature_2m_max]},
-        type table [date = date, rain_mm = nullable number, temp_max_c = nullable number])
+        type table [date = date, rain_mm = nullable number, temp_max_c = nullable number]))
 in
     Result

@@ -19,14 +19,12 @@ let
     Cities = Table.SelectColumns(src_Lakehouse("stg_store"), {"store_key", "city"}),
     WithCity = Table.ExpandTableColumn(
         Table.NestedJoin(InDateRange, {"store_key"}, Cities, {"store_key"}, "c", JoinKind.Inner), "c", {"city"}),
-    Succeeded = Table.SelectRows(src_WeatherAttempts, each not [attempt][HasError]),
-    WeatherTables = Table.TransformColumns(Table.SelectColumns(Succeeded, {"city", "attempt"}), {{"attempt", each [Value]}}),
-    Weather = Table.ExpandTableColumn(WeatherTables, "attempt", {"date", "rain_mm", "temp_max_c"}),
+    Weather = Table.SelectColumns(Table.SelectRows(src_WeatherAttempts, each [error] = null), {"city", "date", "rain_mm", "temp_max_c"}),
     WeatherKeyed = Table.RemoveColumns(Table.AddColumn(Weather, "date_key", each DateKey([date]), Int64.Type), {"date"}),
     WithWeather = Table.ExpandTableColumn(
         Table.NestedJoin(WithCity, {"city", "date_key"}, WeatherKeyed, {"city", "date_key"}, "w", JoinKind.LeftOuter),
         "w", {"rain_mm", "temp_max_c"}),
     Result = Table.TransformColumnTypes(Table.RemoveColumns(WithWeather, {"city"}), {
-        {"receipts", Int64.Type}, {"target_value", type number}, {"rain_mm", type number}, {"temp_max_c", type number}})
+        {"receipts", Int64.Type}, {"target_value", Currency.Type}, {"rain_mm", type number}, {"temp_max_c", type number}})
 in
     Result
