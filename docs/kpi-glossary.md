@@ -22,3 +22,4 @@
 
 - Basket Value, Sales vs Target % and LFL Basket Growth % combine Sales (which follows item/family filters) with Store Day (receipts and targets have no item grain). Under an item or family filter, only the sales side is filtered.
 - The Time Calc items YoY Δ and YoY % applied to a ratio measure (e.g. Gross Margin %) give the change of the ratio: YoY Δ in percentage points, YoY % as relative change.
+- Avg Rain (mm) and Avg Max Temp (°C) average over store-day rows, so at region level a city with more stores weighs more.

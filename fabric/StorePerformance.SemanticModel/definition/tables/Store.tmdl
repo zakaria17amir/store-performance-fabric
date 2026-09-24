@@ -4,6 +4,7 @@ table Store
 	column StoreKey
 		dataType: int64
 		isHidden
+		isKey
 		isAvailableInMdx: false
 		formatString: 0
 		summarizeBy: none
