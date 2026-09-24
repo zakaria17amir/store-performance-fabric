@@ -6,6 +6,7 @@ from .build import build
 from .config import BuildConfig, sample_config
 from .erp_seed import write_erp_seed
 from .extract import extract_archives
+from .publish import onelake_options, publish
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -16,6 +17,7 @@ def main(argv: list[str] | None = None) -> None:
     b.add_argument("--raw", type=Path, default=Path("data/raw"))
     b.add_argument("--out", type=Path, required=True)
     b.add_argument("--sample", action="store_true")
+    b.add_argument("--publish-to", help="Delta target: local folder or lakehouse Tables/ ABFS path")
 
     e = sub.add_parser("extract", help="unpack the Kaggle download")
     e.add_argument("--src", type=Path, default=Path("data/download"))
@@ -29,7 +31,11 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
     if args.command == "build":
         cfg = sample_config(args.raw, args.out) if args.sample else BuildConfig(args.raw, args.out)
-        print(json.dumps(build(cfg), indent=2))
+        counts = build(cfg)  # raises on failed checks, so nothing is published after a failure
+        print(json.dumps(counts, indent=2))
+        if args.publish_to:
+            options = onelake_options() if args.publish_to.startswith("abfss://") else None
+            print("published:", ", ".join(publish(cfg.out_dir / "gold", args.publish_to, options)))
     if args.command == "extract":
         for path in extract_archives(args.src, args.dest):
             print(path)
