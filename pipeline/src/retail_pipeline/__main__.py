@@ -6,6 +6,7 @@ from .build import build
 from .config import BuildConfig, sample_config
 from .erp_seed import write_erp_seed
 from .extract import extract_archives
+from .geo import write_city_geo
 from .publish import onelake_options, publish
 
 
@@ -28,6 +29,10 @@ def main(argv: list[str] | None = None) -> None:
     s.add_argument("--out", type=Path, required=True)
     s.add_argument("--seed", type=int, default=42)
 
+    g = sub.add_parser("geo", help="store-city coordinates → city_geo.csv")
+    g.add_argument("--warehouse", type=Path, required=True)
+    g.add_argument("--out", type=Path, required=True)
+
     args = parser.parse_args(argv)
     if args.command == "build":
         cfg = sample_config(args.raw, args.out) if args.sample else BuildConfig(args.raw, args.out)
@@ -41,6 +46,8 @@ def main(argv: list[str] | None = None) -> None:
             print(path)
     if args.command == "erp-seed":
         print(json.dumps(write_erp_seed(args.warehouse, args.out, args.seed), indent=2))
+    if args.command == "geo":
+        print(write_city_geo(args.warehouse, args.out), "cities located")
 
 
 if __name__ == "__main__":
