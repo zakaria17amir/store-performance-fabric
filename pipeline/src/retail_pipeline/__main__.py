@@ -4,6 +4,7 @@ from pathlib import Path
 
 from .build import build
 from .config import BuildConfig, sample_config
+from .erp_load import connect_azure_sql, load_erp
 from .erp_seed import write_erp_seed
 from .extract import extract_archives
 from .geo import write_city_geo
@@ -33,6 +34,12 @@ def main(argv: list[str] | None = None) -> None:
     g.add_argument("--warehouse", type=Path, required=True)
     g.add_argument("--out", type=Path, required=True)
 
+    el = sub.add_parser("erp-load", help="schema + synthetic ERP CSVs → Azure SQL")
+    el.add_argument("--server", required=True)
+    el.add_argument("--database", default="retail-erp")
+    el.add_argument("--csv", type=Path, required=True)
+    el.add_argument("--sql", type=Path, default=Path("erp"))
+
     args = parser.parse_args(argv)
     if args.command == "build":
         cfg = sample_config(args.raw, args.out) if args.sample else BuildConfig(args.raw, args.out)
@@ -48,6 +55,12 @@ def main(argv: list[str] | None = None) -> None:
         print(json.dumps(write_erp_seed(args.warehouse, args.out, args.seed), indent=2))
     if args.command == "geo":
         print(write_city_geo(args.warehouse, args.out), "cities located")
+    if args.command == "erp-load":
+        con = connect_azure_sql(args.server, args.database)
+        try:
+            print(json.dumps(load_erp(con, args.csv, args.sql), indent=2))
+        finally:
+            con.close()
 
 
 if __name__ == "__main__":

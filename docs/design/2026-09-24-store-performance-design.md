@@ -115,7 +115,7 @@ Each decision gets a short decision record in `docs/decisions/` during implement
   - `sales_target_month`, `weekday_weight`
   - `city_geo` (latitude and longitude, from the Open-Meteo geocoding API)
   - `user_access` (user principal name, store number)
-- **View `erp.v_sales_target_day`**: allocates each monthly target to days in proportion to the store's weekday weights. The daily values sum back exactly to the monthly target.
+- **View `erp.v_sales_target_day`**: allocates each monthly target to the store's planned open days (25 Dec and 1 Jan are planned closures) in proportion to its weekday weights; daily values sum back exactly to the monthly target (the last open day absorbs rounding).
 - **Constraints and data**: primary keys, foreign keys and CHECK constraints (price > cost > 0, weights > 0). A single idempotent seed script creates and loads everything.
 
 ## 8. Dataflow Gen2 (`df_erp_weather`)
@@ -123,7 +123,7 @@ Each decision gets a short decision record in `docs/decisions/` during implement
 - **Joins onto the staged tables**:
   - `stg_store` + `erp.store_profile` + region → `dim_store`
   - `stg_item` + `erp.item_price` → `dim_item`
-  - `stg_store_day` + `erp.v_sales_target_day` + weather → `fact_store_day`
+  - `stg_store_day` + `erp.v_sales_target_day` + weather → `fact_store_day`, driven by the union of store-days with receipts and store-days with a daily target, so a closed day keeps its target
 - **Other outputs**: `user_access` → lakehouse.
 - **Weather**:
   - One archive API call per city for the full date range, built as a Power Query function.
