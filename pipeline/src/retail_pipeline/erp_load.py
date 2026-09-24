@@ -23,7 +23,7 @@ def load_erp(con, csv_dir: Path, sql_dir: Path) -> dict[str, int]:
 
 
 def connect_azure_sql(server: str, database: str):
-    # ponytail: imported here because mssql-python is an optional extra
+    # optional "azure" extra: imported only when needed
     import mssql_python
 
     return mssql_python.connect(

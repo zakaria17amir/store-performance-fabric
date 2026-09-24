@@ -9,6 +9,9 @@ import duckdb
 
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
 
+# Names the geocoder doesn't resolve under Favorita's spelling.
+LOOKUP_ALIASES = {"Libertad": "La Libertad"}
+
 
 def _get_json(url: str) -> dict:
     with urlopen(url, timeout=30) as response:
@@ -16,11 +19,18 @@ def _get_json(url: str) -> dict:
 
 
 def locate(city: str, fetch=_get_json) -> tuple[str, float, float, str]:
-    query = urlencode({"name": city, "count": 10, "language": "en", "format": "json"})
-    for result in fetch(f"{GEOCODING_URL}?{query}").get("results", []):
-        if result.get("country_code") == "EC":
-            return city, result["latitude"], result["longitude"], result.get("admin1", "")
-    raise ValueError(f"No Ecuadorian match for city {city!r}")
+    query = urlencode({
+        "name": LOOKUP_ALIASES.get(city, city),
+        "count": 10,
+        "language": "en",
+        "format": "json",
+        "countryCode": "EC",
+    })
+    results = [r for r in fetch(f"{GEOCODING_URL}?{query}").get("results", []) if r.get("country_code") == "EC"]
+    if not results:
+        raise ValueError(f"No Ecuadorian match for city {city!r}")
+    best = max(results, key=lambda r: r.get("population") or 0)
+    return city, best["latitude"], best["longitude"], best.get("admin1", "")
 
 
 def write_city_geo(warehouse: Path, out: Path, fetch=_get_json) -> int:
