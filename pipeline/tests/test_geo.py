@@ -30,3 +30,14 @@ def test_write_city_geo_one_row_per_store_city(full_build, tmp_path):
         rows = list(csv.reader(f))
     assert rows[0] == ["city", "latitude", "longitude", "admin1"]
     assert sorted(r[0] for r in rows[1:]) == ["Cuenca", "Guayaquil", "Quito"]
+
+
+def test_failed_lookup_writes_no_file(full_build, tmp_path):
+    cfg, _ = full_build
+
+    def fetch_fails_for_quito(url):
+        return {} if "Quito" in url else fake_fetch(url)
+
+    with pytest.raises(ValueError):
+        write_city_geo(cfg.db_path, tmp_path, fetch=fetch_fails_for_quito)
+    assert not (tmp_path / "city_geo.csv").exists()

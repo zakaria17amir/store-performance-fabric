@@ -29,9 +29,10 @@ def write_city_geo(warehouse: Path, out: Path, fetch=_get_json) -> int:
         cities = [r[0] for r in con.execute("SELECT DISTINCT city FROM gold.stg_store ORDER BY city").fetchall()]
     finally:
         con.close()
+    rows = [locate(city, fetch) for city in cities]
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "city_geo.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["city", "latitude", "longitude", "admin1"])
-        writer.writerows(locate(city, fetch) for city in cities)
-    return len(cities)
+        writer.writerows(rows)
+    return len(rows)
