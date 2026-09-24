@@ -1,7 +1,4 @@
 # Store Performance Cockpit: design
-
-- **Date:** 2026-09-24
-- **Status:** Approved
 - **Architecture:** [docs/architecture.md](../architecture.md)
 
 ## 1. Goal
