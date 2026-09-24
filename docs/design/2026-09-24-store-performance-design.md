@@ -142,11 +142,11 @@ Each decision gets a short decision record in `docs/decisions/` during implement
 
 | Measure | Definition |
 |---|---|
-| Units | `SUM(Sales[Units])` |
+| Units | `SUM('Sales'[Unit Sales])` |
 | Sales Value | `SUMX('Item', [Units] * 'Item'[Unit Price])` |
 | Cost Value | `SUMX('Item', [Units] * 'Item'[Unit Cost])`; unavailable to Store operations (OLS) |
 | Gross Margin % | (Sales Value − Cost Value) ÷ Sales Value |
-| Receipts | `SUM('Store Day'[Receipts])` |
+| Receipts | `SUM('Store Day'[Receipt Count])` |
 | Basket Value | Sales Value ÷ Receipts |
 | Target | `SUM('Store Day'[Target Value])` |
 | Sales vs Target % | (Sales Value − Target) ÷ Target |
@@ -276,7 +276,7 @@ Flagship/
 | The 60-day Fabric trial ends | Do the local work before activating the trial; capture screenshots and video; the Import model on sample data opens offline |
 | Laptop memory with ~125M rows | DuckDB reads Parquet in a streaming fashion and spills to disk; stock-out spine limited to 2016 onward; the sample is used in Desktop |
 | Kaggle data terms | Raw files never committed; download script; attribution in the README |
-| Tabular Editor 2 TMDL support is in preview | Fallback: store the model as `model.bim` for the CI check |
+| Tabular Editor 2 TMDL support changes between releases | The CI pins TE2 2.29.0 (GA TMDL, TOM 19.90) by checksum; fallback: store the model as `model.bim` for the CI check |
 | Azure SQL free-tier compute limits | The ERP tables are small and read once per refresh; the database auto-pauses |
 | Weather API limits or outages | One call per city; failures recorded; results persisted in the lakehouse |
 | Scope creep | Cut in this order: Direct Lake variant → composite variant → field parameter → weather visuals |

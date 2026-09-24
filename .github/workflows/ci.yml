@@ -18,3 +18,15 @@ jobs:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
       - run: pytest -q
+
+  model-bpa:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tabular Editor 2.29.0
+        run: |
+          Invoke-WebRequest https://github.com/TabularEditor/TabularEditor/releases/download/2.29.0/TabularEditor.Portable.zip -OutFile te2.zip
+          if ((Get-FileHash te2.zip -Algorithm SHA256).Hash -ne "C0D3A7ABDA4572BAAF3AEEDF9CB342CE7AD4D9840E6438D6B13DF02267D308A4") { throw "TabularEditor.Portable.zip checksum mismatch" }
+          Expand-Archive te2.zip -DestinationPath te2
+      - name: Best Practice Analyzer
+        run: ./fabric/bpa/run-bpa.ps1 -TabularEditor ./te2/TabularEditor.exe

@@ -93,6 +93,8 @@ needs an API token in `~/.kaggle/kaggle.json`.
 
 `build` stops before exporting anything if a data check fails.
 
+The semantic model and its quality gate are described in [fabric/README.md](fabric/README.md).
+
 ## Results
 
 Results are added as each phase ships:
