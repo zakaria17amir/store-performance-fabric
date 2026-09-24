@@ -12,3 +12,6 @@ annotation __PBI_TimeIntelligenceEnabled = 0
 ref table Date
 ref table Store
 ref table Item
+ref table Sales
+ref table 'Store Day'
+ref table 'Stock-out Risk'

@@ -1,0 +1,118 @@
+/// Store × day: receipts (footfall), the daily sales target from the ERP, and weather. Closed days keep their target.
+table 'Store Day'
+
+	/// Footfall: number of shopping trips (receipts).
+	measure Receipts = SUM('Store Day'[Receipt Count])
+		formatString: #,0
+		displayFolder: Footfall
+
+	/// Average spend per shopping trip.
+	measure 'Basket Value' = DIVIDE([Sales Value], [Receipts])
+		formatString: \$#,0.00
+		displayFolder: Footfall
+
+	/// Planned sales value, allocated from monthly ERP targets to planned open days.
+	measure Target = SUM('Store Day'[Target Value])
+		formatString: \$#,0
+		displayFolder: Target
+
+	/// Over or under plan: (sales value − target) ÷ target.
+	measure 'Sales vs Target %' = DIVIDE([Sales Value] - [Target], [Target])
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Target
+
+	/// Receipts of like-for-like stores: stores opened at least 12 months before the start of the selected period.
+	measure 'LFL Receipts' =
+			VAR PeriodStart = MIN('Date'[Date])
+			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)))
+		formatString: #,0
+		displayFolder: Like-for-like
+
+	/// Like-for-like receipts in the same period last year, for the same store set.
+	measure 'LFL Receipts PY' =
+			VAR PeriodStart = MIN('Date'[Date])
+			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
+		formatString: #,0
+		displayFolder: Like-for-like
+
+	/// Like-for-like footfall growth vs. the same period last year.
+	measure 'LFL Footfall Growth %' = DIVIDE([LFL Receipts] - [LFL Receipts PY], [LFL Receipts PY])
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Like-for-like
+
+	/// Like-for-like basket growth: (1 + sales growth) = (1 + footfall growth) × (1 + basket growth).
+	measure 'LFL Basket Growth %' =
+			VAR SalesGrowth = [LFL Growth %]
+			VAR FootfallGrowth = [LFL Footfall Growth %]
+			RETURN IF(NOT ISBLANK(SalesGrowth) && NOT ISBLANK(FootfallGrowth), DIVIDE(SalesGrowth - FootfallGrowth, 1 + FootfallGrowth))
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Like-for-like
+
+	/// Average daily rainfall in the store's city (Open-Meteo).
+	measure 'Avg Rain (mm)' = AVERAGE('Store Day'[Rain (mm)])
+		formatString: #,0.0
+		displayFolder: Weather
+
+	/// Average daily maximum temperature in the store's city (Open-Meteo).
+	measure 'Avg Max Temp (°C)' = AVERAGE('Store Day'[Max Temp (°C)])
+		formatString: #,0.0
+		displayFolder: Weather
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: date_key
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column 'Receipt Count'
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: #,0
+		summarizeBy: none
+		sourceColumn: receipts
+
+	column 'Target Value'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		formatString: \$#,0.00
+		summarizeBy: none
+		sourceColumn: target_value
+
+	column 'Rain (mm)'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		formatString: #,0.0
+		summarizeBy: none
+		sourceColumn: rain_mm
+
+	column 'Max Temp (°C)'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		formatString: #,0.0
+		summarizeBy: none
+		sourceColumn: temp_max_c
+
+	partition 'Store Day' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database(SqlEndpoint, Lakehouse),
+				    Data = Source{[Schema = "dbo", Item = "fact_store_day"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"date_key", "store_key", "receipts", "target_value", "rain_mm", "temp_max_c"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"target_value", Currency.Type}, {"rain_mm", Currency.Type}, {"temp_max_c", Currency.Type}})
+				in
+				    Result

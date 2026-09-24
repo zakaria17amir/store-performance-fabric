@@ -1,0 +1,31 @@
+relationship 2bfeafa9-d21d-4d5a-bbac-7280fb361f6e
+	fromColumn: Sales.DateKey
+	toColumn: Date.DateKey
+
+relationship 988e0852-db77-4018-ab87-471171909997
+	fromColumn: Sales.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 4dd795bd-72ec-48e5-9684-42b53b89fbb0
+	fromColumn: Sales.ItemKey
+	toColumn: Item.ItemKey
+
+relationship 91666428-5efa-46af-976d-caf076c2ffb6
+	fromColumn: 'Store Day'.DateKey
+	toColumn: Date.DateKey
+
+relationship 2a2aeec0-ec27-4443-b364-83d6cfc6a07f
+	fromColumn: 'Store Day'.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 3b955fe7-c068-40a3-9b0f-729dcc4145e0
+	fromColumn: 'Stock-out Risk'.DateKey
+	toColumn: Date.DateKey
+
+relationship 97a38442-0edb-407c-af31-9bfcacb9dc42
+	fromColumn: 'Stock-out Risk'.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 35b38f72-9097-4baa-bfef-c95334424157
+	fromColumn: 'Stock-out Risk'.ItemKey
+	toColumn: Item.ItemKey
