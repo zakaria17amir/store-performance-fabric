@@ -3,9 +3,9 @@
 - Status: Accepted (2026-09-24)
 
 ## Context
-Sales Value can be computed by storing a precomputed column on the ~100M-row Sales fact table,
+Sales Value can be computed by storing a precomputed column on the ~125M-row Sales fact table,
 multiplying units by price on every row, or by a measure that multiplies by a price stored once
-per item. The two approaches were compared in the performance benchmark.
+per item. The two approaches will be compared in the Phase 4 benchmark (ADR-003).
 
 ## Decision
 Store unit price and unit cost once on the Item table (about 4,000 rows) and compute

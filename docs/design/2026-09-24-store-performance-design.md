@@ -64,7 +64,7 @@ seeded generator creates these, and every synthetic column is listed in `docs/re
 - **Weekday weights** per store: each weekday's share of the store's sales value over the store's full history.
 - **Regions**: Pichincha → *Quito*; Guayas → *Guayaquil*; the other Andean provinces → *Sierra*; the remaining coastal and Amazon provinces → *Costa & Oriente*. The seed fails if any store's state is unmapped.
 - **Selling area** per store: drawn from a store-type-specific range.
-- **Opening date** is not synthetic: it is the store's first day with sales in the data.
+- **Opening date** is not synthetic: it is the store's first day with receipts (full history).
 
 ### 4.3 Sample dataset
 
@@ -234,7 +234,7 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
 
 ## 14. Error handling and operations
 
-- **Pipeline**: explicit schemas, so a source schema change fails the run. Re-runs are safe because each table is overwritten. Nothing uploads unless every test passes, and row counts are logged per stage.
+- **Pipeline**: explicit schemas, so a source schema change fails the run. Re-runs are safe because each table is overwritten. Nothing uploads unless every test passes, and row counts are reported for every gold table.
 - **Weather**: per-city failures are recorded in `weather_load_errors`.
 - **Refresh**: the data pipeline refreshes the dataflow, then the semantic model. Refresh-failure notifications go to the owner's personal email address.
 - **Promotion to Prod**: happens only after the Test totals check passes.

@@ -11,7 +11,7 @@ full fact table.
 Compute the promotion baseline (28-day trailing average units per store-item) and the stock-out
 risk flag, with its expected-units value, in the local SQL pipeline, and load them as gold
 tables. The DAX measures (Promo Uplift %, Post-promo Dip %, Stock-out Risk Items, Est. Lost
-Units/Sales) just aggregate these precomputed columns.
+Units / Sales) just aggregate these precomputed columns.
 
 ## Consequences
 + Heavy window-function logic runs once in SQL/DuckDB instead of per query in DAX.
