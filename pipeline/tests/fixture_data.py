@@ -52,8 +52,9 @@ def sales_rows() -> list[tuple]:
         if d not in GAPS_102_STORE1 and d != STORE1_CLOSURE:
             promo = d in PROMO_DAYS
             rows.append((d, 1, 102, 6.0 if promo else 2.0, promo))
-    for d in days(date(2016, 1, 1), date(2016, 3, 31)):
-        rows.append((d, 2, 101, -1.0 if d == RETURN_DAY else 1.0, None))
+    for d in days(date(2015, 6, 1), date(2016, 3, 31)):
+        promo = False if d.year == 2015 else None
+        rows.append((d, 2, 101, -1.0 if d == RETURN_DAY else 1.0, promo))
     for store, units in ((3, 2.0), (4, 1.0), (5, 1.0)):
         for d in days(date(2016, 1, 1), date(2016, 1, 31)):
             rows.append((d, store, 101, units, False))

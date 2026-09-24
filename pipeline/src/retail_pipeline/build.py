@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 from string import Template
 
@@ -48,11 +49,13 @@ def build(cfg: BuildConfig) -> dict[str, int]:
     """Run all stages, block on failed checks, export gold to Parquet. Returns row counts."""
     cfg.out_dir.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(str(cfg.db_path))
+    con.execute("SET preserve_insertion_order = false")
     try:
         run_stages(con, cfg)
         failures = run_checks(con)
         if failures:
             raise DataCheckError(failures)
+        shutil.rmtree(cfg.out_dir / "gold", ignore_errors=True)
         export_gold(con, cfg.out_dir / "gold")
         return {t: con.execute(f"SELECT count(*) FROM gold.{t}").fetchone()[0] for t in GOLD_TABLES}
     finally:

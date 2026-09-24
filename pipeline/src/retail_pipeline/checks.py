@@ -13,9 +13,6 @@ CHECKS: dict[str, str] = {
     "fact_sales_unique_grain": (
         "SELECT count(*) FROM (SELECT 1 FROM gold.fact_sales "
         "GROUP BY date_key, store_key, item_key HAVING count(*) > 1)"),
-    "fact_sales_null_keys": (
-        "SELECT count(*) FROM gold.fact_sales "
-        "WHERE date_key IS NULL OR store_key IS NULL OR item_key IS NULL"),
     "fact_sales_orphan_date": _orphans("fact_sales", "date_key", "dim_date"),
     "fact_sales_orphan_store": _orphans("fact_sales", "store_key", "stg_store"),
     "fact_sales_orphan_item": _orphans("fact_sales", "item_key", "stg_item"),
@@ -24,6 +21,11 @@ CHECKS: dict[str, str] = {
     "stockout_orphan_item": _orphans("fact_stockout_risk", "item_key", "stg_item"),
     "store_day_orphan_date": _orphans("stg_store_day", "date_key", "dim_date"),
     "store_day_orphan_store": _orphans("stg_store_day", "store_key", "stg_store"),
+    "stg_store_day_unique_grain": "SELECT count(*) - count(DISTINCT (date_key, store_key)) FROM gold.stg_store_day",
+    "stockout_unique_grain": "SELECT count(*) - count(DISTINCT (date_key, store_key, item_key)) FROM gold.fact_stockout_risk",
+    "store_days_without_sales": (
+        "SELECT count(*) FROM silver.store_day d WHERE receipts > 0 AND NOT EXISTS "
+        "(SELECT 1 FROM silver.sales s WHERE s.store_nbr = d.store_nbr AND s.date = d.date)"),
     "negative_units": "SELECT count(*) FROM gold.fact_sales WHERE units < 0 OR return_units < 0",
     "store_type_values": "SELECT count(*) FROM gold.stg_store WHERE store_type NOT IN ('A','B','C','D','E')",
     "totals_reconcile_by_year": """

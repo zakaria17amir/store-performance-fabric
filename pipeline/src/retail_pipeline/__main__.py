@@ -4,6 +4,8 @@ from pathlib import Path
 
 from .build import build
 from .config import BuildConfig, sample_config
+from .erp_seed import write_erp_seed
+from .extract import extract_archives
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -29,11 +31,9 @@ def main(argv: list[str] | None = None) -> None:
         cfg = sample_config(args.raw, args.out) if args.sample else BuildConfig(args.raw, args.out)
         print(json.dumps(build(cfg), indent=2))
     if args.command == "extract":
-        from .extract import extract_archives
         for path in extract_archives(args.src, args.dest):
             print(path)
     if args.command == "erp-seed":
-        from .erp_seed import write_erp_seed
         print(json.dumps(write_erp_seed(args.warehouse, args.out, args.seed), indent=2))
 
 

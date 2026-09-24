@@ -64,11 +64,6 @@ def region_for(state: str) -> str:
         raise ValueError(f"No region mapping for state {state!r}") from None
 
 
-def _add_months(month_start: date, months: int) -> date:
-    index = month_start.month - 1 + months
-    return date(month_start.year + index // 12, index % 12 + 1, 1)
-
-
 def generate_erp(con: duckdb.DuckDBPyConnection, seed: int = 42) -> dict[str, list[tuple]]:
     rng = random.Random(seed)
     stores = con.execute("SELECT store_nbr, state, store_type FROM gold.stg_store ORDER BY store_nbr").fetchall()
@@ -95,7 +90,7 @@ def generate_erp(con: duckdb.DuckDBPyConnection, seed: int = 42) -> dict[str, li
     full_months = {(s, m): v for s, m, v, days in monthly if days >= FULL_MONTH_MIN_DAYS}
     targets = []
     for store, month, _, _ in monthly:
-        prior = full_months.get((store, _add_months(month, -12)))
+        prior = full_months.get((store, month.replace(year=month.year - 1)))
         if prior is not None:
             growth = rng.gauss(GROWTH_MEAN, GROWTH_SD)
             targets.append((store, month, round(prior * (1 + growth), 2)))
@@ -122,7 +117,7 @@ COLUMNS = {
 
 def write_erp_seed(warehouse: Path, out: Path, seed: int = 42) -> dict[str, int]:
     out.mkdir(parents=True, exist_ok=True)
-    con = duckdb.connect(str(warehouse))
+    con = duckdb.connect(str(warehouse), read_only=True)
     try:
         tables = generate_erp(con, seed)
     finally:

@@ -16,6 +16,7 @@ SELECT
     strftime(date, '%b') AS month_name,
     year(date) * 100 + month(date) AS month_key,
     weekofyear(date) AS iso_week,
+    isoyear(date) AS iso_year,
     isodow(date) AS weekday_num,
     strftime(date, '%a') AS weekday_name,
     isodow(date) >= 6 AS is_weekend,

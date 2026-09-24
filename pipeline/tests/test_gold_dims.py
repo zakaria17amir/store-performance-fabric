@@ -19,6 +19,9 @@ def test_dim_date_holidays(warehouse):
         "SELECT date, is_national_holiday FROM gold.dim_date "
         "WHERE date IN (DATE '2016-01-01', DATE '2016-02-08', DATE '2016-02-09')").fetchall())
     assert flags == {date(2016, 1, 1): True, date(2016, 2, 8): False, date(2016, 2, 9): True}
+    assert warehouse.execute(
+        "SELECT iso_year, iso_week FROM gold.dim_date WHERE date = DATE '2016-01-01'"
+    ).fetchone() == (2015, 53)
 
 
 def test_opening_date_uses_full_receipt_history(sample_warehouse):
