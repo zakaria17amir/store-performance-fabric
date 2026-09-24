@@ -65,7 +65,7 @@ Tabular Editor 2 · DAX Studio · GitHub Actions · Figma
 ```
 pipeline/   Python + DuckDB data preparation and tests
 erp/        Azure SQL schema and SQL tests
-fabric/     Power BI project (semantic model + report)
+fabric/     Power BI project (semantic model + report) and Dataflow Gen2 queries
 design/     Figma exports and Power BI theme
 docs/       architecture, design, decisions, requirements, results
 ```
@@ -87,6 +87,9 @@ pipeline/.venv/Scripts/python -m retail_pipeline extract --src data/download --d
 pipeline/.venv/Scripts/python -m retail_pipeline build --raw data/raw --out data/full
 pipeline/.venv/Scripts/python -m retail_pipeline build --raw data/raw --out data/sample --sample
 ```
+
+Paths are for Windows (`.venv/Scripts`); on macOS/Linux use `.venv/bin`. The Kaggle CLI
+needs an API token in `~/.kaggle/kaggle.json`.
 
 `build` stops before exporting anything if a data check fails.
 
