@@ -1,0 +1,42 @@
+[
+  {
+    "ID": "PROJECT_MEASURE_DESCRIPTION",
+    "Name": "[Project] Every measure has a description",
+    "Category": "Project conventions",
+    "Description": "The description is the tooltip report users see; it must match the KPI glossary.",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrWhitespace(Description)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PROJECT_MEASURE_DISPLAY_FOLDER",
+    "Name": "[Project] Every measure is in a display folder",
+    "Category": "Project conventions",
+    "Description": "Display folders group measures by business topic in the field list.",
+    "Severity": 3,
+    "Scope": "Measure",
+    "Expression": "string.IsNullOrWhitespace(DisplayFolder)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PROJECT_TABLE_DESCRIPTION",
+    "Name": "[Project] Every table has a description",
+    "Category": "Project conventions",
+    "Description": "Table descriptions state the grain and the source.",
+    "Severity": 3,
+    "Scope": "Table, CalculatedTable, CalculationGroup",
+    "Expression": "string.IsNullOrWhitespace(Description)",
+    "CompatibilityLevel": 1200
+  },
+  {
+    "ID": "PROJECT_SINGLE_DIRECTION_RELATIONSHIPS",
+    "Name": "[Project] Relationships filter in one direction only",
+    "Category": "Project conventions",
+    "Description": "Dynamic RLS uses an unrelated access table, so no relationship needs bi-directional filtering (ADR-005).",
+    "Severity": 3,
+    "Scope": "Relationship",
+    "Expression": "CrossFilteringBehavior == CrossFilteringBehavior.BothDirections",
+    "CompatibilityLevel": 1200
+  }
+]

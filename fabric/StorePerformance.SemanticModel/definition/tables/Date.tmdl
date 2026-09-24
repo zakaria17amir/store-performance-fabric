@@ -1,0 +1,104 @@
+/// One row per calendar day, from the first to the last sales day. Marked as the date table.
+table Date
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: date_key
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: year
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: quarter
+
+	column Month
+		dataType: string
+		summarizeBy: none
+		sourceColumn: month_name
+		sortByColumn: 'Month Number'
+
+	column 'Month Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: month_num
+
+	column 'Year Month'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: year_month
+		sortByColumn: 'Month Key'
+
+	column 'Month Key'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: month_key
+
+	column 'ISO Week'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: iso_week
+
+	column 'ISO Year'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: iso_year
+
+	column Weekday
+		dataType: string
+		summarizeBy: none
+		sourceColumn: weekday_name
+		sortByColumn: 'Weekday Number'
+
+	column 'Weekday Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: weekday_num
+
+	column 'Is Weekend'
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+	column 'Is National Holiday'
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_national_holiday
+
+	partition Date = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database(SqlEndpoint, Lakehouse),
+				    Data = Source{[Schema = "dbo", Item = "dim_date"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"date_key", "date", "year", "quarter", "month_num", "month_name", "month_key", "iso_week", "iso_year", "weekday_num", "weekday_name", "is_weekend", "is_national_holiday"}),
+				    Result = Table.AddColumn(Selected, "year_month", each Date.ToText([date], [Format = "MMM yyyy", Culture = "en-US"]), type text)
+				in
+				    Result
