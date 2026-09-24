@@ -2,7 +2,7 @@ import duckdb
 import pytest
 
 from fixture_data import write_fixture
-from retail_pipeline.build import run_stages
+from retail_pipeline.build import build, run_stages
 from retail_pipeline.config import BuildConfig, sample_config
 
 
@@ -25,3 +25,9 @@ def sample_warehouse(raw_dir, tmp_path_factory):
     run_stages(con, sample_config(raw_dir, tmp_path_factory.mktemp("unused_sample")))
     yield con
     con.close()
+
+
+@pytest.fixture(scope="session")
+def full_build(raw_dir, tmp_path_factory):
+    cfg = BuildConfig(raw_dir=raw_dir, out_dir=tmp_path_factory.mktemp("full"))
+    return cfg, build(cfg)
