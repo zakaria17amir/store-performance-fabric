@@ -1,1 +1,21 @@
-.local\*
+# local working files (plans, checklist)
+.local/
+
+# data (Kaggle terms: never commit raw or derived data)
+data/
+
+# python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# local settings and secrets
+.env
+*.local.json
+
+# Power BI project local files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
