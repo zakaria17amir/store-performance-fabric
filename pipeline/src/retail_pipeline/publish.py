@@ -12,7 +12,8 @@ def onelake_options() -> dict[str, str]:
     from azure.identity import InteractiveBrowserCredential
 
     token = InteractiveBrowserCredential().get_token(STORAGE_SCOPE).token
-    return {"bearer_token": token, "use_fabric_endpoint": "true"}
+    # a slow uplink can take longer than the 30 s default to send one upload block
+    return {"bearer_token": token, "use_fabric_endpoint": "true", "timeout": "600s"}
 
 
 def publish(gold_dir: Path, target: str, storage_options: dict[str, str] | None = None) -> list[str]:
