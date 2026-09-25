@@ -29,3 +29,4 @@ relationship 97a38442-0edb-407c-af31-9bfcacb9dc42
 relationship 35b38f72-9097-4baa-bfef-c95334424157
 	fromColumn: 'Stock-out Risk'.ItemKey
 	toColumn: Item.ItemKey
+

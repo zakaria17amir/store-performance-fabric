@@ -9,3 +9,6 @@ role 'Store operations'
 	tablePermission Item
 
 		columnPermission 'Unit Cost' = none
+
+	annotation PBI_Id = a0e6bd4c09c0440195be7112c5333b7f
+

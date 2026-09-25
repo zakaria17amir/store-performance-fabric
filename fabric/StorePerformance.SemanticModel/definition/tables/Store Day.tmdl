@@ -1,25 +1,30 @@
 /// Store × day: receipts (footfall), the daily sales target from the ERP, and weather. Closed days keep their target.
 table 'Store Day'
+	lineageTag: 569d8aeb-c9c4-4040-8220-fd81aa442427
 
 	/// Footfall: number of shopping trips (receipts).
 	measure Receipts = SUM('Store Day'[Receipt Count])
 		formatString: #,0
 		displayFolder: Footfall
+		lineageTag: 4a3b435f-58c7-49e7-a865-4db80db6e0b9
 
 	/// Average spend per shopping trip.
 	measure 'Basket Value' = DIVIDE([Sales Value], [Receipts])
 		formatString: \$#,0.00
 		displayFolder: Footfall
+		lineageTag: c8c0b85f-0fde-4ab2-b585-a0713caa3081
 
 	/// Planned sales value, allocated from monthly ERP targets to planned open days.
 	measure Target = SUM('Store Day'[Target Value])
 		formatString: \$#,0
 		displayFolder: Target
+		lineageTag: e8346564-2dd6-4585-b190-5a66a09c83b5
 
 	/// Over or under plan: (sales value − target) ÷ target.
 	measure 'Sales vs Target %' = DIVIDE([Sales Value] - [Target], [Target])
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Target
+		lineageTag: 5d91f3cb-3c43-4f11-8940-ce12f64de068
 
 	/// Receipts of like-for-like stores: stores opened at least 12 months before the start of the selected period.
 	measure 'LFL Receipts' =
@@ -27,19 +32,22 @@ table 'Store Day'
 			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)))
 		formatString: #,0
 		displayFolder: Like-for-like
+		lineageTag: 080818d3-f1ec-4cdf-8b43-21ea1a16d8fa
 
 	/// Helper for LFL Footfall Growth %: like-for-like receipts in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Receipts PY' =
 			VAR PeriodStart = MIN('Date'[Date])
 			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
 		formatString: #,0
-		displayFolder: Like-for-like
 		isHidden
+		displayFolder: Like-for-like
+		lineageTag: 33c20ea5-32af-4d17-96b7-3acee6d29021
 
 	/// Like-for-like footfall growth vs. the same period last year.
 	measure 'LFL Footfall Growth %' = DIVIDE([LFL Receipts] - [LFL Receipts PY], [LFL Receipts PY])
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Like-for-like
+		lineageTag: 41d71585-293a-4687-acf4-71b2cabb0627
 
 	/// Like-for-like basket growth: (1 + sales growth) = (1 + footfall growth) × (1 + basket growth).
 	measure 'LFL Basket Growth %' =
@@ -48,62 +56,71 @@ table 'Store Day'
 			RETURN IF(NOT ISBLANK(SalesGrowth) && NOT ISBLANK(FootfallGrowth), DIVIDE(SalesGrowth - FootfallGrowth, 1 + FootfallGrowth))
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Like-for-like
+		lineageTag: 3ad4e7a3-3fae-47d6-a543-6f9d80b91334
 
 	/// Average daily rainfall in the store's city (Open-Meteo).
 	measure 'Avg Rain (mm)' = AVERAGE('Store Day'[Rain (mm)])
 		formatString: #,0.0
 		displayFolder: Weather
+		lineageTag: b6cc6e6f-9ee6-491c-888f-850da05eb627
 
 	/// Average daily maximum temperature in the store's city (Open-Meteo).
 	measure 'Avg Max Temp (°C)' = AVERAGE('Store Day'[Max Temp (°C)])
 		formatString: #,0.0
 		displayFolder: Weather
+		lineageTag: 3db1374c-5542-42fa-bd5c-36a69fad794d
 
 	column DateKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 6825da03-b1a6-4746-b37e-5fb1d564e523
 		summarizeBy: none
 		sourceColumn: date_key
 
 	column StoreKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 2bd207ff-fbc6-4d75-addd-096df94ab8ba
 		summarizeBy: none
 		sourceColumn: store_key
 
 	column 'Receipt Count'
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 8d9ee4c9-acf3-4c1e-945b-8eb18f0e6ad8
 		summarizeBy: none
 		sourceColumn: receipts
 
 	column 'Target Value'
 		dataType: decimal
 		isHidden
-		isAvailableInMdx: false
 		formatString: \$#,0.00
+		isAvailableInMdx: false
+		lineageTag: 2ad7e2fd-1f34-472f-b504-8b9ca584a3df
 		summarizeBy: none
 		sourceColumn: target_value
 
 	column 'Rain (mm)'
 		dataType: decimal
 		isHidden
-		isAvailableInMdx: false
 		formatString: #,0.0
+		isAvailableInMdx: false
+		lineageTag: d9698806-e641-4472-b019-80c10664c266
 		summarizeBy: none
 		sourceColumn: rain_mm
 
 	column 'Max Temp (°C)'
 		dataType: decimal
 		isHidden
-		isAvailableInMdx: false
 		formatString: #,0.0
+		isAvailableInMdx: false
+		lineageTag: ef5e11eb-6626-4c63-b838-b52e9b3a8fcb
 		summarizeBy: none
 		sourceColumn: temp_max_c
 
@@ -117,3 +134,4 @@ table 'Store Day'
 				    Result = Table.TransformColumnTypes(Selected, {{"target_value", Currency.Type}, {"rain_mm", Currency.Type}, {"temp_max_c", Currency.Type}})
 				in
 				    Result
+

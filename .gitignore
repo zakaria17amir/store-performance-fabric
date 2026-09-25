@@ -18,4 +18,5 @@ __pycache__/
 # Power BI project local files
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+**/.pbi/editorSettings.json
 *.pbix

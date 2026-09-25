@@ -1,9 +1,12 @@
 /// Host name of the lakehouse SQL analytics endpoint (Retail Data workspace).
 expression SqlEndpoint = "mfqgrtto2leurmaoxscdjyt7t4-mnz2pujyr7ju5mytkasrawwn2m.datawarehouse.fabric.microsoft.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: c4bffcdb-a2ed-430d-82b1-693acd946838
 
 	annotation PBI_ResultType = Text
 
 /// Lakehouse to read: lh_retail_sample in Dev and Desktop, lh_retail in Test and Prod (deployment rule).
 expression Lakehouse = "lh_retail_sample" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 6d787528-87f8-4fc8-8975-41f2ee154fd1
 
 	annotation PBI_ResultType = Text
+

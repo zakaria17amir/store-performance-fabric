@@ -1,35 +1,42 @@
 /// Store × item × day sales from Favorita, with promotion flags and the upstream promotion baseline.
 table Sales
+	lineageTag: 5309b661-bfe2-4b88-95c3-47fface03eab
 
 	/// Units sold. Returns are excluded.
 	measure Units = SUM('Sales'[Unit Sales])
 		formatString: #,0
 		displayFolder: Sales
+		lineageTag: e1943f07-9568-4ea7-acd0-797c3c9e72dd
 
 	/// Revenue at list price: units × the item's unit price, summed over items.
 	measure 'Sales Value' = SUMX('Item', [Units] * 'Item'[Unit Price])
 		formatString: \$#,0
 		displayFolder: Sales
+		lineageTag: 390a604d-fcf4-4627-ab2a-3f7a8599c71c
 
 	/// Cost of goods sold: units × the item's unit cost. Restricted for store operations.
 	measure 'Cost Value' = SUMX('Item', [Units] * 'Item'[Unit Cost])
 		formatString: \$#,0
 		displayFolder: Margin
+		lineageTag: 984cf3dc-1196-448e-b6e1-52bdd8a82594
 
 	/// Share of sales value kept after the cost of goods.
 	measure 'Gross Margin %' = DIVIDE([Sales Value] - [Cost Value], [Sales Value])
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Margin
+		lineageTag: 9afd29ae-e9fa-4d8e-b43d-b618b7ceb56d
 
 	/// Perishable items' share of sales value in the current selection.
 	measure 'Fresh Share %' = DIVIDE(CALCULATE([Sales Value], KEEPFILTERS('Item'[Is Perishable] = TRUE())), [Sales Value])
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Fresh
+		lineageTag: 5edcb877-e2ea-4c85-9991-a4bb567268e3
 
 	/// Units expected at the normal daily rate, on promotion and post-promotion rows that have a baseline.
 	measure 'Baseline Units' = SUM('Sales'[Baseline Daily Units])
 		formatString: #,0
 		displayFolder: Promotions
+		lineageTag: 8a94e274-af6c-4fc1-8733-5c96a3ce086a
 
 	/// Extra units on promotion days vs. the normal daily rate, over promotion rows with a positive baseline.
 	measure 'Promo Uplift %' =
@@ -38,6 +45,7 @@ table Sales
 			RETURN DIVIDE(PromoUnits - PromoBaseline, PromoBaseline)
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Promotions
+		lineageTag: 3626b5f4-ba4e-40c7-a6bf-c7ed7d3f85b5
 
 	/// Units vs. the normal daily rate in the 7 days after a promotion, over rows with a positive baseline. Biased toward zero: zero-sale days have no row.
 	measure 'Post-promo Dip %' =
@@ -46,6 +54,7 @@ table Sales
 			RETURN DIVIDE(PostUnits - PostBaseline, PostBaseline)
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Promotions
+		lineageTag: c9306ebc-e30c-43cf-9e25-818fe82836aa
 
 	/// Sales value of like-for-like stores: stores opened at least 12 months before the start of the selected period.
 	measure 'LFL Sales' =
@@ -53,49 +62,56 @@ table Sales
 			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)))
 		formatString: \$#,0
 		displayFolder: Like-for-like
+		lineageTag: bc67dee3-0f3c-48a1-b749-bd96549a0942
 
 	/// Helper for LFL Growth %: like-for-like sales value in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Sales PY' =
 			VAR PeriodStart = MIN('Date'[Date])
 			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
 		formatString: \$#,0
-		displayFolder: Like-for-like
 		isHidden
+		displayFolder: Like-for-like
+		lineageTag: ce20a08f-fcf5-4942-86ac-b1a32c424b4d
 
 	/// Like-for-like sales growth vs. the same period last year.
 	measure 'LFL Growth %' = DIVIDE([LFL Sales] - [LFL Sales PY], [LFL Sales PY])
 		formatString: #,0.0%;-#,0.0%;#,0.0%
 		displayFolder: Like-for-like
+		lineageTag: 68d883fb-18a5-40d4-b5c8-2bb9d9657aab
 
 	column DateKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: bdad0ee3-5c6a-4539-aa21-9f8e3487458f
 		summarizeBy: none
 		sourceColumn: date_key
 
 	column StoreKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 3b3d9ee0-e717-4e3c-85fc-38fac094dd87
 		summarizeBy: none
 		sourceColumn: store_key
 
 	column ItemKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 63b68c84-338b-444c-b7dd-925d3bf5fdc9
 		summarizeBy: none
 		sourceColumn: item_key
 
 	column 'Unit Sales'
 		dataType: decimal
 		isHidden
-		isAvailableInMdx: false
 		formatString: #,0.0
+		isAvailableInMdx: false
+		lineageTag: dcc29f77-c382-432e-a0f9-d43c4ab70c8b
 		summarizeBy: none
 		sourceColumn: units
 
@@ -103,6 +119,7 @@ table Sales
 		dataType: boolean
 		isHidden
 		isAvailableInMdx: false
+		lineageTag: 204137e8-ac73-478e-adc3-2e328cda3e09
 		summarizeBy: none
 		sourceColumn: on_promo
 
@@ -110,14 +127,16 @@ table Sales
 		dataType: boolean
 		isHidden
 		isAvailableInMdx: false
+		lineageTag: 1027433f-3055-4460-a9ac-499a61233b54
 		summarizeBy: none
 		sourceColumn: post_promo_window
 
 	column 'Baseline Daily Units'
 		dataType: decimal
 		isHidden
-		isAvailableInMdx: false
 		formatString: #,0.0
+		isAvailableInMdx: false
+		lineageTag: f581c00b-793c-4e3b-82c2-d8c5886a11e0
 		summarizeBy: none
 		sourceColumn: baseline_units
 
@@ -131,3 +150,4 @@ table Sales
 				    Result = Table.TransformColumnTypes(Selected, {{"units", Currency.Type}, {"baseline_units", Currency.Type}})
 				in
 				    Result
+
