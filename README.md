@@ -101,7 +101,7 @@ Results are added as each phase ships:
 
 | Evidence | Where | Status |
 |---|---|---|
-| Data tests and CI | `pipeline/tests`, GitHub Actions | Pending |
+| Data tests and CI | `pipeline/tests`, GitHub Actions, [data profile](docs/data-profile.md) | Passing on the real data |
 | RLS/OLS test matrix | `docs/security.md` | Roles built; tests pending |
 | Performance benchmark | `docs/performance.md` | Pending |
 | Usability test (5 participants) | `docs/usability/` | Pending |

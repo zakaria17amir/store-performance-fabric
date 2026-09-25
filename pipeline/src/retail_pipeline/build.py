@@ -20,6 +20,7 @@ def sql_params(cfg: BuildConfig) -> dict[str, str]:
         "stockout_from": cfg.stockout_from.isoformat(),
         "lookback_days": str(cfg.lookback_days),
         "min_expected_units": str(cfg.min_expected_units),
+        "min_receipts_share": str(cfg.min_receipts_share),
         "post_promo_days": str(cfg.post_promo_days),
     }
 

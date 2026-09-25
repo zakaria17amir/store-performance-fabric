@@ -99,7 +99,7 @@ Each decision gets a short decision record in `docs/decisions/` during implement
   - Known approximation: Post-promotion days with zero sales have no row, so Post-promo Dip % is biased toward zero.
 - **Post-promotion window**: the 7 days after a store-item promotion ends, excluding days that are themselves on promotion.
 - **Stock-out risk** (2016-01-01 onward), flagged when all of these hold:
-  - the store traded that day (receipts > 0);
+  - the store traded a normal day: receipts are at least half its average over the previous 28 days (partial trading days are not evidence);
   - the item has no sales row;
   - the item's average daily units over the previous 28 trading days (λ, with missing sales rows counted as zero) is at least 3, so a zero-sale day has a Poisson probability of at most 5%;
   - the item sells again at the same store within the next 28 days, which excludes delistings.

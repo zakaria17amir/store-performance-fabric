@@ -20,6 +20,10 @@ GAPS_102_STORE1 = {date(2015, 12, 20)}
 # store 1 is closed (no transactions row) on this date, so it drops out of the stock-out
 # spine, and neither item sells anything that day (a closed store sells nothing):
 STORE1_CLOSURE = date(2015, 12, 25)
+# store 1 trades at a fifth of its normal receipts and item 101 has no row: a partial
+# trading day, which must not be flagged as stock-out risk
+STORE1_PARTIAL_DAY = date(2016, 3, 1)
+STORE1_PARTIAL_RECEIPTS = 20
 RETURN_DAY = date(2016, 1, 5)  # store 2 / item 101 has unit_sales = -1
 HOLIDAYS = [
     (date(2016, 1, 1), "Holiday", "National", "Ecuador", "Primer dia del ano", "False"),
@@ -46,7 +50,7 @@ def days(start: date, end: date):
 def sales_rows() -> list[tuple]:
     rows = []
     for d in days(date(2015, 1, 1), date(2016, 3, 31)):
-        if d not in GAPS_101_STORE1 and d != STORE1_CLOSURE:
+        if d not in GAPS_101_STORE1 and d not in (STORE1_CLOSURE, STORE1_PARTIAL_DAY):
             rows.append((d, 1, 101, 5.0, False))
     for d in days(date(2015, 11, 1), date(2016, 3, 31)):
         if d not in GAPS_102_STORE1 and d != STORE1_CLOSURE:
@@ -79,7 +83,8 @@ def write_fixture(raw_dir: Path, *, extra_store_column: bool = False) -> Path:
     _write(
         raw_dir / "transactions.csv",
         ["date", "store_nbr", "transactions"],
-        [(d.isoformat(), s, n) for s, (a, b, n) in TRANSACTION_SPANS.items() for d in days(a, b)
+        [(d.isoformat(), s, STORE1_PARTIAL_RECEIPTS if (s, d) == (1, STORE1_PARTIAL_DAY) else n)
+         for s, (a, b, n) in TRANSACTION_SPANS.items() for d in days(a, b)
          if not (s == 1 and d == STORE1_CLOSURE)],
     )
     header = ["store_nbr", "city", "state", "type", "cluster"]
