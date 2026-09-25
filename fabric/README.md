@@ -27,6 +27,20 @@ Measure definitions are in the [KPI glossary](../docs/kpi-glossary.md). A pytest
 (`pipeline/tests/test_model_contract.py`) fails if the model reads a table outside the
 [lakehouse contract](../docs/architecture.md#lakehouse-table-contract) or a gold column that doesn't exist.
 
+## Fabric setup
+
+- **Git integration:** `Retail BI [Dev]` syncs with branch `main`, folder `fabric/`. Fabric reads only
+  the folders that have a `.platform` file (the model and the report), and it ignores `dataflow/`
+  and `bpa/`.
+- **Refresh connection:** the service won't refresh an Import model through the default Single
+  Sign-On connection (`Premium_ASWL_Error`). Each lakehouse needs an explicit cloud connection
+  (type SQL Server, OAuth 2.0), mapped under semantic model settings → Gateway and cloud
+  connections:
+  - `sql-lh-retail-sample` is used by Dev.
+  - `lh_retail` needs its own connection for Test and Prod.
+- **Desktop:** save once after the first refresh. The data is then cached in `.pbi/cache.abf`
+  (ignored by Git), and the project reopens without refreshing.
+
 ## Quality gate
 
 On every pull request, CI runs Tabular Editor 2's Best Practice Analyzer against two rule sets:
