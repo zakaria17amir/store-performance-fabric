@@ -14,7 +14,7 @@ pipeline, on a Windows laptop. Every data check passed on both builds.
 | Items (`stg_item` / sold) | 4,100 / 4,036 | 4,100 / 4,017 |
 | Store-days (`stg_store_day`) | 83,488 | 3,530 |
 | `fact_sales` rows | 125,497,040 | 8,410,563 |
-| `fact_stockout_risk` rows | 2,951,086 | 396,841 |
+| `fact_stockout_risk` rows | 2,922,881 | 394,956 |
 | DuckDB warehouse | 2.1 GB | — |
 | Gold Parquet (`fact_sales`) | 494 MB | 31 MB |
 
@@ -49,20 +49,21 @@ Store 44 is the busiest Quito store, so it is the store manager's test store
 - **Returns:** 7,795 rows with negative units (143,581 units) are kept separately in
   `return_units` and excluded from `Units`.
 
-## Known gaps
+## Known gaps and how they are handled
 
 - **Sales without receipts (118 store-days):** 109 of them fall on 2–4 January 2016, when
   `transactions.csv` is missing rows for almost every store. Those days have sales but no
   receipts, so Basket Value is undefined for them and footfall is undercounted for early
   January 2016. There are no store-days with receipts but no sales.
-- **Stock-out risk on partial trading days:** the rule treats any day with receipts as a full
-  trading day. On 119 store-days a store traded far below normal (receipts under half its
-  28-day average). Examples:
+- **Partial trading days are not stock-out evidence:** on 119 store-days a store traded far
+  below normal. Examples:
   - store 45 on 2017-04-03: 292 receipts against about 3,700;
   - store 53 in Manta on 17–18 April 2016, after the earthquake.
 
-  On such a day every missing item gets flagged. That adds 28,098 flags, 1% of the total, but
-  it produces visible spikes for single stores (up to 1,504 flags in one day).
+  Counting such a day as a full trading day flagged every item that didn't sell: 28,098 extra
+  flags, with spikes of up to 1,504 on a single store-day. The stock-out rule therefore only
+  flags days on which the store's receipts reach at least half of its average over the
+  previous 28 days. After this change the busiest store-day has 323 flags.
 - **Stock-out risk after peaks:** the expected rate λ averages the previous 28 trading days.
   The early-January flags therefore include items whose December demand didn't carry into
   January: the ten most-flagged dates are all in January 2017. The median is 89 flags per

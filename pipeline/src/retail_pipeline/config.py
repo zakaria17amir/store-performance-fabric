@@ -12,6 +12,7 @@ class BuildConfig:
     stockout_from: date = date(2016, 1, 1)
     lookback_days: int = 28
     min_expected_units: float = 3.0
+    min_receipts_share: float = 0.5  # of the store's trailing average
     post_promo_days: int = 7
 
     @property

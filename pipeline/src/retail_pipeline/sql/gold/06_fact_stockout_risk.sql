@@ -15,6 +15,15 @@ spine AS (
        AND d.receipts > 0
        AND d.date BETWEEN p.first_sale AND p.last_sale
 ),
+full_days AS (
+    -- a partial trading day (e.g. a store that closed early) is not evidence of a stock-out
+    SELECT store_nbr, date,
+           receipts >= $min_receipts_share * avg(receipts) OVER (
+               PARTITION BY store_nbr ORDER BY date
+               RANGE BETWEEN INTERVAL '$lookback_days days' PRECEDING AND INTERVAL '1 day' PRECEDING) AS full_day
+    FROM silver.store_day
+    WHERE receipts > 0
+),
 series AS (
     SELECT sp.store_nbr, sp.item_nbr, sp.date,
            coalesce(s.units, 0) AS units,
@@ -41,7 +50,9 @@ SELECT
     item_nbr AS item_key,
     round(lambda_units, 2) AS expected_units
 FROM scored
+JOIN full_days USING (store_nbr, date)
 WHERE date >= DATE '$stockout_from'
+  AND full_day
   AND no_sale_row
   AND history_days = $lookback_days
   AND lambda_units >= $min_expected_units
