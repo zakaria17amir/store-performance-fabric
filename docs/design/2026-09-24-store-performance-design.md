@@ -262,7 +262,7 @@ Flagship/
 | Week | Done when |
 |---|---|
 | 1 | Repository scaffold, requirements, KPI glossary, local pipeline with passing tests, ERP schema and seed, Figma wireframes |
-| 2 | Tenant and trial active, workspaces and lakehouses, upload, dataflow and data pipeline running, model v1 with core measures on sample data, CI green. **Application-ready checkpoint.** |
+| 2 | Tenant and capacity active, workspaces and lakehouses, upload, dataflow and data pipeline running, model v1 with core measures on sample data, CI green. **Application-ready checkpoint.** |
 | 3 | RLS/OLS with test users, deployment pipeline and Git integration, report v1 from the Figma design |
 | 4 | Full-data benchmark, storage-mode decision record and optimisation; usability round 1 |
 | 5 | Report v2, totals checks, security, performance and usability docs |
@@ -272,12 +272,12 @@ Flagship/
 
 | Risk | Mitigation |
 |---|---|
-| The 60-day Fabric trial ends | Do the local work before activating the trial; capture screenshots and video; the Import model on sample data opens offline |
+| The Fabric trial was refused for this tenant (happened) | Paid F2 capacity, paused when idle ([ADR-011](../decisions/ADR-011-paid-f2-capacity.md)); screenshots and video captured while it runs; the Import model on sample data opens offline |
 | Laptop memory with ~125M rows | DuckDB reads Parquet in a streaming fashion and spills to disk; stock-out spine limited to 2016 onward; the sample is used in Desktop |
 | Kaggle data terms | Raw files never committed; download script; attribution in the README |
 | Tabular Editor 2 TMDL support changes between releases | The CI pins TE2 2.29.0 (GA TMDL, TOM 19.90) by checksum; fallback: store the model as `model.bim` for the CI check |
-| Azure SQL free-tier compute limits | The ERP tables are small and read once per refresh; the database auto-pauses |
-| Weather API limits or outages | One call per city; failures recorded; results persisted in the lakehouse |
+| Azure SQL free offer unavailable in the allowed region (happened) | Basic tier (2 GB, about $5 a month); the ERP holds under 50,000 rows ([ADR-011](../decisions/ADR-011-paid-f2-capacity.md)) |
+| Weather API limits or outages | One call per city, 15 seconds apart, with retries; nothing is written unless every city succeeds; stored in `erp.weather_daily` |
 | Scope creep | Cut in this order: Direct Lake variant → composite variant → field parameter → weather visuals |
 
 ## 18. Later (not part of this build)
