@@ -25,7 +25,9 @@ def load_erp(con, csv_dir: Path, sql_dir: Path) -> dict[str, int]:
 def connect_azure_sql(server: str, database: str):
     # optional "azure" extra: imported only when needed
     import mssql_python
+    from azure.identity import InteractiveBrowserCredential
 
+    # the driver's own ActiveDirectoryInteractive flow fails with "user ''"; a browser token works
     return mssql_python.connect(
-        f"Server=tcp:{server},1433;Database={database};"
-        "Authentication=ActiveDirectoryInteractive;Encrypt=yes;")
+        f"Server=tcp:{server},1433;Database={database};Encrypt=yes;",
+        token_provider=InteractiveBrowserCredential())
