@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from retail_pipeline.erp_seed import generate_erp, region_for
+from retail_pipeline.erp_seed import generate_erp, region_for, user_access
 
 
 @pytest.fixture(scope="module")
@@ -46,3 +46,12 @@ def test_target_growth_is_plausible(warehouse, erp):
         "WHERE store_key = 1 AND date_key BETWEEN 20150101 AND 20150131 GROUP BY 1").fetchall())
     target = next(v for s, m, v in erp["sales_target_month"] if s == 1 and m == date(2016, 1, 1))
     assert -0.10 < target / prior - 1 < 0.16
+
+
+def test_user_access_seeds_store_and_regional_manager(warehouse):
+    # fixture: stores 1 and 2 are in Quito (Pichincha → region Quito); store 1 has more 2016 receipts
+    assert user_access(warehouse, "contoso.onmicrosoft.com") == [
+        ("regional.manager@contoso.onmicrosoft.com", 1),
+        ("regional.manager@contoso.onmicrosoft.com", 2),
+        ("store.manager@contoso.onmicrosoft.com", 1),
+    ]
