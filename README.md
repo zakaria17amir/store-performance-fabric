@@ -43,8 +43,9 @@ only the stores and fields they are allowed to see.
 ```mermaid
 flowchart LR
     K["Favorita sales<br/>Kaggle, 125M rows"] --> P["Local pipeline<br/>Python + DuckDB"]
-    S[("Azure SQL<br/>ERP master data")] --> DF["Dataflow Gen2<br/>Power Query M"]
-    W["Open-Meteo API"] --> DF
+    W["Open-Meteo API"] --> P
+    P -->|"ERP seed + weather"| S[("Azure SQL<br/>ERP master data")]
+    S --> DF["Dataflow Gen2<br/>Power Query M"]
     P --> LH[("Fabric lakehouse<br/>Delta tables")]
     DF --> LH
     LH --> SM["Semantic model<br/>RLS / OLS"]

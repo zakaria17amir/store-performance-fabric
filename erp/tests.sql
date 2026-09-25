@@ -15,3 +15,6 @@ IF EXISTS (SELECT 1 FROM erp.sales_target_month AS m
            WHERE NOT EXISTS (SELECT 1 FROM erp.v_sales_target_day AS d
                              WHERE d.store_nbr = m.store_nbr AND d.target_date BETWEEN m.month_start AND EOMONTH(m.month_start)))
     THROW 50003, 'A monthly target has no daily allocation', 1;
+IF EXISTS (SELECT 1 FROM erp.city_geo AS g
+           WHERE NOT EXISTS (SELECT 1 FROM erp.weather_daily AS w WHERE w.city = g.city))
+    THROW 50004, 'A store city has no weather', 1;

@@ -7,7 +7,7 @@ from .config import BuildConfig, sample_config
 from .erp_load import connect_azure_sql, load_erp
 from .erp_seed import write_erp_seed
 from .extract import extract_archives
-from .geo import write_city_geo
+from .geo import write_city_geo, write_weather
 from .publish import onelake_options, publish
 
 
@@ -35,6 +35,9 @@ def main(argv: list[str] | None = None) -> None:
     g.add_argument("--warehouse", type=Path, required=True)
     g.add_argument("--out", type=Path, required=True)
 
+    w = sub.add_parser("weather", help="city_geo.csv → daily weather per city (weather_daily.csv)")
+    w.add_argument("--csv", type=Path, required=True, help="folder with city_geo.csv; the output goes there too")
+
     el = sub.add_parser("erp-load", help="schema + synthetic ERP CSVs → Azure SQL")
     el.add_argument("--server", required=True)
     el.add_argument("--database", default="retail-erp")
@@ -56,6 +59,8 @@ def main(argv: list[str] | None = None) -> None:
         print(json.dumps(write_erp_seed(args.warehouse, args.out, args.upn_domain, args.seed), indent=2))
     if args.command == "geo":
         print(write_city_geo(args.warehouse, args.out), "cities located")
+    if args.command == "weather":
+        print(write_weather(args.csv), "city-days of weather")
     if args.command == "erp-load":
         con = connect_azure_sql(args.server, args.database)
         try:

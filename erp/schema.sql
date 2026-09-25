@@ -1,5 +1,5 @@
 DROP VIEW IF EXISTS erp.v_sales_target_day;
-DROP TABLE IF EXISTS erp.user_access, erp.city_geo, erp.sales_target_month, erp.weekday_weight,
+DROP TABLE IF EXISTS erp.user_access, erp.weather_daily, erp.city_geo, erp.sales_target_month, erp.weekday_weight,
     erp.item_price, erp.store_profile, erp.state_region, erp.region;
 IF SCHEMA_ID('erp') IS NULL EXEC('CREATE SCHEMA erp');
 CREATE TABLE erp.region (
@@ -31,6 +31,12 @@ CREATE TABLE erp.city_geo (
     latitude float NOT NULL,
     longitude float NOT NULL,
     admin1 nvarchar(80) NOT NULL);
+CREATE TABLE erp.weather_daily (
+    city nvarchar(60) NOT NULL REFERENCES erp.city_geo (city),
+    weather_date date NOT NULL,
+    rain_mm float NULL,
+    temp_max_c float NULL,
+    PRIMARY KEY (city, weather_date));
 CREATE TABLE erp.user_access (
     user_principal_name nvarchar(256) NOT NULL,
     store_nbr int NOT NULL REFERENCES erp.store_profile (store_nbr),

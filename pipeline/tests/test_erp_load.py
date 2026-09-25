@@ -11,7 +11,8 @@ class FakeCursor:
         self.log.append(("execute", sql.split()[0]))
 
     def executemany(self, sql, rows):
-        self.log.append(("executemany", sql, len(list(rows))))
+        self.rows = list(rows)
+        self.log.append(("executemany", sql, len(self.rows)))
 
 
 class FakeConnection:
@@ -44,3 +45,22 @@ def test_load_order_runs_schema_views_inserts_tests_then_commits(tmp_path):
     inserts = [entry for entry in con.log if entry[0] == "executemany"]
     assert [e[1] for e in inserts] == [f"INSERT INTO erp.{t} (a, b) VALUES (?, ?)" for t in LOAD_ORDER]
     assert con.log[-2:] == [("execute", "IF"), ("commit",)]
+
+
+def test_empty_csv_cells_load_as_null(tmp_path):
+    sql = tmp_path / "sql"
+    sql.mkdir()
+    for name in ("schema", "views", "tests"):
+        (sql / f"{name}.sql").write_text("SELECT 1", encoding="utf-8")
+    data = tmp_path / "csv"
+    data.mkdir()
+    for table in LOAD_ORDER:
+        with open(data / f"{table}.csv", "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerows([["city", "rain_mm"], ["Quito", ""]])
+    cursors = []
+    con = FakeConnection()
+    con.cursor = lambda: cursors.append(FakeCursor(con.log)) or cursors[-1]
+
+    load_erp(con, data, sql)
+
+    assert cursors[0].rows == [["Quito", None]]

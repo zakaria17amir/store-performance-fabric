@@ -19,8 +19,8 @@ let
     Cities = Table.SelectColumns(src_Lakehouse("stg_store"), {"store_key", "city"}),
     WithCity = Table.ExpandTableColumn(
         Table.NestedJoin(InDateRange, {"store_key"}, Cities, {"store_key"}, "c", JoinKind.Inner), "c", {"city"}),
-    Weather = Table.SelectColumns(Table.SelectRows(src_WeatherAttempts, each [error] = null), {"city", "date", "rain_mm", "temp_max_c"}),
-    WeatherKeyed = Table.RemoveColumns(Table.AddColumn(Weather, "date_key", each DateKey([date]), Int64.Type), {"date"}),
+    Weather = Table.SelectColumns(src_Erp("weather_daily"), {"city", "weather_date", "rain_mm", "temp_max_c"}),
+    WeatherKeyed = Table.RemoveColumns(Table.AddColumn(Weather, "date_key", each DateKey([weather_date]), Int64.Type), {"weather_date"}),
     WithWeather = Table.ExpandTableColumn(
         Table.NestedJoin(WithCity, {"city", "date_key"}, WeatherKeyed, {"city", "date_key"}, "w", JoinKind.LeftOuter),
         "w", {"rain_mm", "temp_max_c"}),
