@@ -68,12 +68,16 @@ Create them as members of the tenant, not as B2B guests: a guest's `USERPRINCIPA
 
 ## Results
 
+Desktop checks were run on 2026-09-25 against `lh_retail_sample` (6 stores, 3 of them in Quito),
+with Modeling → View as. The test page had a table of stores with `Sales Value`, a table of
+`User Access` (hidden columns shown), and a `Cost Value` card.
+
 | Check | Desktop | Service |
 |---|---|---|
-| Store manager sees one store; `Unit Cost`, `Cost Value` and `Gross Margin %` unavailable | Pending | Pending |
-| Regional manager sees only region Quito | Pending | Pending |
-| Category manager and head office see all stores and margin | Pending | Pending |
-| No test user can list `User Access` rows other than their own | Pending | Pending |
-| No test user is a member of both roles | Pending | Pending |
+| Store manager sees one store; `Unit Cost`, `Cost Value` and `Gross Margin %` unavailable | Pass: Store 44 only ($86.2M); the `Cost Value` card fails ([screenshot](images/security/desktop-store-manager.png)) | Pending |
+| Regional manager sees only region Quito | Pass: stores 44, 45 and 47 ($241.4M); the `Cost Value` card fails ([screenshot](images/security/desktop-regional-manager.png)) | Pending |
+| Category manager and head office see all stores and margin | Pass: all 6 stores ($341.4M); `Cost Value` $255M ([screenshot](images/security/desktop-commercial.png)) | Pending |
+| No test user can list `User Access` rows other than their own | Pass: 1 row for the store manager, 3 for the regional manager, none for Commercial users | Pending |
+| No test user is a member of both roles | Not applicable in Desktop, where View as picks the role | Pending |
 
-Results and screenshots are added once the tenant and the test users exist.
+The service checks follow once the model is published and the test users have app access.
