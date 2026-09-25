@@ -60,7 +60,7 @@ the model, as long as these tables keep their grain and columns.
 | Table | Produced by | Grain | Used by |
 |---|---|---|---|
 | `dim_date` | Local pipeline | 1 row per calendar day | Model |
-| `stg_store` | Local pipeline | 1 row per store (Favorita attributes, first sale date) | Dataflow |
+| `stg_store` | Local pipeline | 1 row per store (Favorita attributes, first day with receipts (full history)) | Dataflow |
 | `stg_item` | Local pipeline | 1 row per item | Dataflow |
 | `stg_store_day` | Local pipeline | store × day (receipts) | Dataflow |
 | `fact_sales` | Local pipeline | store × item × day (units, promo flag, baseline) | Model |

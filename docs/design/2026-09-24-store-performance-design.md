@@ -64,7 +64,7 @@ seeded generator creates these, and every synthetic column is listed in `docs/re
 - **Weekday weights** per store: each weekday's share of the store's sales value over the store's full history.
 - **Regions**: Pichincha → *Quito*; Guayas → *Guayaquil*; the other Andean provinces → *Sierra*; the remaining coastal and Amazon provinces → *Costa & Oriente*. The seed fails if any store's state is unmapped.
 - **Selling area** per store: drawn from a store-type-specific range.
-- **Opening date** is not synthetic: it is the store's first day with sales in the data.
+- **Opening date** is not synthetic: it is the store's first day with receipts (full history).
 
 ### 4.3 Sample dataset
 
@@ -93,9 +93,10 @@ Each decision gets a short decision record in `docs/decisions/` during implement
 
 - **Stages**: download → bronze (raw CSV to typed Parquet) → silver (cleaned: returns separated, missing promotion flags marked unknown, keys typed) → gold (the table contract in `docs/architecture.md`) → tests → upload.
 - **Promotion baseline** (on promotion and post-promotion rows only; null elsewhere, which keeps the column small):
-  - Definition: the average daily units for the same store and item over the 28 days before the row's date.
+  - Definition: the average daily units for the same store and item over the trading days (receipts > 0) in the 28 days before the row's date.
   - Rules: days without a sales row count as zero; days on promotion are excluded.
   - Known approximation: Favorita has no promotion flag on zero-sale days, so those days are treated as non-promotion days.
+  - Known approximation: Post-promotion days with zero sales have no row, so Post-promo Dip % is biased toward zero.
 - **Post-promotion window**: the 7 days after a store-item promotion ends, excluding days that are themselves on promotion.
 - **Stock-out risk** (2016-01-01 onward), flagged when all of these hold:
   - the store traded that day (receipts > 0);
@@ -233,7 +234,7 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
 
 ## 14. Error handling and operations
 
-- **Pipeline**: explicit schemas, so a source schema change fails the run. Re-runs are safe because each table is overwritten. Nothing uploads unless every test passes, and row counts are logged per stage.
+- **Pipeline**: explicit schemas, so a source schema change fails the run. Re-runs are safe because each table is overwritten. Nothing uploads unless every test passes, and row counts are reported for every gold table.
 - **Weather**: per-city failures are recorded in `weather_load_errors`.
 - **Refresh**: the data pipeline refreshes the dataflow, then the semantic model. Refresh-failure notifications go to the owner's personal email address.
 - **Promotion to Prod**: happens only after the Test totals check passes.
