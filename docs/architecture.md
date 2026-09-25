@@ -15,7 +15,7 @@ This page describes the system as built.
 flowchart TB
     subgraph SRC[Sources]
         K["Favorita sales files<br/>Kaggle CSVs, ~125M rows"]
-        S[("Azure SQL: retail-erp<br/>regions, prices, targets, access")]
+        S[("Azure SQL: retail-erp<br/>regions, prices, targets, access, weather")]
         W["Open-Meteo archive API<br/>daily weather per city"]
     end
     subgraph LOCAL[Local machine]
@@ -33,8 +33,9 @@ flowchart TB
     end
     K --> P
     P -->|"Delta upload (only if tests pass)"| LH
+    W --> P
+    P -->|"ERP seed + weather load"| S
     S --> DF
-    W --> DF
     LH -->|"staged store, item, store-day tables"| DF
     DF -->|"conformed dimensions and facts"| LH
     PL -. "1. refresh" .-> DF
@@ -44,9 +45,9 @@ flowchart TB
 
 | Component | Owns | Technology |
 |---|---|---|
-| Local pipeline | Favorita download, cleaning, the gold star schema, derived facts (promo baseline, stock-out risk), data tests, upload | Python, DuckDB SQL, pytest, Delta Lake |
-| Azure SQL `retail-erp` | ERP-style master data: state → region, store profile, item price and cost, monthly targets, weekday weights, user → store access | Azure SQL Database (free offer), T-SQL |
-| Dataflow Gen2 `df_erp_weather` | Conforms ERP attributes onto the staged dimensions, joins daily targets from the ERP view, loads weather | Power Query M |
+| Local pipeline | Favorita download, cleaning, the gold star schema, derived facts (promo baseline, stock-out risk), data tests, upload; ERP seed, city geocoding and daily weather from the Open-Meteo APIs | Python, DuckDB SQL, pytest, Delta Lake |
+| Azure SQL `retail-erp` | ERP-style master data: state → region, store profile, item price and cost, monthly targets, weekday weights, user → store access, daily weather per city | Azure SQL Database (Basic tier), T-SQL |
+| Dataflow Gen2 `df_erp_weather` | Conforms ERP attributes onto the staged dimensions, joins daily targets and weather from the ERP database | Power Query M |
 | Data pipeline `pl_refresh` | Runs the dataflow, then refreshes the semantic model | Fabric Data Factory |
 | Semantic model `Store Performance` | Star schema, measures, time-intelligence calculation group, RLS and OLS | Power BI (PBIP / TMDL) |
 | Report and app | Four desktop pages, a phone layout, app audiences | Power BI (PBIR) |
@@ -69,7 +70,6 @@ the model, as long as these tables keep their grain and columns.
 | `dim_item` | Dataflow | 1 row per item (+ unit price, unit cost) | Model |
 | `fact_store_day` | Dataflow | store × day (receipts, daily target, weather) | Model |
 | `user_access` | Dataflow | user × store | Model (RLS) |
-| `weather_load_errors` | Dataflow | 1 row per failed API call | Monitoring |
 
 ## Semantic model
 

@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 
 LOAD_ORDER = ("region", "state_region", "store_profile", "item_price",
-              "weekday_weight", "sales_target_month", "city_geo", "user_access")
+              "weekday_weight", "sales_target_month", "city_geo", "weather_daily", "user_access")
 
 
 def load_erp(con, csv_dir: Path, sql_dir: Path) -> dict[str, int]:
@@ -14,6 +14,7 @@ def load_erp(con, csv_dir: Path, sql_dir: Path) -> dict[str, int]:
     for table in LOAD_ORDER:
         with open(csv_dir / f"{table}.csv", newline="", encoding="utf-8") as f:
             header, *rows = list(csv.reader(f))
+        rows = [[value if value != "" else None for value in row] for row in rows]  # empty cell → NULL
         cursor.executemany(
             f"INSERT INTO erp.{table} ({', '.join(header)}) VALUES ({', '.join('?' for _ in header)})", rows)
         counts[table] = len(rows)

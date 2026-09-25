@@ -3,18 +3,14 @@
 Paste each `.pq` file into a blank query with the same name (without `.pq`).
 Set the three parameters first.
 
-Destinations: output queries (every query not prefixed `fn_` or `src_` — `dim_item`,
-`dim_store`, `fact_store_day`, `user_access`, `weather_load_errors`) each get a lakehouse
-data destination, table name = query name, replace mode.
-Helper queries (`fn_*`, `src_Erp`, `src_Lakehouse`) have no data destination and staging off.
-`src_WeatherAttempts` has no data destination but staging **on**: it's referenced by two
-queries (`weather_load_errors`, `fact_store_day`), and staging makes the API run once per
-refresh instead of twice.
+Destinations: the four output queries (`dim_item`, `dim_store`, `fact_store_day`,
+`user_access`) each get a lakehouse data destination, table name = query name, replace mode.
+The helper queries (`src_Erp`, `src_Lakehouse`) have no data destination and staging off.
 
 Create the lakehouses with **Lakehouse schemas** unticked — the publish path and
 `src_Lakehouse` assume there are no schemas.
 
-Set all three connections (Azure SQL, Lakehouse, Web/Open-Meteo) to privacy level
+Set both connections (Azure SQL, Lakehouse) to privacy level
 **Organizational**, and leave "Allow combining data from multiple sources" unticked.
 
 | Parameter | Value |
@@ -26,8 +22,9 @@ Set all three connections (Azure SQL, Lakehouse, Web/Open-Meteo) to privacy leve
 This dataflow is per-lakehouse: make a copy of `df_erp_weather` for `lh_retail_sample` with
 its own `LakehouseId`.
 
-Note: each refresh makes one archive request per store city, 15 seconds apart. Open-Meteo
-weights multi-year requests, so a full refresh costs about 120 weighted calls per city (well
-within the free daily limit).
+Weather comes from `erp.weather_daily`, which `retail_pipeline weather` fills from the
+Open-Meteo archive API before `erp-load`. The dataflow itself makes no web calls: on the F2
+capacity, Dataflow Gen2 failed every `Web.Contents` call to the API with a generic evaluation
+error, while the same request worked from the local pipeline.
 
 Weather data: Open-Meteo.com (CC BY 4.0).

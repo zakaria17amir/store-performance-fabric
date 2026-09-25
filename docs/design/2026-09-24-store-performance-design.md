@@ -114,6 +114,7 @@ Each decision gets a short decision record in `docs/decisions/` during implement
   - `item_price` (unit price, unit cost)
   - `sales_target_month`, `weekday_weight`
   - `city_geo` (latitude and longitude, from the Open-Meteo geocoding API)
+  - `weather_daily` (rain and maximum temperature per city and day, from the Open-Meteo archive API)
   - `user_access` (user principal name, store number)
 - **View `erp.v_sales_target_day`**: allocates each monthly target to the store's planned open days (25 Dec and 1 Jan are planned closures) in proportion to its weekday weights; daily values sum back exactly to the monthly target (the last open day absorbs rounding).
 - **Constraints and data**: primary keys, foreign keys and CHECK constraints (price > cost > 0, weights > 0). A single idempotent seed script creates and loads everything.
@@ -125,10 +126,8 @@ Each decision gets a short decision record in `docs/decisions/` during implement
   - `stg_item` + `erp.item_price` → `dim_item`
   - `stg_store_day` + `erp.v_sales_target_day` + weather → `fact_store_day`, driven by the union of store-days with receipts and store-days with a daily target, so a closed day keeps its target
 - **Other outputs**: `user_access` → lakehouse.
-- **Weather**:
-  - One archive API call per city for the full date range, built as a Power Query function.
-  - Uses `Web.Contents` with `RelativePath` and `Query`, so the Service can refresh it.
-  - `ManualStatusHandling` covers 429 and 5xx responses; failed cities are written to `weather_load_errors` and never dropped silently.
+- **Weather** is joined from `erp.weather_daily`. The local pipeline (`retail_pipeline weather`) makes one archive API call per city for the full date range, 15 seconds apart, and writes nothing unless every city succeeds; `erp-load` then loads it and a SQL test checks that every store city has weather.
+  - Changed during the build: Dataflow Gen2 on the F2 capacity failed every `Web.Contents` call to the API with a generic evaluation error, so the API call moved to the pipeline.
 
 ## 9. Semantic model: `Store Performance`
 
@@ -235,7 +234,7 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
 ## 14. Error handling and operations
 
 - **Pipeline**: explicit schemas, so a source schema change fails the run. Re-runs are safe because each table is overwritten. Nothing uploads unless every test passes, and row counts are reported for every gold table.
-- **Weather**: per-city failures are recorded in `weather_load_errors`.
+- **Weather**: a failed API call stops `retail_pipeline weather` before anything is written; `erp/tests.sql` fails the load if a store city has no weather.
 - **Refresh**: the data pipeline refreshes the dataflow, then the semantic model. Refresh-failure notifications go to the owner's personal email address.
 - **Promotion to Prod**: happens only after the Test totals check passes.
 
