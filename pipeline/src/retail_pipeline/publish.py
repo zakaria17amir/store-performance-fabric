@@ -4,16 +4,10 @@ from pathlib import Path
 import pyarrow.dataset as ds
 from deltalake import write_deltalake
 
-STORAGE_SCOPE = "https://storage.azure.com/.default"
-
-
 def onelake_options() -> dict[str, str]:
-    # optional "azure" extra: imported only when needed
-    from azure.identity import InteractiveBrowserCredential
-
-    token = InteractiveBrowserCredential().get_token(STORAGE_SCOPE).token
+    # tokens come from `az login` and are refreshed during long uploads (a fixed bearer token expires after ~1 h);
     # a slow uplink can take longer than the 30 s default to send one upload block
-    return {"bearer_token": token, "use_fabric_endpoint": "true", "timeout": "600s"}
+    return {"use_azure_cli": "true", "use_fabric_endpoint": "true", "timeout": "600s"}
 
 
 def publish(gold_dir: Path, target: str, storage_options: dict[str, str] | None = None) -> list[str]:
