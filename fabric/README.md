@@ -1,8 +1,8 @@
 # Power BI project
 
-`StorePerformance.SemanticModel/` is the semantic model `Store Performance`, stored as TMDL.
-The report (`StorePerformance.Report/`) arrives in Phase 3. `dataflow/` holds the Dataflow Gen2
-queries.
+Open `StorePerformance.pbip` in Power BI Desktop. `StorePerformance.SemanticModel/` is the semantic
+model `Store Performance`, stored as TMDL. `StorePerformance.Report/` is the report, stored as PBIR.
+`dataflow/` holds the Dataflow Gen2 queries.
 
 ## Model
 

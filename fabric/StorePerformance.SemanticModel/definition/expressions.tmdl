@@ -1,5 +1,5 @@
 /// Host name of the lakehouse SQL analytics endpoint (Retail Data workspace).
-expression SqlEndpoint = "your-endpoint.datawarehouse.fabric.microsoft.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression SqlEndpoint = "mfqgrtto2leurmaoxscdjyt7t4-mnz2pujyr7ju5mytkasrawwn2m.datawarehouse.fabric.microsoft.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 
 	annotation PBI_ResultType = Text
 
