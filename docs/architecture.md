@@ -173,6 +173,8 @@ never used to test security.
 
 App audiences decide which pages each persona sees. Roles decide which data they can see.
 
+Role definitions, the RLS rule and the test matrix: [security.md](security.md).
+
 ## Scaling path
 
 - **More data**: move the local pipeline into a Fabric notebook or Databricks. The table contract stays the same.

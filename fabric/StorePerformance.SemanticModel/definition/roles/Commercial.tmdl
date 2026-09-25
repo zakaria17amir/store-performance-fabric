@@ -1,0 +1,5 @@
+/// Category managers and head office: all stores and all columns. The access list itself stays hidden.
+role Commercial
+	modelPermission: read
+
+	tablePermission 'User Access' = FALSE()

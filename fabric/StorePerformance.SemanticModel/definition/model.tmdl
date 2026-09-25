@@ -16,3 +16,7 @@ ref table Sales
 ref table 'Store Day'
 ref table 'Stock-out Risk'
 ref table 'Time Calc'
+ref table 'User Access'
+
+ref role 'Store operations'
+ref role Commercial
