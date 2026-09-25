@@ -76,7 +76,7 @@ with Modeling → View as. The test page had a table of stores with `Sales Value
 |---|---|---|
 | Store manager sees one store; `Unit Cost`, `Cost Value` and `Gross Margin %` unavailable | Pass: Store 44 only ($86.2M); the `Cost Value` card fails ([screenshot](images/security/desktop-store-manager.png)) | Pending |
 | Regional manager sees only region Quito | Pass: stores 44, 45 and 47 ($241.4M); the `Cost Value` card fails ([screenshot](images/security/desktop-regional-manager.png)) | Pending |
-| Category manager and head office see all stores and margin | Pass: all 6 stores ($341.4M); `Cost Value` $255M ([screenshot](images/security/desktop-commercial.png)) | Pending |
+| Category manager and head office see all stores and margin | Pass: all 6 stores ($341.4M); `Cost Value` $255M (screenshots: [category manager](images/security/desktop-commercial.png), [head office](images/security/desktop-head-office.png)) | Pending |
 | No test user can list `User Access` rows other than their own | Pass: 1 row for the store manager, 3 for the regional manager, none for Commercial users | Pending |
 | No test user is a member of both roles | Not applicable in Desktop, where View as picks the role | Pending |
 
