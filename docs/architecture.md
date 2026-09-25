@@ -46,7 +46,7 @@ flowchart TB
 |---|---|---|
 | Local pipeline | Favorita download, cleaning, the gold star schema, derived facts (promo baseline, stock-out risk), data tests, upload | Python, DuckDB SQL, pytest, Delta Lake |
 | Azure SQL `retail-erp` | ERP-style master data: state → region, store profile, item price and cost, monthly targets, weekday weights, user → store access | Azure SQL Database (free offer), T-SQL |
-| Dataflow Gen2 `df_erp_weather` | Conforms ERP attributes onto the staged dimensions, allocates targets to days, loads weather | Power Query M |
+| Dataflow Gen2 `df_erp_weather` | Conforms ERP attributes onto the staged dimensions, joins daily targets from the ERP view, loads weather | Power Query M |
 | Data pipeline `pl_refresh` | Runs the dataflow, then refreshes the semantic model | Fabric Data Factory |
 | Semantic model `Store Performance` | Star schema, measures, time-intelligence calculation group, RLS and OLS | Power BI (PBIP / TMDL) |
 | Report and app | Four desktop pages, a phone layout, app audiences | Power BI (PBIR) |

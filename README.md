@@ -30,7 +30,7 @@ only the stores and fields they are allowed to see.
 | Capability | How | Status |
 |---|---|---|
 | Data modelling | Star schema: 3 facts, 3 dimensions, single-direction relationships | Designed |
-| Data preparation | Python + DuckDB SQL pipeline (bronze → silver → gold) with automated data tests | Planned |
+| Data preparation | Python + DuckDB SQL pipeline (bronze → silver → gold) with automated data tests | Built (tests on synthetic data) |
 | Multiple sources | Kaggle files, Azure SQL (ERP master data), REST API (weather) through Dataflow Gen2 / Power Query M | Planned |
 | DAX | Calculation group for time intelligence, like-for-like, basket decomposition, promotion uplift | Planned |
 | Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Planned |
@@ -65,10 +65,33 @@ Tabular Editor 2 · DAX Studio · GitHub Actions · Figma
 ```
 pipeline/   Python + DuckDB data preparation and tests
 erp/        Azure SQL schema and SQL tests
-fabric/     Power BI project (semantic model + report)
+fabric/     Power BI project (semantic model + report) and Dataflow Gen2 queries
 design/     Figma exports and Power BI theme
 docs/       architecture, design, decisions, requirements, results
 ```
+
+## Run it locally
+
+Requires Python 3.11+ and a Kaggle account that has accepted the
+[Favorita competition rules](https://www.kaggle.com/c/favorita-grocery-sales-forecasting/rules).
+
+```bash
+cd pipeline
+python -m venv .venv
+.venv/Scripts/python -m pip install -e ".[dev]"
+.venv/Scripts/python -m pytest -q        # tests run on a synthetic fixture, no download needed
+cd ..
+pipeline/.venv/Scripts/python -m pip install kaggle
+pipeline/.venv/Scripts/kaggle competitions download -c favorita-grocery-sales-forecasting -p data/download
+pipeline/.venv/Scripts/python -m retail_pipeline extract --src data/download --dest data/raw
+pipeline/.venv/Scripts/python -m retail_pipeline build --raw data/raw --out data/full
+pipeline/.venv/Scripts/python -m retail_pipeline build --raw data/raw --out data/sample --sample
+```
+
+Paths are for Windows (`.venv/Scripts`); on macOS/Linux use `.venv/bin`. The Kaggle CLI
+needs an API token in `~/.kaggle/kaggle.json`.
+
+`build` stops before exporting anything if a data check fails.
 
 ## Results
 

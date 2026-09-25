@@ -7,10 +7,11 @@ name = "retail-pipeline"
 version = "0.1.0"
 description = "Favorita → gold star schema for the Store Performance Cockpit"
 requires-python = ">=3.11"
-dependencies = ["duckdb>=1.1", "py7zr>=0.21"]
+dependencies = ["duckdb>=1.1", "py7zr>=0.21", "deltalake>=1.0", "pyarrow>=17"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+azure = ["azure-identity>=1.17", "mssql-python>=0.9"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
