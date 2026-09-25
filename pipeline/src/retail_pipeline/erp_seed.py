@@ -55,6 +55,16 @@ JOIN erp_item_price AS p USING (item_key)
 GROUP BY f.store_key, d.weekday_num
 ORDER BY 1, 2
 """
+# rank 1 of the sample selection (silver/01_selected_stores.sql), so this store is in both lakehouses
+BUSIEST_QUITO_STORE = """
+SELECT s.store_key
+FROM gold.stg_store AS s
+JOIN gold.stg_store_day AS d USING (store_key)
+WHERE s.city = 'Quito' AND d.date_key >= 20160101
+GROUP BY s.store_key
+ORDER BY sum(d.receipts) DESC, s.store_key
+LIMIT 1
+"""
 
 
 def region_for(state: str) -> str:
@@ -105,6 +115,16 @@ def generate_erp(con: duckdb.DuckDBPyConnection, seed: int = 42) -> dict[str, li
     }
 
 
+def user_access(con: duckdb.DuckDBPyConnection, upn_domain: str) -> list[tuple[str, int]]:
+    """Store-operations test users: a store manager for one store, a regional manager for its region."""
+    (store,) = con.execute(BUSIEST_QUITO_STORE).fetchone()
+    states = dict(con.execute("SELECT store_key, state FROM gold.stg_store").fetchall())
+    region = region_for(states[store])
+    rows = [(f"store.manager@{upn_domain}", store)]
+    rows += [(f"regional.manager@{upn_domain}", s) for s, state in states.items() if region_for(state) == region]
+    return sorted(rows)
+
+
 COLUMNS = {
     "region": ("region_id", "region_name"),
     "state_region": ("state", "region_id"),
@@ -112,14 +132,16 @@ COLUMNS = {
     "item_price": ("item_nbr", "unit_price", "unit_cost"),
     "weekday_weight": ("store_nbr", "weekday_num", "weight"),
     "sales_target_month": ("store_nbr", "month_start", "target_value"),
+    "user_access": ("user_principal_name", "store_nbr"),
 }
 
 
-def write_erp_seed(warehouse: Path, out: Path, seed: int = 42) -> dict[str, int]:
+def write_erp_seed(warehouse: Path, out: Path, upn_domain: str, seed: int = 42) -> dict[str, int]:
     out.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(str(warehouse), read_only=True)
     try:
         tables = generate_erp(con, seed)
+        tables["user_access"] = user_access(con, upn_domain)
     finally:
         con.close()
     for name, rows in tables.items():

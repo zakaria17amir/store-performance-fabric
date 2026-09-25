@@ -28,6 +28,7 @@ def main(argv: list[str] | None = None) -> None:
     s = sub.add_parser("erp-seed", help="gold warehouse → synthetic ERP CSVs")
     s.add_argument("--warehouse", type=Path, required=True)
     s.add_argument("--out", type=Path, required=True)
+    s.add_argument("--upn-domain", required=True, help="tenant domain of the test users, e.g. contoso.onmicrosoft.com")
     s.add_argument("--seed", type=int, default=42)
 
     g = sub.add_parser("geo", help="store-city coordinates → city_geo.csv")
@@ -52,7 +53,7 @@ def main(argv: list[str] | None = None) -> None:
         for path in extract_archives(args.src, args.dest):
             print(path)
     if args.command == "erp-seed":
-        print(json.dumps(write_erp_seed(args.warehouse, args.out, args.seed), indent=2))
+        print(json.dumps(write_erp_seed(args.warehouse, args.out, args.upn_domain, args.seed), indent=2))
     if args.command == "geo":
         print(write_city_geo(args.warehouse, args.out), "cities located")
     if args.command == "erp-load":

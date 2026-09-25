@@ -102,7 +102,7 @@ Results are added as each phase ships:
 | Evidence | Where | Status |
 |---|---|---|
 | Data tests and CI | `pipeline/tests`, GitHub Actions | Pending |
-| RLS/OLS test matrix | `docs/security.md` | Pending |
+| RLS/OLS test matrix | `docs/security.md` | Roles built; tests pending |
 | Performance benchmark | `docs/performance.md` | Pending |
 | Usability test (5 participants) | `docs/usability/` | Pending |
 | Demo video | This README | Pending |

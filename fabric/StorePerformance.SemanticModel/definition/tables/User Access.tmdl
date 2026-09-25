@@ -1,0 +1,28 @@
+/// One row per user × store they may see, from the ERP via the dataflow. Read by the Store operations role; deliberately unrelated to Store.
+table 'User Access'
+	isHidden
+
+	column 'User Principal Name'
+		dataType: string
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: user_principal_name
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: store_key
+
+	partition 'User Access' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database(SqlEndpoint, Lakehouse),
+				    Data = Source{[Schema = "dbo", Item = "user_access"]}[Data],
+				    Result = Table.SelectColumns(Data, {"user_principal_name", "store_key"})
+				in
+				    Result

@@ -3,7 +3,7 @@ import csv
 from pathlib import Path
 
 LOAD_ORDER = ("region", "state_region", "store_profile", "item_price",
-              "weekday_weight", "sales_target_month", "city_geo")
+              "weekday_weight", "sales_target_month", "city_geo", "user_access")
 
 
 def load_erp(con, csv_dir: Path, sql_dir: Path) -> dict[str, int]:
