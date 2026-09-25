@@ -1,0 +1,77 @@
+/// One row per store in this lakehouse: Favorita attributes plus the ERP region and selling area.
+table Store
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		isKey
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column Store
+		dataType: string
+		isDefaultLabel
+		summarizeBy: none
+		sourceColumn: store_name
+		sortByColumn: 'Store Number'
+
+	column 'Store Number'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: store_nbr
+
+	column City
+		dataType: string
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: city
+
+	column State
+		dataType: string
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: state
+
+	column Region
+		dataType: string
+		summarizeBy: none
+		sourceColumn: region
+
+	column 'Store Type'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: store_type
+
+	column Cluster
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: cluster
+
+	column 'Opening Date'
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: opening_date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Selling Area (m²)'
+		dataType: int64
+		formatString: #,0
+		summarizeBy: none
+		sourceColumn: selling_area_m2
+
+	partition Store = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database(SqlEndpoint, Lakehouse),
+				    Data = Source{[Schema = "dbo", Item = "dim_store"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"store_key", "store_nbr", "city", "state", "region", "store_type", "cluster", "opening_date", "selling_area_m2"}),
+				    Result = Table.AddColumn(Selected, "store_name", each "Store " & Text.From([store_nbr]) & " (" & [city] & ")", type text)
+				in
+				    Result

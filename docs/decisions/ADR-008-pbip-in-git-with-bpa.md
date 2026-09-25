@@ -13,5 +13,5 @@ committed to Git, with the Best Practice Analyzer running in CI on every pull re
 ## Consequences
 + Model and report changes get reviewable text diffs instead of an opaque binary file.
 + CI blocks a pull request that fails BPA rules, so quality issues don't reach `main`.
-− TMDL support in Tabular Editor 2 is in preview; `model.bim` is the documented fallback for the
-  CI check if it's needed.
+− CI depends on Tabular Editor 2 (Windows-only runner). It is pinned to 2.29.0 by checksum; if a
+  TMDL change breaks it, the documented fallback is storing the model as `model.bim`.

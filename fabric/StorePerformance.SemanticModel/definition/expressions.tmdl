@@ -1,0 +1,9 @@
+/// Host name of the lakehouse SQL analytics endpoint (Retail Data workspace).
+expression SqlEndpoint = "your-endpoint.datawarehouse.fabric.microsoft.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+	annotation PBI_ResultType = Text
+
+/// Lakehouse to read: lh_retail_sample in Dev and Desktop, lh_retail in Test and Prod (deployment rule).
+expression Lakehouse = "lh_retail_sample" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+
+	annotation PBI_ResultType = Text

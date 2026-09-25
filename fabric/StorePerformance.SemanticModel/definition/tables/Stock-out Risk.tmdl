@@ -1,0 +1,60 @@
+/// Store × item × day on which an item that normally sells had no sales on a trading day. Flagged days only, from 2016.
+table 'Stock-out Risk'
+
+	/// Distinct store-item pairs with at least one flagged day in the period.
+	measure 'Stock-out Risk Items' = COUNTROWS(SUMMARIZE('Stock-out Risk', 'Stock-out Risk'[StoreKey], 'Stock-out Risk'[ItemKey]))
+		formatString: #,0
+		displayFolder: Availability
+
+	/// Expected units that did not sell on flagged days (the item's normal daily rate).
+	measure 'Est. Lost Units' = SUM('Stock-out Risk'[Expected Units])
+		formatString: #,0
+		displayFolder: Availability
+
+	/// Estimated lost units valued at each item's unit price.
+	measure 'Est. Lost Sales' = SUMX('Item', [Est. Lost Units] * 'Item'[Unit Price])
+		formatString: \$#,0
+		displayFolder: Availability
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: date_key
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: item_key
+
+	column 'Expected Units'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		formatString: #,0.0
+		summarizeBy: none
+		sourceColumn: expected_units
+
+	partition 'Stock-out Risk' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database(SqlEndpoint, Lakehouse),
+				    Data = Source{[Schema = "dbo", Item = "fact_stockout_risk"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"date_key", "store_key", "item_key", "expected_units"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"expected_units", Currency.Type}})
+				in
+				    Result

@@ -1,0 +1,133 @@
+/// Store × item × day sales from Favorita, with promotion flags and the upstream promotion baseline.
+table Sales
+
+	/// Units sold. Returns are excluded.
+	measure Units = SUM('Sales'[Unit Sales])
+		formatString: #,0
+		displayFolder: Sales
+
+	/// Revenue at list price: units × the item's unit price, summed over items.
+	measure 'Sales Value' = SUMX('Item', [Units] * 'Item'[Unit Price])
+		formatString: \$#,0
+		displayFolder: Sales
+
+	/// Cost of goods sold: units × the item's unit cost. Restricted for store operations.
+	measure 'Cost Value' = SUMX('Item', [Units] * 'Item'[Unit Cost])
+		formatString: \$#,0
+		displayFolder: Margin
+
+	/// Share of sales value kept after the cost of goods.
+	measure 'Gross Margin %' = DIVIDE([Sales Value] - [Cost Value], [Sales Value])
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Margin
+
+	/// Perishable items' share of sales value in the current selection.
+	measure 'Fresh Share %' = DIVIDE(CALCULATE([Sales Value], KEEPFILTERS('Item'[Is Perishable] = TRUE())), [Sales Value])
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Fresh
+
+	/// Units expected at the normal daily rate, on promotion and post-promotion rows that have a baseline.
+	measure 'Baseline Units' = SUM('Sales'[Baseline Daily Units])
+		formatString: #,0
+		displayFolder: Promotions
+
+	/// Extra units on promotion days vs. the normal daily rate, over promotion rows with a positive baseline.
+	measure 'Promo Uplift %' =
+			VAR PromoUnits = CALCULATE([Units], KEEPFILTERS('Sales'[On Promo] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
+			VAR PromoBaseline = CALCULATE([Baseline Units], KEEPFILTERS('Sales'[On Promo] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
+			RETURN DIVIDE(PromoUnits - PromoBaseline, PromoBaseline)
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Promotions
+
+	/// Units vs. the normal daily rate in the 7 days after a promotion, over rows with a positive baseline. Biased toward zero: zero-sale days have no row.
+	measure 'Post-promo Dip %' =
+			VAR PostUnits = CALCULATE([Units], KEEPFILTERS('Sales'[Post Promo Window] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
+			VAR PostBaseline = CALCULATE([Baseline Units], KEEPFILTERS('Sales'[Post Promo Window] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
+			RETURN DIVIDE(PostUnits - PostBaseline, PostBaseline)
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Promotions
+
+	/// Sales value of like-for-like stores: stores opened at least 12 months before the start of the selected period.
+	measure 'LFL Sales' =
+			VAR PeriodStart = MIN('Date'[Date])
+			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)))
+		formatString: \$#,0
+		displayFolder: Like-for-like
+
+	/// Helper for LFL Growth %: like-for-like sales value in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
+	measure 'LFL Sales PY' =
+			VAR PeriodStart = MIN('Date'[Date])
+			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
+		formatString: \$#,0
+		displayFolder: Like-for-like
+		isHidden
+
+	/// Like-for-like sales growth vs. the same period last year.
+	measure 'LFL Growth %' = DIVIDE([LFL Sales] - [LFL Sales PY], [LFL Sales PY])
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Like-for-like
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: date_key
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		isAvailableInMdx: false
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: item_key
+
+	column 'Unit Sales'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		formatString: #,0.0
+		summarizeBy: none
+		sourceColumn: units
+
+	column 'On Promo'
+		dataType: boolean
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: on_promo
+
+	column 'Post Promo Window'
+		dataType: boolean
+		isHidden
+		isAvailableInMdx: false
+		summarizeBy: none
+		sourceColumn: post_promo_window
+
+	column 'Baseline Daily Units'
+		dataType: decimal
+		isHidden
+		isAvailableInMdx: false
+		formatString: #,0.0
+		summarizeBy: none
+		sourceColumn: baseline_units
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database(SqlEndpoint, Lakehouse),
+				    Data = Source{[Schema = "dbo", Item = "fact_sales"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"date_key", "store_key", "item_key", "units", "on_promo", "post_promo_window", "baseline_units"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"units", Currency.Type}, {"baseline_units", Currency.Type}})
+				in
+				    Result

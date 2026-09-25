@@ -1,0 +1,3 @@
+database 'Store Performance'
+	compatibilityLevel: 1601
+	compatibilityMode: powerBI

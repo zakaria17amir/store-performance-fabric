@@ -168,7 +168,7 @@ never used to test security.
 
 | Role | Row filter | Object-level security | Personas |
 |---|---|---|---|
-| Store operations | Stores listed for the user in `user_access` | `Item[UnitCost]` hidden, so margin is unavailable | Store manager, regional manager |
+| Store operations | Stores listed for the user in `user_access` | `'Item'[Unit Cost]` hidden, so margin is unavailable | Store manager, regional manager |
 | Commercial | None (all stores) | None | Category manager, head office |
 
 App audiences decide which pages each persona sees. Roles decide which data they can see.
