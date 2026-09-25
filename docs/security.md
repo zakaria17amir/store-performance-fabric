@@ -11,6 +11,8 @@ sees; Power BI app audiences decide which **pages** they see. For the design rea
 | Store operations | Stores listed for the signed-in user in `User Access` | `'Item'[Unit Cost]` removed | Store managers, regional managers |
 | Commercial | None | None | Category managers, head office |
 
+Each person belongs to exactly one role. Row-level and object-level security from different roles can't be combined: Power BI returns an error at query time for anyone who is a member of both roles.
+
 ### Store operations: dynamic RLS
 
 ```dax
@@ -54,6 +56,7 @@ python -m retail_pipeline erp-seed --warehouse data/full/warehouse.duckdb --out 
 
 Create all four users in Microsoft Entra ID with these user principal names, and give them
 app access only.
+Create them as members of the tenant, not as B2B guests: a guest's `USERPRINCIPALNAME()` has the `#EXT#` form and won't match the seeded rows.
 
 ## How to test
 
@@ -71,5 +74,6 @@ app access only.
 | Regional manager sees only region Quito | Pending | Pending |
 | Category manager and head office see all stores and margin | Pending | Pending |
 | No test user can list `User Access` rows other than their own | Pending | Pending |
+| No test user is a member of both roles | Pending | Pending |
 
 Results and screenshots are added once the tenant and the test users exist.
