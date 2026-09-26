@@ -62,22 +62,27 @@ Create them as members of the tenant, not as B2B guests: a guest's `USERPRINCIPA
 
 - **Power BI Desktop:** Modeling → View as. Tick *Other user*, enter the user principal
   name, and tick the role.
-- **Power BI service:** semantic model → Security → Test as role.
+- **Power BI service:** semantic model → Security → Test as role, or automated:
+  `python -m retail_pipeline service-check rls` impersonates each user through the
+  `executeQueries` API (`impersonatedUserName`), so the service applies their real role
+  memberships. It counts the stores and `User Access` rows they can see and tries `Cost Value`,
+  which fails when object-level security removes `Unit Cost`.
 - Workspace Admins, Members and Contributors bypass RLS. Test users therefore get app access
   only, and security is never tested with a workspace member.
 
 ## Results
 
 Desktop checks were run on 2026-09-25 against `lh_retail_sample` (6 stores, 3 of them in Quito),
-with Modeling → View as. The test page had a table of stores with `Sales Value`, a table of
+with Modeling → View as. Service checks were run on 2026-09-26 against `Retail BI [Prod]` (full data,
+54 stores, 19 of them in Quito), by impersonation with each user's role membership in Prod. The test page had a table of stores with `Sales Value`, a table of
 `User Access` (hidden columns shown), and a `Cost Value` card.
 
 | Check | Desktop | Service |
 |---|---|---|
-| Store manager sees one store; `Unit Cost`, `Cost Value` and `Gross Margin %` unavailable | Pass: Store 44 only ($86.2M); the `Cost Value` card fails ([screenshot](images/security/desktop-store-manager.png)) | Pending |
-| Regional manager sees only region Quito | Pass: stores 44, 45 and 47 ($241.4M); the `Cost Value` card fails ([screenshot](images/security/desktop-regional-manager.png)) | Pending |
-| Category manager and head office see all stores and margin | Pass: all 6 stores ($341.4M); `Cost Value` $255M (screenshots: [category manager](images/security/desktop-commercial.png), [head office](images/security/desktop-head-office.png)) | Pending |
-| No test user can list `User Access` rows other than their own | Pass: 1 row for the store manager, 3 for the regional manager, none for Commercial users | Pending |
-| No test user is a member of both roles | Not applicable in Desktop, where View as picks the role | Pending |
+| Store manager sees one store; `Unit Cost`, `Cost Value` and `Gross Margin %` unavailable | Pass: Store 44 only ($86.2M); the `Cost Value` card fails ([screenshot](images/security/desktop-store-manager.png)) | Pass: 1 store; `Cost Value` refused |
+| Regional manager sees only region Quito | Pass: stores 44, 45 and 47 ($241.4M); the `Cost Value` card fails ([screenshot](images/security/desktop-regional-manager.png)) | Pass: 19 stores (all of Quito); `Cost Value` refused |
+| Category manager and head office see all stores and margin | Pass: all 6 stores ($341.4M); `Cost Value` $255M (screenshots: [category manager](images/security/desktop-commercial.png), [head office](images/security/desktop-head-office.png)) | Pass: category manager and head office see all 54 stores; `Cost Value` returns a value |
+| No test user can list `User Access` rows other than their own | Pass: 1 row for the store manager, 3 for the regional manager, none for Commercial users | Pass: 1 row for the store manager, 19 for the regional manager, none for Commercial users |
+| No test user is a member of both roles | Not applicable in Desktop, where View as picks the role | Pass: each user's queries run under one role; a user in both roles would get a query error |
 
-The service checks follow once the model is published and the test users have app access.
+Screenshots of each test user in the published app are the remaining evidence (see the README roadmap).

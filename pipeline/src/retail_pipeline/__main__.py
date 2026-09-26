@@ -9,6 +9,7 @@ from .erp_seed import write_erp_seed
 from .extract import extract_archives
 from .geo import write_city_geo, write_weather
 from .publish import onelake_options, publish
+from . import service
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -44,6 +45,16 @@ def main(argv: list[str] | None = None) -> None:
     el.add_argument("--csv", type=Path, required=True)
     el.add_argument("--sql", type=Path, default=Path("erp"))
 
+    sc = sub.add_parser("service-check", help="benchmark, RLS matrix or totals against a published semantic model")
+    sc.add_argument("check", choices=["benchmark", "rls", "totals"])
+    sc.add_argument("--workspace", required=True, help="workspace ID that holds the semantic model")
+    sc.add_argument("--tenant", required=True, help="Entra tenant ID or domain")
+    sc.add_argument("--token-cache", type=Path, default=Path.home() / ".retail-pipeline-tokens.bin")
+    sc.add_argument("--runs", type=int, default=5)
+    sc.add_argument("--users", help="comma-separated user principal names (rls)")
+    sc.add_argument("--sql-endpoint", help="lakehouse SQL analytics endpoint host (totals)")
+    sc.add_argument("--lakehouse", help="lakehouse name, e.g. lh_retail (totals)")
+
     args = parser.parse_args(argv)
     if args.command == "build":
         cfg = sample_config(args.raw, args.out) if args.sample else BuildConfig(args.raw, args.out)
@@ -67,6 +78,27 @@ def main(argv: list[str] | None = None) -> None:
             print(json.dumps(load_erp(con, args.csv, args.sql), indent=2))
         finally:
             con.close()
+
+    if args.command == "service-check":
+        token = service.token_provider(args.tenant, args.token_cache)
+        call = service.power_bi(token(service.PBI_SCOPE))
+        dataset = service.dataset_id(call, args.workspace)
+        if args.check == "benchmark":
+            result = service.benchmark(call, dataset, service.BENCHMARK_QUERIES, args.runs)
+        elif args.check == "rls":
+            result = service.rls_matrix(call, dataset, args.users.split(","))
+        else:
+            import mssql_python
+
+            con = mssql_python.connect(f"Server=tcp:{args.sql_endpoint},1433;Database={args.lakehouse};Encrypt=yes;",
+                                       token_provider=service.sql_credential(token))
+            try:
+                mismatches = service.compare_totals(service.model_totals(call, dataset),
+                                                    service.lakehouse_totals(con.cursor()))
+            finally:
+                con.close()
+            result = {"mismatches": [[list(k), a, b] for k, a, b in mismatches]}
+        print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

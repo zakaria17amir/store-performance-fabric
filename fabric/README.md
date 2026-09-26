@@ -67,6 +67,20 @@ Measure definitions are in the [KPI glossary](../docs/kpi-glossary.md). A pytest
 - **Desktop:** save once after the first refresh. The data is then cached in `.pbi/cache.abf`
   (ignored by Git), and the project reopens without refreshing.
 
+## Checks against the published model
+
+`python -m retail_pipeline service-check <check>` (from `pipeline/`, with the `azure` extra)
+signs in once in the browser with MFA and keeps the token in an encrypted local cache. It then
+queries a workspace's model through the Power BI `executeQueries` API:
+
+| Check | What it does | Last result (2026-09-26) |
+|---|---|---|
+| `rls --users …` | Impersonates each test user and records stores seen, `User Access` rows and whether `Cost Value` is refused | Prod: 1 / 19 / 54 / 54 stores; cost hidden only for Store operations ([security](../docs/security.md)) |
+| `totals --sql-endpoint … --lakehouse …` | Units and Sales Value per year and region: model against the lakehouse SQL endpoint | Test: 20 of 20 cells equal. The SQL port was blocked on the test network, so this run compared against the local full build of the same data |
+| `benchmark` | Median warm wall time of the heaviest query per page | See [performance](../docs/performance.md) |
+
+Run `totals` on Test before every promotion to Prod.
+
 ## Quality gate
 
 On every pull request, CI runs Tabular Editor 2's Best Practice Analyzer against two rule sets:

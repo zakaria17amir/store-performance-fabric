@@ -266,13 +266,13 @@ Flagship/
 | 3 | RLS/OLS with test users, deployment pipeline and Git integration, report v1 from the Figma design |
 | 4 | Full-data benchmark, storage-mode decision record and optimisation; usability round 1 |
 | 5 | Report v2, totals checks, security, performance and usability docs |
-| 6 | README, GIF, 3-minute video walkthrough, buffer |
+| 6 | README, GIF, buffer (video walkthrough dropped for now) |
 
 ## 17. Risks
 
 | Risk | Mitigation |
 |---|---|
-| The Fabric trial was refused for this tenant (happened) | Paid F2 capacity, paused when idle ([ADR-011](../decisions/ADR-011-paid-f2-capacity.md)); screenshots and video captured while it runs; the Import model on sample data opens offline |
+| The Fabric trial was refused for this tenant (happened) | Paid F2 capacity, paused when idle ([ADR-011](../decisions/ADR-011-paid-f2-capacity.md)); screenshots captured while it runs; the Import model on sample data opens offline |
 | Laptop memory with ~125M rows | DuckDB reads Parquet in a streaming fashion and spills to disk; stock-out spine limited to 2016 onward; the sample is used in Desktop |
 | Kaggle data terms | Raw files never committed; download script; attribution in the README |
 | Tabular Editor 2 TMDL support changes between releases | The CI pins TE2 2.29.0 (GA TMDL, TOM 19.90) by checksum; fallback: store the model as `model.bim` for the CI check |
