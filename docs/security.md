@@ -1,7 +1,7 @@
 # Security
 
 The `Store Performance` semantic model has two roles. Roles decide which **data** a person
-sees; Power BI app audiences decide which **pages** they see. For the design reasons, see
+sees; Power BI app audiences decide which **reports** they see (one report per page, because audiences can't hide single pages). For the design reasons, see
 [ADR-005](decisions/ADR-005-dynamic-rls-and-ols.md).
 
 ## Roles
@@ -31,7 +31,7 @@ Each person belongs to exactly one role. Row-level and object-level security fro
 - `User Access` is also filtered to the signed-in user's own rows, so nobody can list other
   people's access.
 - Object-level security removes `'Item'[Unit Cost]`. Measures built on it (`Cost Value`,
-  `Gross Margin %`) are unavailable to this role, so margin visuals only go on pages whose
+  `Gross Margin %`) are unavailable to this role, so margin visuals only go in the Promotions report, whose
   app audiences are commercial users.
 
 ### Commercial

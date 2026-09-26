@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "Report",
-    "displayName": "Store performance"
+    "displayName": "Store today"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "60ce19c2-38ea-4448-bba4-a3c7ba3fd8de"
+    "logicalId": "fed565e1-a817-4472-9f65-a40902437863"
   }
 }

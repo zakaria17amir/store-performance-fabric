@@ -171,11 +171,11 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
 | Store operations | `'Store'[StoreKey]` in the user's rows of User Access | `Item[Unit Cost]` = none | Store and regional managers |
 | Commercial | None | None | Category managers, head office |
 
-- **App audiences** control pages:
-  - Store managers: store performance, fresh and availability, phone layout.
+- **App audiences** control reports. Audiences show or hide whole items, not pages, so each page is its own report on the shared model:
+  - Store managers: store performance, fresh and availability, store today (phone layout).
   - Regional managers: network overview, store performance, fresh and availability.
   - Category managers: network overview, fresh and availability, promotions.
-  - Head office: all pages.
+  - Head office: all reports.
 - **Test users** (created in the tenant, app access only):
   - one store manager (a sample store)
   - one regional manager (a sample region)
@@ -244,7 +244,7 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
 Flagship/
 ├─ pipeline/   download, bronze/silver/gold SQL, derived facts, tests, upload
 ├─ erp/        schema, target-allocation view, seed script, SQL tests
-├─ fabric/     StorePerformance.pbip, *.SemanticModel (TMDL), *.Report (PBIR)
+├─ fabric/     one .pbip per report, *.SemanticModel (TMDL), five *.Report (PBIR)
 ├─ design/     Figma exports, Power BI theme JSON
 ├─ docs/       architecture, design, decisions, requirements, KPI glossary,
 │              security, performance, usability, standards
