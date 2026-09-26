@@ -56,18 +56,22 @@ table Sales
 		displayFolder: Promotions
 		lineageTag: c9306ebc-e30c-43cf-9e25-818fe82836aa
 
-	/// Sales value of like-for-like stores: stores opened at least 12 months before the start of the selected period.
+	/// Sales value of like-for-like stores (opened at least 12 months before the period start), counting only dates that have a prior year in the data.
 	measure 'LFL Sales' =
-			VAR PeriodStart = MIN('Date'[Date])
-			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)))
+			VAR FirstComparable = EDATE(CALCULATE(MIN('Date'[Date]), ALL('Date')), 12)
+			VAR Dates = FILTER(VALUES('Date'[Date]), 'Date'[Date] >= FirstComparable)
+			VAR PeriodStart = MINX(Dates, 'Date'[Date])
+			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), Dates))
 		formatString: \$#,0
 		displayFolder: Like-for-like
 		lineageTag: bc67dee3-0f3c-48a1-b749-bd96549a0942
 
 	/// Helper for LFL Growth %: like-for-like sales value in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Sales PY' =
-			VAR PeriodStart = MIN('Date'[Date])
-			RETURN CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
+			VAR FirstComparable = EDATE(CALCULATE(MIN('Date'[Date]), ALL('Date')), 12)
+			VAR Dates = FILTER(VALUES('Date'[Date]), 'Date'[Date] >= FirstComparable)
+			VAR PeriodStart = MINX(Dates, 'Date'[Date])
+			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR(Dates)))
 		formatString: \$#,0
 		isHidden
 		displayFolder: Like-for-like
