@@ -1,0 +1,36 @@
+{
+  "name": "Store Performance",
+  "dataColors": ["#1F4E9A", "#8C95A6", "#0072B2", "#B8460B", "#5A6475", "#007A5E"],
+  "foreground": "#1B2230",
+  "foregroundNeutralSecondary": "#5A6475",
+  "foregroundNeutralTertiary": "#8C95A6",
+  "background": "#FFFFFF",
+  "backgroundLight": "#F4F5F7",
+  "backgroundNeutral": "#D9DDE4",
+  "tableAccent": "#1F4E9A",
+  "good": "#0072B2",
+  "neutral": "#8C95A6",
+  "bad": "#B8460B",
+  "maximum": "#1F4E9A",
+  "center": "#D9DDE4",
+  "minimum": "#B8460B",
+  "textClasses": {
+    "callout": { "fontSize": 26, "fontFace": "Segoe UI Bold", "color": "#1B2230" },
+    "title": { "fontSize": 14, "fontFace": "Segoe UI Semibold", "color": "#1B2230" },
+    "header": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#1B2230" },
+    "label": { "fontSize": 11, "fontFace": "Segoe UI", "color": "#5A6475" }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [{ "show": true, "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#D9DDE4" } }, "radius": 8 }]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#F4F5F7" } }, "transparency": 0 }]
+      }
+    }
+  }
+}
