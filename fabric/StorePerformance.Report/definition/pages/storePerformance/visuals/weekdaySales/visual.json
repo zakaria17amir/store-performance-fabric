@@ -104,7 +104,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Sales Value · blue: this year · grey: last year'"
+                  "Value": "'Sales Value · blue: this year · orange: last year'"
                 }
               }
             }

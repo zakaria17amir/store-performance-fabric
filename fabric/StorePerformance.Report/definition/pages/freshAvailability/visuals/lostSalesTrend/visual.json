@@ -150,7 +150,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Est. Lost Sales by month · blue: this year · grey: last year · lower is better'"
+                  "Value": "'Est. Lost Sales by month · blue: this year · orange: last year · lower is better'"
                 }
               }
             }

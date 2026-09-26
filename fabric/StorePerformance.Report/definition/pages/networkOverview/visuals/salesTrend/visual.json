@@ -150,7 +150,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Sales Value by month · blue: this year · grey: last year'"
+                  "Value": "'Sales Value by month · blue: this year · orange: last year'"
                 }
               }
             }

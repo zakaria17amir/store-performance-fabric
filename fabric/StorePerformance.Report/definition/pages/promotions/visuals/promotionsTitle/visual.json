@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
   "name": "promotionsTitle",
   "position": {
-    "x": 16,
-    "y": 8,
+    "x": 0,
+    "y": 0,
     "z": 0,
-    "width": 480,
-    "height": 44,
+    "width": 1280,
+    "height": 64,
     "tabOrder": 0
   },
   "visual": {
@@ -23,7 +23,8 @@
                     "value": "Promotions",
                     "textStyle": {
                       "fontWeight": "bold",
-                      "fontSize": "18pt"
+                      "fontSize": "18pt",
+                      "color": "#ffffff"
                     }
                   }
                 ]
@@ -40,7 +41,25 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0d366b'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
                 }
               }
             }
