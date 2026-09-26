@@ -115,6 +115,13 @@
                   "Value": "'Last 7 days · by estimated lost sales'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

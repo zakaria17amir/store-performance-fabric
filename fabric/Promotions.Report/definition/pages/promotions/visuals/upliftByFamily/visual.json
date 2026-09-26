@@ -42,6 +42,24 @@
                       "Entity": "Sales"
                     }
                   },
+                  "Property": "Promo Extra Units"
+                }
+              },
+              "queryRef": "Sales.Promo Extra Units",
+              "nativeQueryRef": "Promo Extra Units"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
                   "Property": "Promo Uplift %"
                 }
               },
@@ -61,7 +79,7 @@
                     "Entity": "Sales"
                   }
                 },
-                "Property": "Promo Uplift %"
+                "Property": "Promo Extra Units"
               }
             },
             "direction": "Descending"
@@ -103,7 +121,7 @@
                                       "Entity": "Sales"
                                     }
                                   },
-                                  "Property": "Promo Uplift %"
+                                  "Property": "Promo Extra Units"
                                 }
                               },
                               "Right": {
@@ -157,7 +175,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Which families gain most from promotions?'"
+                  "Value": "'Which families gained most units from promotions?'"
                 }
               }
             }
@@ -177,7 +195,14 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Promo Uplift % by family'"
+                  "Value": "'Extra units on promotion days vs the normal daily rate · uplift % in the tooltip'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }
@@ -190,7 +215,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Which families gain most from promotions?'"
+                  "Value": "'Which families gained most units from promotions?'"
                 }
               }
             }

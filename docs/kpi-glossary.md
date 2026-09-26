@@ -14,6 +14,7 @@
 | LFL Footfall / Basket Growth % | Which lever drives LFL growth | Footfall: the same pattern on Receipts. Basket: `DIVIDE(sales growth − footfall growth, 1 + footfall growth)`, from (1 + sales growth) = (1 + footfall growth) × (1 + basket growth) |
 | Fresh Share % | Perishables' share of revenue | Sales Value of perishable items ÷ all items |
 | Promo Uplift % | Extra units on promotion days vs. the normal rate | `DIVIDE([Units] - [Baseline Units], [Baseline Units])` over promotion rows with a baseline > 0 |
+| Promo Extra Units | Size of the promotion lift in units | Units − Baseline Units on promotion rows with a positive baseline. The Promotions page ranks families by this, because a % uplift on a tiny baseline looks huge |
 | Post-promo Dip % | Sales lost in the 7 days after a promotion | Same formula over post-promotion rows with a baseline > 0 |
 | Stock-out Risk Items | Store-item pairs with an improbable zero-sale day | `COUNTROWS(SUMMARIZE('Stock-out Risk', StoreKey, ItemKey))`: distinct flagged pairs |
 | Est. Lost Units / Sales | Expected sales that did not happen on flagged days | `SUM('Stock-out Risk'[Expected Units])`, valued at unit price |

@@ -149,6 +149,13 @@
                   "Value": "'Sales Value and Target by month · select a month and drill down (↓) to see its days'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

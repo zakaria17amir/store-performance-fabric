@@ -108,6 +108,13 @@
                   "Value": "'Promo Uplift % (x) vs Post-promo Dip % (y) · right and high = real lift'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

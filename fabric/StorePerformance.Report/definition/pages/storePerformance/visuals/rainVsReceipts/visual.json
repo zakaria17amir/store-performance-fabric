@@ -108,6 +108,13 @@
                   "Value": "'Receipts vs average rain (mm) · one dot per day'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

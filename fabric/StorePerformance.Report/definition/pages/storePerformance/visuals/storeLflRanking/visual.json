@@ -180,6 +180,13 @@
                   "Value": "'LFL Growth % vs last year · right-click a store → Drill through → Store detail'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

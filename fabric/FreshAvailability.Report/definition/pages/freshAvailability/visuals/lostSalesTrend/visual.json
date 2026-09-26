@@ -153,6 +153,13 @@
                   "Value": "'Est. Lost Sales by month · blue: this year · orange: last year · lower is better'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }
