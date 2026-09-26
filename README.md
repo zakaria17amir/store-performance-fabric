@@ -12,7 +12,8 @@ deployment. It's built for store managers, regional managers and head office.
 > - Dev → Test → Prod deployment;
 > - row-level and object-level security, tested for four test users.
 >
-> The persona walkthrough, the storage-mode benchmark and report v2 are next.
+> Report v2 fixes most issues from the v1 review. The persona walkthrough and the storage-mode
+> benchmark are next.
 > The [spec](docs/design/2026-09-24-store-performance-design.md) has the full design.
 
 ---
@@ -53,7 +54,7 @@ The design and wireframes are in [design/](design/README.md).
 | Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Built and tested in Desktop and in the Service (by impersonation); one report per audience |
 | Governance and deployment | PBIP/TMDL/PBIR in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Built: Git-synced Dev, a parameter rule for the full lakehouse in Test/Prod, and a data pipeline for refreshes |
 | Performance | Benchmark of Import vs. composite aggregations vs. Direct Lake in DAX Studio | Import measured on full data: 4 of 6 page queries under 500 ms, and a 1 GB per-query failure fixed ([performance](docs/performance.md)) |
-| UX | Requirements, Figma design system, persona walkthrough with the four test accounts, v1 → v2 iteration | Figma wireframes, colour-blind-checked theme and report v1 built; walkthrough answer key checked on Prod |
+| UX | Requirements, Figma design system, persona walkthrough with the four test accounts, v1 → v2 iteration | Figma wireframes, a colour-blind-checked theme, report v1 → v2 (5 of 6 review fixes), walkthrough answer key checked on Prod |
 
 ## Architecture
 
@@ -127,7 +128,7 @@ Results are added as each phase ships:
 | Model totals vs source | [fabric/README.md](fabric/README.md#checks-against-the-published-model) | 20 of 20 year × region cells equal |
 | Performance benchmark | [docs/performance.md](docs/performance.md) | Import measured; storage-mode comparison pending |
 | Persona walkthrough (4 test accounts) | [docs/usability/protocol.md](docs/usability/protocol.md) | Tasks and answer key ready; walkthrough pending |
-| Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | 6 items from the v1 review |
+| Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | 5 of 6 items done in v2; performance item open |
 
 ## Data and attribution
 

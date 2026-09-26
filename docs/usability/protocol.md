@@ -42,5 +42,5 @@ were computed on Prod (full data) by impersonating each account through the Powe
 | 2 | Store manager | "Which fresh item looks most out of stock in your store over the last 7 days?" | Item 871513 (BREAD/BAKERY), about $473 estimated lost sales | US-02 |
 | 3 | Regional manager | "Which of your stores is furthest behind on like-for-like sales this year?" | Store 2 (Quito), LFL ▼ 2.7% | US-04 |
 | 4 | Regional manager | "For that store, is it fewer shoppers or smaller baskets?" | Both, mostly smaller baskets: footfall ▼ 0.7%, basket ▼ 2.0% | US-05, US-06 |
-| 5 | Category manager | "Which product family gained most from promotions this year, and did sales drop afterwards?" | School and office supplies (uplift ▲ 1,149%, post-promo dip ▼ 5.8%). The uplift comes from a very small baseline, see backlog #6 | US-07 |
+| 5 | Category manager | "Which product family gained most from promotions this year, and did sales drop afterwards?" | Grocery I: about 5.0M extra units (uplift ▲ 134%), and no drop afterwards (post-promo ▲ 6.4% vs the normal rate). v1 ranked by % and showed school supplies (▲ 1,149% on a tiny baseline); v2 ranks by extra units | US-07 |
 | 6 | Head office | "Which region is weakest against plan this year?" | Guayaquil at ▲ 3.2% vs target. No region is below plan in 2017 | US-09 |
