@@ -1,6 +1,6 @@
 # ADR-006: Sales value iterates Item
 
-- Status: Accepted (2026-09-24)
+- Status: Superseded by [ADR-012](ADR-012-sales-value-iterates-fact.md) (2026-09-26)
 
 ## Context
 Sales Value can be computed by storing a precomputed column on the ~125M-row Sales fact table,

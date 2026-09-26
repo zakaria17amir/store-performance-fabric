@@ -9,13 +9,13 @@ table Sales
 		lineageTag: e1943f07-9568-4ea7-acd0-797c3c9e72dd
 
 	/// Revenue at list price: units × the item's unit price, summed over items.
-	measure 'Sales Value' = SUMX('Item', [Units] * 'Item'[Unit Price])
+	measure 'Sales Value' = SUMX('Sales', 'Sales'[Unit Sales] * RELATED('Item'[Unit Price]))
 		formatString: \$#,0
 		displayFolder: Sales
 		lineageTag: 390a604d-fcf4-4627-ab2a-3f7a8599c71c
 
 	/// Cost of goods sold: units × the item's unit cost. Restricted for store operations.
-	measure 'Cost Value' = SUMX('Item', [Units] * 'Item'[Unit Cost])
+	measure 'Cost Value' = SUMX('Sales', 'Sales'[Unit Sales] * RELATED('Item'[Unit Cost]))
 		formatString: \$#,0
 		displayFolder: Margin
 		lineageTag: 984cf3dc-1196-448e-b6e1-52bdd8a82594
@@ -69,9 +69,10 @@ table Sales
 	/// Helper for LFL Growth %: like-for-like sales value in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Sales PY' =
 			VAR FirstComparable = EDATE(CALCULATE(MIN('Date'[Date]), ALL('Date')), 12)
+			VAR LastComparablePY = EDATE(CALCULATE(MAX('Date'[Date]), ALL('Date')), -12)
 			VAR Dates = FILTER(VALUES('Date'[Date]), 'Date'[Date] >= FirstComparable)
 			VAR PeriodStart = MINX(Dates, 'Date'[Date])
-			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR(Dates)))
+			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Sales Value], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), FILTER(SAMEPERIODLASTYEAR(Dates), 'Date'[Date] <= LastComparablePY)))
 		formatString: \$#,0
 		isHidden
 		displayFolder: Like-for-like

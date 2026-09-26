@@ -10,18 +10,18 @@ table 'Time Calc'
 
 		calculationItem YTD = CALCULATE(SELECTEDMEASURE(), DATESYTD('Date'[Date]))
 
-		calculationItem PY = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
+		calculationItem PY = CALCULATE(SELECTEDMEASURE(), FILTER(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Date] <= EDATE(CALCULATE(MAX('Date'[Date]), ALL('Date')), -12)))
 
-		calculationItem 'PY YTD' = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])))
+		calculationItem 'PY YTD' = CALCULATE(SELECTEDMEASURE(), FILTER(SAMEPERIODLASTYEAR(DATESYTD('Date'[Date])), 'Date'[Date] <= EDATE(CALCULATE(MAX('Date'[Date]), ALL('Date')), -12)))
 
 		calculationItem 'YoY Δ' =
 				VAR ThisPeriod = SELECTEDMEASURE()
-				VAR PriorYear = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
+				VAR PriorYear = CALCULATE(SELECTEDMEASURE(), FILTER(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Date] <= EDATE(CALCULATE(MAX('Date'[Date]), ALL('Date')), -12)))
 				RETURN IF(NOT ISBLANK(ThisPeriod) && NOT ISBLANK(PriorYear), ThisPeriod - PriorYear)
 
 		calculationItem 'YoY %' =
 				VAR ThisPeriod = SELECTEDMEASURE()
-				VAR PriorYear = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
+				VAR PriorYear = CALCULATE(SELECTEDMEASURE(), FILTER(SAMEPERIODLASTYEAR('Date'[Date]), 'Date'[Date] <= EDATE(CALCULATE(MAX('Date'[Date]), ALL('Date')), -12)))
 				RETURN IF(NOT ISBLANK(ThisPeriod), DIVIDE(ThisPeriod - PriorYear, PriorYear))
 
 			formatStringDefinition = "▲ #,0.0%;▼ #,0.0%;#,0.0%"
