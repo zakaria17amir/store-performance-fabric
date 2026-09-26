@@ -64,6 +64,11 @@ Store 44 is the busiest Quito store, so it is the store manager's test store
   flags, with spikes of up to 1,504 on a single store-day. The stock-out rule therefore only
   flags days on which the store's receipts reach at least half of its average over the
   previous 28 days. After this change the busiest store-day has 323 flags.
+- **Store-days without a target (19,731 of 83,761 in the full lakehouse):** a monthly target is
+  last year's sales for that month plus a random growth rate, so a store has no target until it has
+  a full prior-year month. That excludes all of 2013 and each new store's first year. Sales vs
+  Target % is blank for those days rather than zero. The sample (from 2016) has targets for every
+  store-day.
 - **Stock-out risk after peaks:** the expected rate λ averages the previous 28 trading days.
   The early-January flags therefore include items whose December demand didn't carry into
   January: the ten most-flagged dates are all in January 2017. The median is 89 flags per

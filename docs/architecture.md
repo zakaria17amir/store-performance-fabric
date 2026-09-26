@@ -155,13 +155,13 @@ flowchart LR
 
 | Workspace | Contents | Data |
 |---|---|---|
-| `Retail Data` | `lh_retail`, `lh_retail_sample`, `df_erp_weather`, `pl_refresh` | Full and sample |
+| `Retail Data` | `lh_retail`, `lh_retail_sample`, `df_erp_weather`, `df_erp_weather_sample`, `pl_refresh` | Full and sample |
 | `Retail BI [Dev]` | Semantic model, report (Git-synced to `main`) | Sample lakehouse |
 | `Retail BI [Test]` | Same items, promoted by the deployment pipeline | Full lakehouse |
 | `Retail BI [Prod]` | Same items plus the Power BI app | Full lakehouse |
 
-A deployment-pipeline data source rule points Dev at `lh_retail_sample` and Test/Prod at
-`lh_retail`. Test users only get app access. Workspace members bypass RLS, so they are
+The model's `Lakehouse` parameter is `lh_retail_sample` in Dev. A deployment-pipeline parameter rule
+sets it to `lh_retail` in Test and Prod. Test users only get app access. Workspace members bypass RLS, so they are
 never used to test security.
 
 ## Security

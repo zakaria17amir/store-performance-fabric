@@ -35,6 +35,8 @@ The Azure SQL free offer isn't available in Austria East either.
 − F2 has a 3 GB memory limit per semantic model. An Import model of the full 125M-row
   `fact_sales` may not fit, or may not refresh. The ADR-003 benchmark measures this rather than
   assuming it: if Import doesn't fit, the options are the composite model or Direct Lake.
+  *Update 2026-09-26:* the first full Import refresh in `Retail BI [Test]` completed on F2 in
+  13 minutes (125M `fact_sales` rows), against about 1.5 minutes for the sample in Dev.
 − A paused capacity can't serve anything: the SQL endpoint, refresh and reports all stop.
   Screenshots and the video are captured while it runs, and the sample Import model still
   opens offline in Desktop.
