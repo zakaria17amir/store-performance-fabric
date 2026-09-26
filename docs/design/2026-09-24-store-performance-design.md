@@ -36,7 +36,7 @@ One report, published through one Power BI app:
 - The Best Practice Analyzer (BPA) check reports zero errors and CI is green on `main`.
 - RLS and OLS are verified with four test users, one per persona, with screenshots in `docs/security.md`.
 - Every visual's query runs in under 500 ms on a warm cache on full data, with before/after evidence in `docs/performance.md`.
-- A usability test with 5 participants reaches at least 80% task success on v2, and the SUS score is reported (target 70 or more).
+- A persona walkthrough with the four test accounts answers every task correctly in under a minute on v2. This replaces the original plan of an independent usability test with 5 participants, who aren't available for now.
 - The model opens offline in Power BI Desktop on the sample data.
 
 ### 3.3 Out of scope
@@ -194,11 +194,11 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
    - then high-fidelity 1280 × 720 pages and the phone layout.
    - Exports: a Power BI theme JSON in `design/`.
 3. **Build v1** from the design.
-4. **Usability test**:
-   - 5 participants, 5 think-aloud tasks each;
-   - measures: task success, time on task, SUS;
+4. **Persona walkthrough** (replaces a 5-participant usability test while participants aren't available):
+   - the four test accounts, 6 tasks mapped to the user stories, answer key checked on Prod;
+   - measures: task success, time on task, problems found;
    - protocol and results in `docs/usability/`;
-   - findings drive a v2 change log.
+   - findings drive the v2 backlog.
 5. **Accessibility**:
    - text contrast at least 4.5:1, non-text at least 3:1;
    - colour is never the only signal;
@@ -228,7 +228,7 @@ KPI glossary (`docs/kpi-glossary.md`) holds the business definition next to the 
 | ERP | Constraints; daily targets sum exactly to monthly targets | SQL test script against Azure SQL |
 | Model | BPA rules (Microsoft's standard set plus project rules); DAX totals equal SQL endpoint totals per year and region | BPA in CI; the totals check before every promotion to Prod |
 | Security | Four-user RLS/OLS test matrix | Desktop and Service |
-| Report | Accessibility and design checklist; usability test | Manual |
+| Report | Accessibility and design checklist; persona walkthrough | Manual |
 | Performance | Benchmark against the budget | DAX Studio |
 
 ## 14. Error handling and operations
@@ -264,7 +264,7 @@ Flagship/
 | 1 | Repository scaffold, requirements, KPI glossary, local pipeline with passing tests, ERP schema and seed, Figma wireframes |
 | 2 | Tenant and capacity active, workspaces and lakehouses, upload, dataflow and data pipeline running, model v1 with core measures on sample data, CI green. **Application-ready checkpoint.** |
 | 3 | RLS/OLS with test users, deployment pipeline and Git integration, report v1 from the Figma design |
-| 4 | Full-data benchmark, storage-mode decision record and optimisation; usability round 1 |
+| 4 | Full-data benchmark, storage-mode decision record and optimisation; persona walkthrough |
 | 5 | Report v2, totals checks, security, performance and usability docs |
 | 6 | README, GIF, buffer (video walkthrough dropped for now) |
 

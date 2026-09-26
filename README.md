@@ -12,7 +12,7 @@ deployment. It's built for store managers, regional managers and head office.
 > - Dev → Test → Prod deployment;
 > - row-level and object-level security, tested for four test users.
 >
-> The usability study, the storage-mode benchmark and report v2 are next (see [Roadmap](#roadmap)).
+> The persona walkthrough, the storage-mode benchmark and report v2 are next (see [Roadmap](#roadmap)).
 > The [spec](docs/design/2026-09-24-store-performance-design.md) has the full design.
 
 ---
@@ -53,7 +53,7 @@ The design and wireframes are in [design/](design/README.md).
 | Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Built and tested in Desktop and in the Service (by impersonation); one report per audience |
 | Governance and deployment | PBIP/TMDL/PBIR in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Built: Git-synced Dev, a parameter rule for the full lakehouse in Test/Prod, and a data pipeline for refreshes |
 | Performance | Benchmark of Import vs. composite aggregations vs. Direct Lake in DAX Studio | Import measured on full data: 4 of 6 page queries under 500 ms, and a 1 GB per-query failure fixed ([performance](docs/performance.md)) |
-| UX | Requirements, Figma design system, usability test with 5 users, v1 → v2 iteration | Figma wireframes, colour-blind-checked theme and report v1 built; test protocol ready |
+| UX | Requirements, Figma design system, persona walkthrough with the four test accounts, v1 → v2 iteration | Figma wireframes, colour-blind-checked theme and report v1 built; walkthrough answer key checked on Prod |
 
 ## Architecture
 
@@ -126,8 +126,8 @@ Results are added as each phase ships:
 | RLS/OLS test matrix | [docs/security.md](docs/security.md) | Pass for all 4 test users, in Desktop (sample) and in the Service (Prod, full data) |
 | Model totals vs source | [fabric/README.md](fabric/README.md#checks-against-the-published-model) | 20 of 20 year × region cells equal |
 | Performance benchmark | [docs/performance.md](docs/performance.md) | Import measured; storage-mode comparison pending |
-| Usability test (5 participants) | [docs/usability/protocol.md](docs/usability/protocol.md) | Protocol ready; sessions pending |
-| Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | 5 items from the v1 review |
+| Persona walkthrough (4 test accounts) | [docs/usability/protocol.md](docs/usability/protocol.md) | Tasks and answer key ready; walkthrough pending |
+| Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | 6 items from the v1 review |
 
 ## Roadmap
 
@@ -135,7 +135,7 @@ Results are added as each phase ships:
 - [x] Phase 1: data pipeline, synthetic ERP data, requirements (Figma wireframes move to Phase 3)
 - [x] Phase 2: Fabric platform, Azure SQL, dataflow, semantic model v1, CI, refresh pipeline
 - [ ] Phase 3: security, deployment pipeline, report v1 (left: publish the app with its 4 audiences, and screenshots per test user)
-- [ ] Phase 4: performance benchmark (Import done; composite and Direct Lake left), usability round 1
+- [ ] Phase 4: performance benchmark (Import done; composite and Direct Lake left), persona walkthrough
 - [ ] Phase 5: report v2, evidence docs
 - [ ] Phase 6: final polish
 
