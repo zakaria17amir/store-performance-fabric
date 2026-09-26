@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "weekdaySales",
   "position": {
     "x": 552,
     "y": 388,
     "z": 6,
-    "width": 348,
     "height": 300,
+    "width": 348,
     "tabOrder": 6
   },
   "visual": {
     "visualType": "clusteredColumnChart",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -28,25 +27,8 @@
                 }
               },
               "queryRef": "Date.Weekday",
-              "nativeQueryRef": "Weekday"
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Sales"
-                    }
-                  },
-                  "Property": "Sales Value"
-                }
-              },
-              "queryRef": "Sales.Sales Value",
-              "nativeQueryRef": "Sales Value"
+              "nativeQueryRef": "Weekday",
+              "active": true
             }
           ]
         },
@@ -65,6 +47,24 @@
               },
               "queryRef": "Time Calc.Show As",
               "nativeQueryRef": "Show As"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sales"
+                    }
+                  },
+                  "Property": "Sales Value"
+                }
+              },
+              "queryRef": "Sales.Sales Value",
+              "nativeQueryRef": "Sales Value"
             }
           ]
         }
@@ -124,7 +124,8 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [
@@ -141,7 +142,6 @@
           }
         },
         "type": "Categorical",
-        "howCreated": "User",
         "filter": {
           "Version": 2,
           "From": [
@@ -187,7 +187,8 @@
               }
             }
           ]
-        }
+        },
+        "howCreated": "User"
       }
     ]
   }

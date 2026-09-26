@@ -109,17 +109,22 @@ table Date
 
 	/// Year → quarter → month → day, for drilling down on date axes and slicers.
 	hierarchy Calendar
+		lineageTag: 7a5f078d-8925-4fe8-8378-f3afe027fe6d
 
 		level Year
+			lineageTag: 187bb435-258e-4f0c-a807-192d38215454
 			column: Year
 
 		level Quarter
+			lineageTag: b7deabad-57e9-4d8a-9975-0fcd9a31b62c
 			column: Quarter
 
 		level Month
+			lineageTag: 7b9d8a0c-a8e6-41a5-a0ac-edf87247277e
 			column: Month
 
 		level Date
+			lineageTag: fe0361ca-d287-4f64-aede-3bdb679c3605
 			column: Date
 
 	partition Date = m

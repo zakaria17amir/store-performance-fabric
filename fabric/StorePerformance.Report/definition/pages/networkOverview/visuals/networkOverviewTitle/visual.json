@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "networkOverviewTitle",
   "position": {
     "x": 0,
     "y": 0,
     "z": 0,
-    "width": 1280,
-    "height": 64,
+    "height": 72.386438015447041,
+    "width": 1280.0335122398219,
     "tabOrder": 0
   },
   "visual": {
     "visualType": "textbox",
-    "drillFilterOtherVisuals": true,
     "objects": {
       "general": [
         {
@@ -79,6 +78,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

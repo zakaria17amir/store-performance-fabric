@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "regionVsTarget",
   "position": {
     "x": 16,
     "y": 184,
     "z": 9,
-    "width": 608,
     "height": 252,
+    "width": 608,
     "tabOrder": 9
   },
   "visual": {
     "visualType": "clusteredBarChart",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -28,7 +27,8 @@
                 }
               },
               "queryRef": "Store.Region",
-              "nativeQueryRef": "Region"
+              "nativeQueryRef": "Region",
+              "active": true
             }
           ]
         },
@@ -66,8 +66,7 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "objects": {
@@ -198,6 +197,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "regionTable",
   "position": {
     "x": 16,
     "y": 452,
     "z": 11,
-    "width": 1248,
     "height": 236,
+    "width": 1248,
     "tabOrder": 11
   },
   "visual": {
     "visualType": "tableEx",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -118,8 +117,7 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "visualContainerObjects": {
@@ -176,6 +174,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

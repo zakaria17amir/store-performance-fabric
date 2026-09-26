@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "liftVsShift",
   "position": {
     "x": 648,
     "y": 184,
     "z": 9,
-    "width": 616,
     "height": 244,
+    "width": 616,
     "tabOrder": 9
   },
   "visual": {
     "visualType": "scatterChart",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -28,7 +27,8 @@
                 }
               },
               "queryRef": "Item.Family",
-              "nativeQueryRef": "Family"
+              "nativeQueryRef": "Family",
+              "active": true
             }
           ]
         },
@@ -46,7 +46,8 @@
                 }
               },
               "queryRef": "Sales.Promo Uplift %",
-              "nativeQueryRef": "Promo Uplift %"
+              "nativeQueryRef": "Promo Uplift %",
+              "active": true
             }
           ]
         },
@@ -124,6 +125,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

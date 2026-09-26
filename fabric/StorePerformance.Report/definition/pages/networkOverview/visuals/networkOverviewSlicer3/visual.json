@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "networkOverviewSlicer3",
   "position": {
-    "x": 1114,
-    "y": 6,
+    "x": 1113.5447048042936,
+    "y": 6.03220316795392,
     "z": 3,
-    "width": 150,
-    "height": 52,
+    "height": 66.354234847493117,
+    "width": 150.805079198848,
     "tabOrder": 3
   },
   "visual": {
     "visualType": "slicer",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -28,7 +27,8 @@
                 }
               },
               "queryRef": "Time Calc.Show As",
-              "nativeQueryRef": "Show As"
+              "nativeQueryRef": "Show As",
+              "active": true
             }
           ]
         }
@@ -48,6 +48,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

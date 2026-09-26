@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "freshLast7Days",
   "position": {
     "x": 16,
     "y": 184,
     "z": 7,
-    "width": 1248,
     "height": 504,
+    "width": 1248,
     "tabOrder": 7
   },
   "visual": {
     "visualType": "tableEx",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -76,8 +75,7 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "visualContainerObjects": {
@@ -134,7 +132,8 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   },
   "filterConfig": {
     "filters": [
@@ -151,7 +150,6 @@
           }
         },
         "type": "Categorical",
-        "howCreated": "User",
         "filter": {
           "Version": 2,
           "From": [
@@ -190,7 +188,8 @@
               }
             }
           ]
-        }
+        },
+        "howCreated": "User"
       }
     ]
   }

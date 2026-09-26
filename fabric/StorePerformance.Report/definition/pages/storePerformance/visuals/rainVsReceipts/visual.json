@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "rainVsReceipts",
   "position": {
     "x": 916,
     "y": 388,
     "z": 7,
-    "width": 348,
     "height": 300,
+    "width": 348,
     "tabOrder": 7
   },
   "visual": {
     "visualType": "scatterChart",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Category": {
@@ -28,7 +27,8 @@
                 }
               },
               "queryRef": "Date.Date",
-              "nativeQueryRef": "Date"
+              "nativeQueryRef": "Date",
+              "active": true
             }
           ]
         },
@@ -46,7 +46,8 @@
                 }
               },
               "queryRef": "Store Day.Avg Rain (mm)",
-              "nativeQueryRef": "Avg Rain (mm)"
+              "nativeQueryRef": "Avg Rain (mm)",
+              "active": true
             }
           ]
         },
@@ -124,6 +125,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }

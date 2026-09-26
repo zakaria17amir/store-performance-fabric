@@ -1,17 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
   "name": "freshAvailabilitySlicer3",
   "position": {
     "x": 1114,
     "y": 6,
     "z": 3,
+    "height": 58,
     "width": 150,
-    "height": 52,
     "tabOrder": 3
   },
   "visual": {
     "visualType": "slicer",
-    "drillFilterOtherVisuals": true,
     "query": {
       "queryState": {
         "Values": {
@@ -28,7 +27,8 @@
                 }
               },
               "queryRef": "Item.Family",
-              "nativeQueryRef": "Family"
+              "nativeQueryRef": "Family",
+              "active": true
             }
           ]
         }
@@ -48,6 +48,7 @@
           }
         }
       ]
-    }
+    },
+    "drillFilterOtherVisuals": true
   }
 }
