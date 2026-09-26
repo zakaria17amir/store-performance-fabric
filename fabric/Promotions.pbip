@@ -4,7 +4,7 @@
   "artifacts": [
     {
       "report": {
-        "path": "StorePerformance.Report"
+        "path": "Promotions.Report"
       }
     }
   ],

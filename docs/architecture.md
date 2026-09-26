@@ -50,7 +50,7 @@ flowchart TB
 | Dataflow Gen2 `df_erp_weather` | Conforms ERP attributes onto the staged dimensions, joins daily targets and weather from the ERP database | Power Query M |
 | Data pipeline `pl_refresh` | Runs the dataflow, then refreshes the semantic model | Fabric Data Factory |
 | Semantic model `Store Performance` | Star schema, measures, time-intelligence calculation group, RLS and OLS | Power BI (PBIP / TMDL) |
-| Report and app | Four desktop pages, a phone layout, app audiences | Power BI (PBIR) |
+| Reports and app | Five single-page reports (plus a drill-through) on one model, a phone layout, app audiences | Power BI (PBIR) |
 
 ## Lakehouse table contract
 
@@ -171,7 +171,7 @@ never used to test security.
 | Store operations | Stores listed for the user in `user_access` | `'Item'[Unit Cost]` hidden, so margin is unavailable | Store manager, regional manager |
 | Commercial | None (all stores) | None | Category manager, head office |
 
-App audiences decide which pages each persona sees. Roles decide which data they can see.
+App audiences decide which reports each persona sees (one report per page; audiences can't hide single pages). Roles decide which data they can see.
 
 Role definitions, the RLS rule and the test matrix: [security.md](security.md).
 

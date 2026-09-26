@@ -1,7 +1,18 @@
 # Power BI project
 
-Open `StorePerformance.pbip` in Power BI Desktop. `StorePerformance.SemanticModel/` is the semantic
-model `Store Performance`, stored as TMDL. `StorePerformance.Report/` is the report, stored as PBIR.
+`StorePerformance.SemanticModel/` is the semantic model `Store Performance`, stored as TMDL.
+Five reports, stored as PBIR, read it. There's one report per page, because Power BI app
+audiences can show or hide whole reports but not individual pages:
+
+| Report | Pages | App audiences |
+|---|---|---|
+| `NetworkOverview.Report` | Network overview | Regional managers, category managers, head office |
+| `StorePerformance.Report` | Store performance, Store detail (drill-through) | Store managers, regional managers, head office |
+| `FreshAvailability.Report` | Fresh and availability | Everyone |
+| `Promotions.Report` | Promotions (margin: Commercial role) | Category managers, head office |
+| `StoreToday.Report` | Store today, with a phone layout | Store managers, head office |
+
+Open any `<Report>.pbip` in Power BI Desktop. All five share the model and its data cache.
 `dataflow/` holds the Dataflow Gen2 queries.
 
 ## Model
