@@ -1,14 +1,13 @@
-# Usability test protocol
+# Persona walkthrough
 
-Goal: find out whether each persona can answer their questions from the app without help, and
-fix what gets in the way before v2. The target is at least 80% task success on v2 and a
-System Usability Scale (SUS) score of 70 or more.
+The plan was a usability test with five independent participants. Recruiting them isn't
+possible for now, so the report is evaluated with a **persona walkthrough**. Someone signs in as
+each of the four test accounts and works through the tasks each persona needs to answer, in the
+published app. This checks that each persona can find and read its answers within its own
+security view. It isn't an independent usability study: the evaluator knows the report. Findings
+are recorded as such.
 
-## Participants
-
-Five people, ideally one or two per persona. Retail or reporting experience helps but isn't
-required. Each participant uses the test account for their persona, so row-level security shows
-them the persona's real view:
+## Accounts
 
 | Persona | Test account | App reports |
 |---|---|---|
@@ -17,38 +16,31 @@ them the persona's real view:
 | Category manager | `category.manager@` | Network overview, Fresh and availability, Promotions |
 | Head office | `head.office@` | All five |
 
-## Session (about 30 minutes, remote or in person)
+## How to run it
 
-1. **Intro (3 min).** "We're testing the report, not you. Please think aloud: say what you're
-   looking for and what you expect to happen." Get consent to record the screen and audio.
-2. **Tasks (15 min).** Read each task aloud. Don't help. If the participant is stuck for 2
-   minutes, note it as a failure and move on.
-3. **SUS questionnaire (5 min).** The standard 10 statements, rated 1–5.
-4. **Debrief (5 min).** "What was the hardest part? What would you change first?"
+1. Sign in to the app in a private browser window as the persona. For task 1, use the Power BI
+   mobile app or a phone-sized window.
+2. For each task, note:
+   - where you started;
+   - each click, filter or drill;
+   - the time until the answer was on screen;
+   - anything that slowed you down or could be misread.
+3. Compare the answer with the answer key below. A task passes when the report shows the key's
+   answer, is readable in the persona's view, and is reached in under a minute.
+4. Record the results in `results.md`, and add each problem to the
+   [v2 backlog](../report-v2-backlog.md).
 
-## Tasks
+## Tasks and answer key
 
-Each task maps to a user story in the [requirements](../requirements.md). A task succeeds when
-the participant states the correct answer without help.
+"This year" is 2017, which is January to 15 August 2017, the last day in the data. The answers
+were computed on Prod (full data) by impersonating each account through the Power BI API
+(`service-check`), so they already reflect row-level security.
 
-| # | Persona | Task | Success when… | Story |
+| # | Persona | Task | Answer key | Story |
 |---|---|---|---|---|
-| 1 | Store manager (phone) | "How did your store do on the last day in the report, against its target?" | They read Sales Value, Target and the % above/below target on the Store today page | US-01 |
-| 2 | Store manager | "Which fresh item is most likely out of stock in your store?" | They name the top item in the 7-day fresh list | US-02 |
-| 3 | Regional manager | "Which of your stores is furthest behind on like-for-like sales this year?" | They pick the current year and name the lowest store in the LFL ranking | US-04 |
-| 4 | Regional manager | "For that store, is it fewer shoppers or smaller baskets?" | They read the footfall and basket split and say which is negative (or drill through to Store detail) | US-05, US-06 |
-| 5 | Category manager | "Which product family gained most from promotions, and did it lose sales afterwards?" | They name the top uplift family and read its post-promotion dip | US-07 |
-| 6 | Head office | "Which region is furthest below plan this year?" | They pick the current year and name the region with the lowest Sales vs Target % | US-09 |
-
-Every participant does tasks 1–2 (as a store manager, on a phone) and the tasks for their own
-persona. That gives about 5 tasks each.
-
-## What to record
-
-For each task: success (yes / with a hint / no), time on task, and every point where they
-hesitated, backtracked or misread something, quoted in their own words. After the session: the
-SUS score and the debrief answers.
-
-Results go in `results.md` in this folder: a task-success table, the median time per task, the
-SUS scores, and the issues ranked by how many participants hit them. Each issue that drives a v2
-change links to its change-log entry.
+| 1 | Store manager (phone) | "How did your store do on the last day in the report, against its target?" | Store 44 (Quito), 15 Aug 2017: Sales Value $108,422 against a target of $110,988, ▼ 2.3% | US-01 |
+| 2 | Store manager | "Which fresh item looks most out of stock in your store over the last 7 days?" | Item 871513 (BREAD/BAKERY), about $473 estimated lost sales | US-02 |
+| 3 | Regional manager | "Which of your stores is furthest behind on like-for-like sales this year?" | Store 2 (Quito), LFL ▼ 2.7% | US-04 |
+| 4 | Regional manager | "For that store, is it fewer shoppers or smaller baskets?" | Both, mostly smaller baskets: footfall ▼ 0.7%, basket ▼ 2.0% | US-05, US-06 |
+| 5 | Category manager | "Which product family gained most from promotions this year, and did sales drop afterwards?" | School and office supplies (uplift ▲ 1,149%, post-promo dip ▼ 5.8%). The uplift comes from a very small baseline, see backlog #6 | US-07 |
+| 6 | Head office | "Which region is weakest against plan this year?" | Guayaquil at ▲ 3.2% vs target. No region is below plan in 2017 | US-09 |
