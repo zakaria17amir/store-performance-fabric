@@ -43,7 +43,7 @@ table Sales
 			VAR PromoUnits = CALCULATE([Units], KEEPFILTERS('Sales'[On Promo] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
 			VAR PromoBaseline = CALCULATE([Baseline Units], KEEPFILTERS('Sales'[On Promo] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
 			RETURN DIVIDE(PromoUnits - PromoBaseline, PromoBaseline)
-		formatString: #,0.0%;-#,0.0%;#,0.0%
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Promotions
 		lineageTag: 3626b5f4-ba4e-40c7-a6bf-c7ed7d3f85b5
 
@@ -52,7 +52,7 @@ table Sales
 			VAR PostUnits = CALCULATE([Units], KEEPFILTERS('Sales'[Post Promo Window] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
 			VAR PostBaseline = CALCULATE([Baseline Units], KEEPFILTERS('Sales'[Post Promo Window] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
 			RETURN DIVIDE(PostUnits - PostBaseline, PostBaseline)
-		formatString: #,0.0%;-#,0.0%;#,0.0%
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Promotions
 		lineageTag: c9306ebc-e30c-43cf-9e25-818fe82836aa
 
@@ -75,7 +75,7 @@ table Sales
 
 	/// Like-for-like sales growth vs. the same period last year.
 	measure 'LFL Growth %' = DIVIDE([LFL Sales] - [LFL Sales PY], [LFL Sales PY])
-		formatString: #,0.0%;-#,0.0%;#,0.0%
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Like-for-like
 		lineageTag: 68d883fb-18a5-40d4-b5c8-2bb9d9657aab
 
