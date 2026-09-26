@@ -26,14 +26,14 @@
                           "Entity": "Date"
                         }
                       },
-                      "Hierarchy": "Fiscal Calendar"
+                      "Hierarchy": "Calendar"
                     }
                   },
-                  "Level": "Fiscal Year"
+                  "Level": "Year"
                 }
               },
-              "queryRef": "Date.Fiscal Calendar.Fiscal Year",
-              "nativeQueryRef": "Fiscal Year",
+              "queryRef": "Date.Calendar.Year",
+              "nativeQueryRef": "Year",
               "active": true
             },
             {
@@ -46,14 +46,14 @@
                           "Entity": "Date"
                         }
                       },
-                      "Hierarchy": "Fiscal Calendar"
+                      "Hierarchy": "Calendar"
                     }
                   },
-                  "Level": "Fiscal Month"
+                  "Level": "Month"
                 }
               },
-              "queryRef": "Date.Fiscal Calendar.Fiscal Month",
-              "nativeQueryRef": "Fiscal Month",
+              "queryRef": "Date.Calendar.Month",
+              "nativeQueryRef": "Month",
               "active": true
             },
             {
@@ -66,13 +66,13 @@
                           "Entity": "Date"
                         }
                       },
-                      "Hierarchy": "Fiscal Calendar"
+                      "Hierarchy": "Calendar"
                     }
                   },
                   "Level": "Date"
                 }
               },
-              "queryRef": "Date.Fiscal Calendar.Date",
+              "queryRef": "Date.Calendar.Date",
               "nativeQueryRef": "Date",
               "active": false
             }
@@ -146,7 +146,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Sales Value and Target by fiscal month · select a month and drill down (↓) to see its days'"
+                  "Value": "'Sales Value and Target by month · select a month and drill down (↓) to see its days'"
                 }
               }
             }

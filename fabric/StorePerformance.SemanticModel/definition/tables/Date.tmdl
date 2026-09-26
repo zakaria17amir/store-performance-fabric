@@ -1,4 +1,4 @@
-/// One row per calendar day, from the first to the last sales day. Marked as the date table.
+/// One row per calendar day, from the first to the last sales day. Marked as the date table. The fiscal year is the calendar year (Ecuador).
 table Date
 	lineageTag: 14a5102b-56fb-4f10-8120-4ecfd4fdb0d3
 	dataCategory: Time
@@ -31,7 +31,7 @@ table Date
 
 	column Quarter
 		dataType: int64
-		formatString: 0
+		formatString: \Q0
 		lineageTag: 976496e9-4622-451f-87b7-f242b7ddbc78
 		summarizeBy: none
 		sourceColumn: quarter
@@ -107,43 +107,17 @@ table Date
 		summarizeBy: none
 		sourceColumn: is_national_holiday
 
-	/// Fiscal year: February to January, named by the calendar year it ends in (FY2017 = Feb 2016 – Jan 2017).
-	column 'Fiscal Year'
-		dataType: string
-		summarizeBy: none
-		sourceColumn: fiscal_year
+	/// Year → quarter → month → day, for drilling down on date axes and slicers.
+	hierarchy Calendar
 
-	/// Fiscal quarter, Q1 = February to April.
-	column 'Fiscal Quarter'
-		dataType: string
-		summarizeBy: none
-		sourceColumn: fiscal_quarter
+		level Year
+			column: Year
 
-	/// Month name, sorted in fiscal order (February first).
-	column 'Fiscal Month'
-		dataType: string
-		summarizeBy: none
-		sourceColumn: fiscal_month
-		sortByColumn: 'Fiscal Month Number'
+		level Quarter
+			column: Quarter
 
-	column 'Fiscal Month Number'
-		dataType: int64
-		isHidden
-		formatString: 0
-		summarizeBy: none
-		sourceColumn: fiscal_month_num
-
-	/// Fiscal year → quarter → month → day, for drilling down on date axes and slicers.
-	hierarchy 'Fiscal Calendar'
-
-		level 'Fiscal Year'
-			column: 'Fiscal Year'
-
-		level 'Fiscal Quarter'
-			column: 'Fiscal Quarter'
-
-		level 'Fiscal Month'
-			column: 'Fiscal Month'
+		level Month
+			column: Month
 
 		level Date
 			column: Date
@@ -155,13 +129,7 @@ table Date
 				    Source = Sql.Database(SqlEndpoint, Lakehouse),
 				    Data = Source{[Schema = "dbo", Item = "dim_date"]}[Data],
 				    Selected = Table.SelectColumns(Data, {"date_key", "date", "year", "quarter", "month_num", "month_name", "month_key", "iso_week", "iso_year", "weekday_num", "weekday_name", "is_weekend", "is_national_holiday"}),
-				    WithYearMonth = Table.AddColumn(Selected, "year_month", each Date.ToText([date], [Format = "MMM yyyy", Culture = "en-US"]), type text),
-				    // fiscal year runs February to January and is named by the year it ends in
-				    FiscalStartMonth = 2,
-				    WithFiscalMonthNum = Table.AddColumn(WithYearMonth, "fiscal_month_num", each Number.Mod(Date.Month([date]) + 12 - FiscalStartMonth, 12) + 1, Int64.Type),
-				    WithFiscalYear = Table.AddColumn(WithFiscalMonthNum, "fiscal_year", each "FY" & Text.From(Date.Year([date]) + (if Date.Month([date]) >= FiscalStartMonth then 1 else 0)), type text),
-				    WithFiscalQuarter = Table.AddColumn(WithFiscalYear, "fiscal_quarter", each "Q" & Text.From(Number.RoundUp([fiscal_month_num] / 3)), type text),
-				    Result = Table.AddColumn(WithFiscalQuarter, "fiscal_month", each Date.ToText([date], [Format = "MMM", Culture = "en-US"]), type text)
+				    Result = Table.AddColumn(Selected, "year_month", each Date.ToText([date], [Format = "MMM yyyy", Culture = "en-US"]), type text)
 				in
 				    Result
 

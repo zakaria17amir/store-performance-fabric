@@ -26,14 +26,14 @@
                           "Entity": "Date"
                         }
                       },
-                      "Hierarchy": "Fiscal Calendar"
+                      "Hierarchy": "Calendar"
                     }
                   },
-                  "Level": "Fiscal Year"
+                  "Level": "Year"
                 }
               },
-              "queryRef": "Date.Fiscal Calendar.Fiscal Year",
-              "nativeQueryRef": "Fiscal Year",
+              "queryRef": "Date.Calendar.Year",
+              "nativeQueryRef": "Year",
               "active": true
             },
             {
@@ -46,14 +46,14 @@
                           "Entity": "Date"
                         }
                       },
-                      "Hierarchy": "Fiscal Calendar"
+                      "Hierarchy": "Calendar"
                     }
                   },
-                  "Level": "Fiscal Month"
+                  "Level": "Month"
                 }
               },
-              "queryRef": "Date.Fiscal Calendar.Fiscal Month",
-              "nativeQueryRef": "Fiscal Month",
+              "queryRef": "Date.Calendar.Month",
+              "nativeQueryRef": "Month",
               "active": true
             }
           ]
