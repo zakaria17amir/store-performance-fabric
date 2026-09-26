@@ -40,7 +40,8 @@ Measure definitions are in the [KPI glossary](../docs/kpi-glossary.md). A pytest
   - `sql-lh-retail` is used by Test and Prod.
 - **Deployment pipeline `Store Performance release`:** Development (`Retail BI [Dev]`) → Test →
   Production. A parameter rule on the Test and Production stages sets `Lakehouse` to `lh_retail`,
-  so only Dev reads the sample. Rules take effect on the next deploy.
+  so only Dev reads the sample. Rules take effect on the next deploy. The first full Import
+  refresh in Test (125M sales rows) took 13 minutes on F2.
 - **Dataflows:** `df_erp_weather_sample` writes to `lh_retail_sample` and `df_erp_weather` writes to
   `lh_retail`. They run the same queries; only the `LakehouseId` parameter and the destinations
   differ.
