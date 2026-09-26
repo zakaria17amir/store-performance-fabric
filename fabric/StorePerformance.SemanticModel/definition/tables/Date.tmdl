@@ -1,12 +1,14 @@
 /// One row per calendar day, from the first to the last sales day. Marked as the date table.
 table Date
+	lineageTag: 14a5102b-56fb-4f10-8120-4ecfd4fdb0d3
 	dataCategory: Time
 
 	column DateKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: a7fdad84-7e02-4b43-9195-4641e0740130
 		summarizeBy: none
 		sourceColumn: date_key
 
@@ -14,6 +16,7 @@ table Date
 		dataType: dateTime
 		isKey
 		formatString: yyyy-mm-dd
+		lineageTag: 258b0291-b08a-4632-86d6-629c928ab542
 		summarizeBy: none
 		sourceColumn: date
 
@@ -22,17 +25,20 @@ table Date
 	column Year
 		dataType: int64
 		formatString: 0
+		lineageTag: 91f83c94-55e4-4f59-b74e-af7d5b993c60
 		summarizeBy: none
 		sourceColumn: year
 
 	column Quarter
 		dataType: int64
 		formatString: 0
+		lineageTag: 976496e9-4622-451f-87b7-f242b7ddbc78
 		summarizeBy: none
 		sourceColumn: quarter
 
 	column Month
 		dataType: string
+		lineageTag: efb6a1fb-0727-4228-9241-70e5458cfeb6
 		summarizeBy: none
 		sourceColumn: month_name
 		sortByColumn: 'Month Number'
@@ -41,11 +47,13 @@ table Date
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: 693b1fe9-9fac-4e8f-8410-090d1bf59863
 		summarizeBy: none
 		sourceColumn: month_num
 
 	column 'Year Month'
 		dataType: string
+		lineageTag: 4dcfa2a2-1675-463b-aba5-fe86d4807a3f
 		summarizeBy: none
 		sourceColumn: year_month
 		sortByColumn: 'Month Key'
@@ -54,23 +62,27 @@ table Date
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: da300576-c66a-42db-8f8d-08a11e972a31
 		summarizeBy: none
 		sourceColumn: month_key
 
 	column 'ISO Week'
 		dataType: int64
 		formatString: 0
+		lineageTag: 97e28ae0-a1d2-4abe-b442-331ca42823f2
 		summarizeBy: none
 		sourceColumn: iso_week
 
 	column 'ISO Year'
 		dataType: int64
 		formatString: 0
+		lineageTag: 5b04061e-50bd-4118-91b6-d2de155daac5
 		summarizeBy: none
 		sourceColumn: iso_year
 
 	column Weekday
 		dataType: string
+		lineageTag: 2c511330-82e3-4fc4-9504-cf43c915d248
 		summarizeBy: none
 		sourceColumn: weekday_name
 		sortByColumn: 'Weekday Number'
@@ -79,16 +91,19 @@ table Date
 		dataType: int64
 		isHidden
 		formatString: 0
+		lineageTag: c181f154-3f06-4620-a7a6-614b913eae1c
 		summarizeBy: none
 		sourceColumn: weekday_num
 
 	column 'Is Weekend'
 		dataType: boolean
+		lineageTag: f0f53ee8-b769-4f28-af32-c2e8e9d2ae0c
 		summarizeBy: none
 		sourceColumn: is_weekend
 
 	column 'Is National Holiday'
 		dataType: boolean
+		lineageTag: abe59858-2ceb-4db2-b929-6f1324e7d31a
 		summarizeBy: none
 		sourceColumn: is_national_holiday
 
@@ -102,3 +117,4 @@ table Date
 				    Result = Table.AddColumn(Selected, "year_month", each Date.ToText([date], [Format = "MMM yyyy", Culture = "en-US"]), type text)
 				in
 				    Result
+

@@ -1,50 +1,58 @@
 /// Store × item × day on which an item that normally sells had no sales on a trading day. Flagged days only, from 2016.
 table 'Stock-out Risk'
+	lineageTag: 130f162d-5542-495a-a883-21d704b0ae30
 
 	/// Distinct store-item pairs with at least one flagged day in the period.
 	measure 'Stock-out Risk Items' = COUNTROWS(SUMMARIZE('Stock-out Risk', 'Stock-out Risk'[StoreKey], 'Stock-out Risk'[ItemKey]))
 		formatString: #,0
 		displayFolder: Availability
+		lineageTag: c60eb848-88ac-412e-b45b-344762fec626
 
 	/// Expected units that did not sell on flagged days (the item's normal daily rate).
 	measure 'Est. Lost Units' = SUM('Stock-out Risk'[Expected Units])
 		formatString: #,0
 		displayFolder: Availability
+		lineageTag: fb35b867-44d3-4cca-adcb-42b0cbdf826b
 
 	/// Estimated lost units valued at each item's unit price.
 	measure 'Est. Lost Sales' = SUMX('Item', [Est. Lost Units] * 'Item'[Unit Price])
 		formatString: \$#,0
 		displayFolder: Availability
+		lineageTag: 71fea5de-eb42-4d70-9802-9c435f78a754
 
 	column DateKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 935e6afb-049d-4c7c-880f-b56368a78ff9
 		summarizeBy: none
 		sourceColumn: date_key
 
 	column StoreKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 613f26ae-cd69-4141-a8d9-aed4fc634d64
 		summarizeBy: none
 		sourceColumn: store_key
 
 	column ItemKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 176da85d-711c-4b77-b9d0-77faf0ee29be
 		summarizeBy: none
 		sourceColumn: item_key
 
 	column 'Expected Units'
 		dataType: decimal
 		isHidden
-		isAvailableInMdx: false
 		formatString: #,0.0
+		isAvailableInMdx: false
+		lineageTag: a9945daa-c934-413e-9b36-91c89d8c506a
 		summarizeBy: none
 		sourceColumn: expected_units
 
@@ -58,3 +66,4 @@ table 'Stock-out Risk'
 				    Result = Table.TransformColumnTypes(Selected, {{"expected_units", Currency.Type}})
 				in
 				    Result
+

@@ -9,6 +9,10 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
+annotation PBI_QueryOrder = ["Date","Store","Item","Sales","Store Day","Stock-out Risk","User Access","SqlEndpoint","Lakehouse"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
 ref table Date
 ref table Store
 ref table Item
@@ -20,3 +24,4 @@ ref table 'User Access'
 
 ref role 'Store operations'
 ref role Commercial
+

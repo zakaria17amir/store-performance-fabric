@@ -1,17 +1,20 @@
 /// One row per store in this lakehouse: Favorita attributes plus the ERP region and selling area.
 table Store
+	lineageTag: 45407b67-68df-433a-84ed-e9ed664337a6
 
 	column StoreKey
 		dataType: int64
 		isHidden
 		isKey
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 177bad96-ae5e-44b1-986d-0cbc89c47c72
 		summarizeBy: none
 		sourceColumn: store_key
 
 	column Store
 		dataType: string
+		lineageTag: 8dc53d67-9565-4f9a-8d3c-7a69d80527d3
 		isDefaultLabel
 		summarizeBy: none
 		sourceColumn: store_name
@@ -20,40 +23,47 @@ table Store
 	column 'Store Number'
 		dataType: int64
 		formatString: 0
+		lineageTag: 626b6800-cf73-49d0-84ac-42eddc27aae2
 		summarizeBy: none
 		sourceColumn: store_nbr
 
 	column City
 		dataType: string
+		lineageTag: 9c8f1409-c4a4-4572-b442-604efaa18172
 		dataCategory: City
 		summarizeBy: none
 		sourceColumn: city
 
 	column State
 		dataType: string
+		lineageTag: 5616ef42-5ac1-4602-8ce6-b0e081e4d8b5
 		dataCategory: StateOrProvince
 		summarizeBy: none
 		sourceColumn: state
 
 	column Region
 		dataType: string
+		lineageTag: 62973992-1e15-408f-8a79-0267658c74be
 		summarizeBy: none
 		sourceColumn: region
 
 	column 'Store Type'
 		dataType: string
+		lineageTag: 1bd9af68-255c-41d5-b816-43ad9b42e036
 		summarizeBy: none
 		sourceColumn: store_type
 
 	column Cluster
 		dataType: int64
 		formatString: 0
+		lineageTag: e345e19f-9c2b-4fa9-b75b-840855d73231
 		summarizeBy: none
 		sourceColumn: cluster
 
 	column 'Opening Date'
 		dataType: dateTime
 		formatString: yyyy-mm-dd
+		lineageTag: 7d3240d9-db8c-4fd0-91c3-13ac9ae5e194
 		summarizeBy: none
 		sourceColumn: opening_date
 
@@ -62,6 +72,7 @@ table Store
 	column 'Selling Area (m²)'
 		dataType: int64
 		formatString: #,0
+		lineageTag: 1c95ecc9-d045-43eb-9486-3fc557a7fe78
 		summarizeBy: none
 		sourceColumn: selling_area_m2
 
@@ -75,3 +86,4 @@ table Store
 				    Result = Table.AddColumn(Selected, "store_name", each "Store " & Text.From([store_nbr]) & " (" & [city] & ")", type text)
 				in
 				    Result
+

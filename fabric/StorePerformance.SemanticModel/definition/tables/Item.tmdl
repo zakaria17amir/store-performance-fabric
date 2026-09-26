@@ -1,46 +1,54 @@
 /// One row per Favorita item, with the synthetic ERP unit price and unit cost.
 table Item
+	lineageTag: 06e35e64-167f-48bd-b98a-c6ea2e36d4a6
 
 	column ItemKey
 		dataType: int64
 		isHidden
 		isKey
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 519e8de4-bbec-4bbd-ac12-27cd84e7ad43
 		summarizeBy: none
 		sourceColumn: item_key
 
 	column 'Item Number'
 		dataType: int64
 		formatString: 0
+		lineageTag: e65277fa-b4a9-49bb-8e1e-4458b7653782
 		summarizeBy: none
 		sourceColumn: item_nbr
 
 	column Family
 		dataType: string
+		lineageTag: 037fcdfb-7e75-429c-a4ec-fcbef23031d3
 		summarizeBy: none
 		sourceColumn: family
 
 	column Class
 		dataType: int64
 		formatString: 0
+		lineageTag: 57d66150-2fe7-4e3e-a74f-e4eb4793a44a
 		summarizeBy: none
 		sourceColumn: class
 
 	column 'Is Perishable'
 		dataType: boolean
+		lineageTag: cb928dcd-8b5f-40de-8a2e-121dfd01152e
 		summarizeBy: none
 		sourceColumn: is_perishable
 
 	column 'Unit Price'
 		dataType: decimal
 		formatString: \$#,0.00
+		lineageTag: f43c532a-2a55-4cac-86bc-576b4a41ea0f
 		summarizeBy: none
 		sourceColumn: unit_price
 
 	column 'Unit Cost'
 		dataType: decimal
 		formatString: \$#,0.00
+		lineageTag: 0a0ce5c5-6ffe-4042-a1f2-8aec7727f05a
 		summarizeBy: none
 		sourceColumn: unit_cost
 
@@ -50,6 +58,8 @@ table Item
 				let
 				    Source = Sql.Database(SqlEndpoint, Lakehouse),
 				    Data = Source{[Schema = "dbo", Item = "dim_item"]}[Data],
-				    Result = Table.SelectColumns(Data, {"item_key", "item_nbr", "family", "class", "is_perishable", "unit_price", "unit_cost"})
+				    Selected = Table.SelectColumns(Data, {"item_key", "item_nbr", "family", "class", "is_perishable", "unit_price", "unit_cost"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"unit_price", Currency.Type}, {"unit_cost", Currency.Type}})
 				in
 				    Result
+

@@ -1,12 +1,15 @@
 # Store Performance Cockpit
 
+[![CI](https://github.com/zakaria17amir/store-performance-fabric/actions/workflows/ci.yml/badge.svg)](https://github.com/zakaria17amir/store-performance-fabric/actions/workflows/ci.yml)
+
 **End-to-end Power BI on Microsoft Fabric:** 125M rows of real grocery sales feed a governed
 star-schema model with dynamic row-level security, CI quality checks and Dev → Test → Prod
 deployment. It's built for store managers, regional managers and head office.
 
-> **Status: in progress.** The design is complete ([spec](docs/design/2026-09-24-store-performance-design.md)).
-> Implementation is running phase by phase (see [Roadmap](#roadmap)). Results sections are
-> filled in as each phase ships.
+> **Status: in progress.** The data platform and the semantic model run on Fabric with the full
+> 125M rows, and row-level security is tested in Desktop. The report, the performance benchmark and
+> the usability study are next (see [Roadmap](#roadmap)). The [spec](docs/design/2026-09-24-store-performance-design.md)
+> has the full design.
 
 ---
 
@@ -29,12 +32,12 @@ only the stores and fields they are allowed to see.
 
 | Capability | How | Status |
 |---|---|---|
-| Data modelling | Star schema: 3 facts, 3 dimensions, single-direction relationships | Designed |
-| Data preparation | Python + DuckDB SQL pipeline (bronze → silver → gold) with automated data tests | Built (tests on synthetic data) |
-| Multiple sources | Kaggle files, Azure SQL (ERP master data), REST API (weather) through Dataflow Gen2 / Power Query M | Planned |
-| DAX | Calculation group for time intelligence, like-for-like, basket decomposition, promotion uplift | Planned |
-| Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Planned |
-| Governance and deployment | PBIP/TMDL in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Planned |
+| Data modelling | Star schema: 3 facts, 3 dimensions, single-direction relationships | Built: TMDL model with 8 relationships |
+| Data preparation | Python + DuckDB SQL pipeline (bronze → silver → gold) with automated data tests | Built: full 125M-row build in about 2 minutes, checks block the upload |
+| Multiple sources | Kaggle files, Azure SQL (ERP master data), REST API (weather) through Dataflow Gen2 / Power Query M | Built |
+| DAX | Calculation group for time intelligence, like-for-like, basket decomposition, promotion uplift | Built: 24 measures, 7 time calculations |
+| Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Roles built and tested in Desktop; app audiences next |
+| Governance and deployment | PBIP/TMDL in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Git integration and BPA in CI done; deployment pipeline next |
 | Performance | Benchmark of Import vs. composite aggregations vs. Direct Lake in DAX Studio | Planned |
 | UX | Requirements, Figma design system, usability test with 5 users, v1 → v2 iteration | Planned |
 
@@ -95,6 +98,7 @@ needs an API token in `~/.kaggle/kaggle.json`.
 `build` stops before exporting anything if a data check fails.
 
 The semantic model and its quality gate are described in [fabric/README.md](fabric/README.md).
+The Fabric side runs on a paid F2 capacity that is paused when idle ([ADR-011](docs/decisions/ADR-011-paid-f2-capacity.md)).
 
 ## Results
 
@@ -103,7 +107,7 @@ Results are added as each phase ships:
 | Evidence | Where | Status |
 |---|---|---|
 | Data tests and CI | `pipeline/tests`, GitHub Actions, [data profile](docs/data-profile.md) | Passing on the real data |
-| RLS/OLS test matrix | `docs/security.md` | Roles built; tests pending |
+| RLS/OLS test matrix | [docs/security.md](docs/security.md) | Desktop: 4 test users pass; Service: pending |
 | Performance benchmark | `docs/performance.md` | Pending |
 | Usability test (5 participants) | `docs/usability/` | Pending |
 | Demo video | This README | Pending |
@@ -111,8 +115,8 @@ Results are added as each phase ships:
 ## Roadmap
 
 - [x] Design and architecture
-- [ ] Phase 1: data pipeline, synthetic ERP data, requirements
-- [ ] Phase 2: Fabric platform, Azure SQL, dataflow, semantic model v1, CI
+- [x] Phase 1: data pipeline, synthetic ERP data, requirements (Figma wireframes move to Phase 3)
+- [ ] Phase 2: Fabric platform, Azure SQL, dataflow, semantic model v1, CI (refresh pipeline left)
 - [ ] Phase 3: security, deployment pipeline, report v1
 - [ ] Phase 4: performance benchmark, usability round 1
 - [ ] Phase 5: report v2, evidence docs

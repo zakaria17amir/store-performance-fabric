@@ -1,19 +1,22 @@
 /// One row per user × store they may see, from the ERP via the dataflow. Read by the Store operations role; deliberately unrelated to Store.
 table 'User Access'
 	isHidden
+	lineageTag: b08d5421-2d51-4370-bb9f-420effbc4b0b
 
 	column 'User Principal Name'
 		dataType: string
 		isHidden
 		isAvailableInMdx: false
+		lineageTag: 9cff94c0-f120-4405-834d-ec9499da7443
 		summarizeBy: none
 		sourceColumn: user_principal_name
 
 	column StoreKey
 		dataType: int64
 		isHidden
-		isAvailableInMdx: false
 		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 17b9341d-7b5f-41f4-b7ae-5178800b32be
 		summarizeBy: none
 		sourceColumn: store_key
 
@@ -26,3 +29,4 @@ table 'User Access'
 				    Result = Table.SelectColumns(Data, {"user_principal_name", "store_key"})
 				in
 				    Result
+
