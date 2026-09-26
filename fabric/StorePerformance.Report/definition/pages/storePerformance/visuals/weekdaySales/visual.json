@@ -107,6 +107,13 @@
                   "Value": "'Sales Value · blue: this year · orange: last year'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

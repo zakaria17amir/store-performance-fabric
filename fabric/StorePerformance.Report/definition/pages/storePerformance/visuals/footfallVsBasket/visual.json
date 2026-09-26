@@ -129,6 +129,13 @@
                   "Value": "'LFL growth split into footfall (receipts) and basket (value per receipt)'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

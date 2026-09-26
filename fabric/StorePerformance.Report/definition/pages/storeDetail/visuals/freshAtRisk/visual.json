@@ -129,6 +129,13 @@
                   "Value": "'Perishable items with flagged days, by estimated lost sales'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

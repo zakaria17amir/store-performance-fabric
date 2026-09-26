@@ -121,6 +121,13 @@
                   "Value": "'Gross Margin % by family'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

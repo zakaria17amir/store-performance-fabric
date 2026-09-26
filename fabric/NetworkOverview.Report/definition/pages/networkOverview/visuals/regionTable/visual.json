@@ -3,9 +3,9 @@
   "name": "regionTable",
   "position": {
     "x": 16,
-    "y": 452,
+    "y": 428,
     "z": 11,
-    "height": 236,
+    "height": 276,
     "width": 1248,
     "tabOrder": 11
   },
@@ -155,6 +155,13 @@
               "expr": {
                 "Literal": {
                   "Value": "'LFL footfall % + LFL basket % ≈ LFL growth % · select a region to filter the page'"
+                }
+              }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

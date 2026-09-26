@@ -47,6 +47,11 @@ table Sales
 		displayFolder: Promotions
 		lineageTag: 3626b5f4-ba4e-40c7-a6bf-c7ed7d3f85b5
 
+	/// Extra units sold on promotion days above the normal daily rate, over promotion rows with a positive baseline. Ranks families by the size of the lift rather than the %.
+	measure 'Promo Extra Units' = CALCULATE([Units] - [Baseline Units], KEEPFILTERS('Sales'[On Promo] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))
+		formatString: #,0
+		displayFolder: Promotions
+
 	/// Units vs. the normal daily rate in the 7 days after a promotion, over rows with a positive baseline. Biased toward zero: zero-sale days have no row.
 	measure 'Post-promo Dip %' =
 			VAR PostUnits = CALCULATE([Units], KEEPFILTERS('Sales'[Post Promo Window] = TRUE()), KEEPFILTERS('Sales'[Baseline Daily Units] > 0))

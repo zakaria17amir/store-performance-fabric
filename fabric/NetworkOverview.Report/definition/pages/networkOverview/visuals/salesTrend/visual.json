@@ -6,7 +6,7 @@
     "y": 184,
     "z": 10,
     "width": 624,
-    "height": 252,
+    "height": 228,
     "tabOrder": 10
   },
   "visual": {
@@ -153,6 +153,13 @@
                   "Value": "'Sales Value by month · blue: this year · orange: last year'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }
@@ -164,6 +171,21 @@
               "expr": {
                 "Literal": {
                   "Value": "'Is the network growing vs last year?'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objects": {
+      "valueAxis": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1000000D"
                 }
               }
             }

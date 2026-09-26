@@ -180,6 +180,13 @@
                   "Value": "'Post-promo Dip % by family (7 days after)'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }

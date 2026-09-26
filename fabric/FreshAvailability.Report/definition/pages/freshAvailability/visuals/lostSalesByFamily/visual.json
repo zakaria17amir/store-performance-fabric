@@ -121,6 +121,13 @@
                   "Value": "'Est. Lost Sales by perishable family'"
                 }
               }
+            },
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
             }
           }
         }
