@@ -18,17 +18,43 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "Date"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Date"
+                        }
+                      },
+                      "Hierarchy": "Fiscal Calendar"
                     }
                   },
-                  "Property": "Year Month"
+                  "Level": "Fiscal Year"
                 }
               },
-              "queryRef": "Date.Year Month",
-              "nativeQueryRef": "Year Month"
+              "queryRef": "Date.Fiscal Calendar.Fiscal Year",
+              "nativeQueryRef": "Fiscal Year",
+              "active": true
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Date"
+                        }
+                      },
+                      "Hierarchy": "Fiscal Calendar"
+                    }
+                  },
+                  "Level": "Fiscal Month"
+                }
+              },
+              "queryRef": "Date.Fiscal Calendar.Fiscal Month",
+              "nativeQueryRef": "Fiscal Month",
+              "active": true
             }
           ]
         }

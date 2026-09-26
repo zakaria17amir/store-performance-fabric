@@ -8,13 +8,13 @@ model `Store Performance`, stored as TMDL. `StorePerformance.Report/` is the rep
 
 | Table | Lakehouse source | Grain |
 |---|---|---|
-| Date | `dim_date` | 1 row per day (marked as the date table) |
+| Date | `dim_date` | 1 row per day (marked as the date table); fiscal year February–January, `Fiscal Calendar` hierarchy |
 | Store | `dim_store` | 1 row per store |
 | Item | `dim_item` | 1 row per item |
 | Sales | `fact_sales` | store × item × day |
 | Store Day | `fact_store_day` | store × day |
 | Stock-out Risk | `fact_stockout_risk` | store × item × flagged day |
-| Time Calc | calculation group | Actual, MTD, YTD, PY, PY YTD, YoY Δ, YoY % |
+| Time Calc | calculation group | Actual, MTD, YTD, FYTD, PY, PY YTD, YoY Δ, YoY % |
 
 Import mode reads the lakehouse SQL analytics endpoint. Two parameters choose the source:
 

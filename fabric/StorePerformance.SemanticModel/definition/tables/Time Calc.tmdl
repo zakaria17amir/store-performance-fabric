@@ -1,4 +1,4 @@
-/// Time intelligence for any measure: Actual, MTD, YTD, PY, PY YTD, YoY Δ, YoY %. Use Show As in a slicer, column or filter.
+/// Time intelligence for any measure: Actual, MTD, YTD, FYTD (fiscal, February to January), PY, PY YTD, YoY Δ, YoY %. Use Show As in a slicer, column or filter.
 table 'Time Calc'
 	lineageTag: 03bd88ab-2850-4bc7-8a3c-3c011beac84a
 
@@ -9,6 +9,8 @@ table 'Time Calc'
 		calculationItem MTD = CALCULATE(SELECTEDMEASURE(), DATESMTD('Date'[Date]))
 
 		calculationItem YTD = CALCULATE(SELECTEDMEASURE(), DATESYTD('Date'[Date]))
+
+		calculationItem FYTD = CALCULATE(SELECTEDMEASURE(), DATESYTD('Date'[Date], "1/31"))
 
 		calculationItem PY = CALCULATE(SELECTEDMEASURE(), SAMEPERIODLASTYEAR('Date'[Date]))
 

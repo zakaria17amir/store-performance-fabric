@@ -18,17 +18,63 @@
           "projections": [
             {
               "field": {
-                "Column": {
+                "HierarchyLevel": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "Date"
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Date"
+                        }
+                      },
+                      "Hierarchy": "Fiscal Calendar"
                     }
                   },
-                  "Property": "Date"
+                  "Level": "Fiscal Year"
                 }
               },
-              "queryRef": "Date.Date",
-              "nativeQueryRef": "Date"
+              "queryRef": "Date.Fiscal Calendar.Fiscal Year",
+              "nativeQueryRef": "Fiscal Year",
+              "active": true
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Date"
+                        }
+                      },
+                      "Hierarchy": "Fiscal Calendar"
+                    }
+                  },
+                  "Level": "Fiscal Month"
+                }
+              },
+              "queryRef": "Date.Fiscal Calendar.Fiscal Month",
+              "nativeQueryRef": "Fiscal Month",
+              "active": true
+            },
+            {
+              "field": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Date"
+                        }
+                      },
+                      "Hierarchy": "Fiscal Calendar"
+                    }
+                  },
+                  "Level": "Date"
+                }
+              },
+              "queryRef": "Date.Fiscal Calendar.Date",
+              "nativeQueryRef": "Date",
+              "active": false
             }
           ]
         },
@@ -80,7 +126,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Is the store on target day by day?'"
+                  "Value": "'Is the store on target?'"
                 }
               }
             }
@@ -100,7 +146,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Sales Value and daily Target per day'"
+                  "Value": "'Sales Value and Target by fiscal month · select a month and drill down (↓) to see its days'"
                 }
               }
             }
@@ -113,7 +159,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Is the store on target day by day?'"
+                  "Value": "'Is the store on target?'"
                 }
               }
             }
