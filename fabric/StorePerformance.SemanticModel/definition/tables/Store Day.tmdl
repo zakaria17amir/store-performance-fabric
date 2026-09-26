@@ -20,24 +20,32 @@ table 'Store Day'
 		displayFolder: Target
 		lineageTag: e8346564-2dd6-4585-b190-5a66a09c83b5
 
-	/// Over or under plan: (sales value − target) ÷ target.
-	measure 'Sales vs Target %' = DIVIDE([Sales Value] - [Target], [Target])
+	/// Over or under plan: (sales value − target) ÷ target, over the store-months that have a target (none before a store's first full prior-year month).
+	measure 'Sales vs Target %' =
+			VAR Covered = FILTER(ADDCOLUMNS(SUMMARIZE('Store Day', 'Store'[StoreKey], 'Date'[Month Key]), "@target", [Target]), NOT ISBLANK([@target]))
+			VAR TargetValue = SUMX(Covered, [@target])
+			VAR SalesValue = CALCULATE([Sales Value], TREATAS(SELECTCOLUMNS(Covered, "store", 'Store'[StoreKey], "month", 'Date'[Month Key]), 'Store'[StoreKey], 'Date'[Month Key]))
+			RETURN DIVIDE(SalesValue - TargetValue, TargetValue)
 		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Target
 		lineageTag: 5d91f3cb-3c43-4f11-8940-ce12f64de068
 
-	/// Receipts of like-for-like stores: stores opened at least 12 months before the start of the selected period.
+	/// Receipts of like-for-like stores (opened at least 12 months before the period start), counting only dates that have a prior year in the data.
 	measure 'LFL Receipts' =
-			VAR PeriodStart = MIN('Date'[Date])
-			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)))
+			VAR FirstComparable = EDATE(CALCULATE(MIN('Date'[Date]), ALL('Date')), 12)
+			VAR Dates = FILTER(VALUES('Date'[Date]), 'Date'[Date] >= FirstComparable)
+			VAR PeriodStart = MINX(Dates, 'Date'[Date])
+			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), Dates))
 		formatString: #,0
 		displayFolder: Like-for-like
 		lineageTag: 080818d3-f1ec-4cdf-8b43-21ea1a16d8fa
 
 	/// Helper for LFL Footfall Growth %: like-for-like receipts in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Receipts PY' =
-			VAR PeriodStart = MIN('Date'[Date])
-			RETURN CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR('Date'[Date]))
+			VAR FirstComparable = EDATE(CALCULATE(MIN('Date'[Date]), ALL('Date')), 12)
+			VAR Dates = FILTER(VALUES('Date'[Date]), 'Date'[Date] >= FirstComparable)
+			VAR PeriodStart = MINX(Dates, 'Date'[Date])
+			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR(Dates)))
 		formatString: #,0
 		isHidden
 		displayFolder: Like-for-like
