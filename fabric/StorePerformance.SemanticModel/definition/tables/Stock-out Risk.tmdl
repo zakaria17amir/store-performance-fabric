@@ -15,7 +15,7 @@ table 'Stock-out Risk'
 		lineageTag: fb35b867-44d3-4cca-adcb-42b0cbdf826b
 
 	/// Estimated lost units valued at each item's unit price.
-	measure 'Est. Lost Sales' = SUMX('Item', [Est. Lost Units] * 'Item'[Unit Price])
+	measure 'Est. Lost Sales' = SUMX('Stock-out Risk', 'Stock-out Risk'[Expected Units] * RELATED('Item'[Unit Price]))
 		formatString: \$#,0
 		displayFolder: Availability
 		lineageTag: 71fea5de-eb42-4d70-9802-9c435f78a754

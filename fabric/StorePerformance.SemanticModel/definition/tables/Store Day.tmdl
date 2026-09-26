@@ -43,9 +43,10 @@ table 'Store Day'
 	/// Helper for LFL Footfall Growth %: like-for-like receipts in the same period last year, for the current period's store set. Hidden so the Time Calc items can't shift it a second time.
 	measure 'LFL Receipts PY' =
 			VAR FirstComparable = EDATE(CALCULATE(MIN('Date'[Date]), ALL('Date')), 12)
+			VAR LastComparablePY = EDATE(CALCULATE(MAX('Date'[Date]), ALL('Date')), -12)
 			VAR Dates = FILTER(VALUES('Date'[Date]), 'Date'[Date] >= FirstComparable)
 			VAR PeriodStart = MINX(Dates, 'Date'[Date])
-			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), SAMEPERIODLASTYEAR(Dates)))
+			RETURN IF(NOT ISEMPTY(Dates), CALCULATE([Receipts], KEEPFILTERS('Store'[Opening Date] <= EDATE(PeriodStart, -12)), FILTER(SAMEPERIODLASTYEAR(Dates), 'Date'[Date] <= LastComparablePY)))
 		formatString: #,0
 		isHidden
 		displayFolder: Like-for-like
