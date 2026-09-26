@@ -85,4 +85,4 @@ with Modeling → View as. Service checks were run on 2026-09-26 against `Retail
 | No test user can list `User Access` rows other than their own | Pass: 1 row for the store manager, 3 for the regional manager, none for Commercial users | Pass: 1 row for the store manager, 19 for the regional manager, none for Commercial users |
 | No test user is a member of both roles | Not applicable in Desktop, where View as picks the role | Pass: each user's queries run under one role; a user in both roles would get a query error |
 
-Screenshots of each test user in the published app are the remaining evidence (see the README roadmap).
+Screenshots of each test user in the published app are the remaining evidence.
