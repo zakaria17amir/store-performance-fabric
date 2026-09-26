@@ -37,7 +37,21 @@ Measure definitions are in the [KPI glossary](../docs/kpi-glossary.md). A pytest
   (type SQL Server, OAuth 2.0), mapped under semantic model settings → Gateway and cloud
   connections:
   - `sql-lh-retail-sample` is used by Dev.
-  - `lh_retail` needs its own connection for Test and Prod.
+  - `sql-lh-retail` is used by Test and Prod.
+- **Deployment pipeline `Store Performance release`:** Development (`Retail BI [Dev]`) → Test →
+  Production. A parameter rule on the Test and Production stages sets `Lakehouse` to `lh_retail`,
+  so only Dev reads the sample. Rules take effect on the next deploy.
+- **Dataflows:** `df_erp_weather_sample` writes to `lh_retail_sample` and `df_erp_weather` writes to
+  `lh_retail`. They run the same queries; only the `LakehouseId` parameter and the destinations
+  differ.
+- **Refresh:** the data pipeline `pl_refresh` in `Retail Data` runs the dataflow, then refreshes the
+  semantic model. It uses a *Power BI Semantic Model* connection (`pbi-semantic-models`, OAuth 2.0).
+  There's no schedule, because the capacity is paused when idle. There's also no failure email,
+  because the admin account has no mailbox; failures show in the Monitoring hub.
+- **SQL endpoint sign-in:** the SQL analytics endpoint reads OneLake as its owner. When the
+  owner's Entra token goes stale, every read fails with `AdalMultiFactorAuthException`. Signing in
+  to Fabric again with MFA fixes it. If it doesn't, use **Take over** in the SQL analytics endpoint's
+  settings.
 - **Desktop:** save once after the first refresh. The data is then cached in `.pbi/cache.abf`
   (ignored by Git), and the project reopens without refreshing.
 
