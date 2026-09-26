@@ -22,21 +22,30 @@ The canvas is 1280 × 720 on an 8-px grid, with 16 px margins and gutters. Visua
 the question the visual answers, and subtitles give the measure, unit and period. The values in
 the wireframes are illustrative.
 
-## Design tokens
+## Design tokens (theme v2)
 
-`store-performance-theme.json` is the Power BI theme built from the tokens ([token sheet](wireframes/design-tokens.png)). Contrast is
-checked against white:
+`store-performance-theme.json` is the Power BI theme. v2 adds colour after the v1 review
+("too colourless"). The Figma token sheet ([v1](wireframes/design-tokens.png)) shows the first,
+mostly grey version.
 
-| Token | Colour | Contrast | Use |
+The chart colours follow a validated categorical palette. Its order is part of the
+colour-blind safety, so series always take slots in order. Checks use `validate_palette.js`
+against the white card surface: CVD ΔE ≥ 9.1 between neighbours, normal-vision ΔE ≥ 19.6.
+
+| Role | Colour | Contrast | Use |
 |---|---|---|---|
-| Text | `#1B2230` | 15.9:1 | Body text, values |
-| Muted text | `#5A6475` | 6.0:1 | Labels, captions, axes |
-| Primary | `#1F4E9A` | 8.0:1 | This year, main series |
-| Good | `#0072B2` | 5.2:1 | Favourable change |
-| Bad | `#B8460B` | 5.4:1 | Unfavourable change |
-| Last year / target | `#8C95A6` | 3.0:1 | Comparison marks only, never text |
+| Series 1 · this year · positive | `#2a78d6` | 4.4:1 (marks) | Main series, bars at or above zero |
+| Series 2 · last year / target | `#eb6834` | 3.2:1 (marks) | Comparison series |
+| Negative | `#e34948` | 4.0:1 (marks) | Bars below zero (blue ↔ red diverging pair) |
+| Header band, titles, KPI values | `#0d366b` | 11.9:1 | Page header (white text on it), visual titles |
+| KPI tile | `#e8f1fc` | – | Card background; values 10.5:1, labels 7.0:1 |
+| Table header | `#1c5cab` | 6.6:1 (white text) | Column headers |
+| Page | `#eef2f8` | – | Canvas behind the white visuals |
+| Text / secondary | `#0b0b0b` / `#52514e` | 17.5:1 / 7.9:1 | Values, labels, axes |
 
-Good and bad are blue and orange, a pair that stays distinguishable with the common types of
-colour-blindness. Colour is never the only signal: ▲ and ▼ carry the direction, and the words
-"better" or "worse" appear where the favourable direction isn't obvious (for example, a drop
-in lost sales).
+Series 3–8 (`#1baf7a`, `#eda100`, `#e87ba4`, `#008300`, `#4a3aa7`, `#e34948`) are for charts
+with more series. Three of them are below 3:1 on white, so a chart using them needs data labels
+or a table view.
+
+Colour is never the only signal: ▲ and ▼ are in the growth measures' format strings, so every
+label repeats the sign that the bar colour shows.

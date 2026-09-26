@@ -8,7 +8,7 @@ model `Store Performance`, stored as TMDL. `StorePerformance.Report/` is the rep
 
 | Table | Lakehouse source | Grain |
 |---|---|---|
-| Date | `dim_date` | 1 row per day (marked as the date table) |
+| Date | `dim_date` | 1 row per day (marked as the date table); `Calendar` hierarchy Year → Quarter → Month → Date |
 | Store | `dim_store` | 1 row per store |
 | Item | `dim_item` | 1 row per item |
 | Sales | `fact_sales` | store × item × day |

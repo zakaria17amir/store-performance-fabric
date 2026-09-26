@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "storeDetailKpi2",
+  "position": {
+    "x": 332,
+    "y": 72,
+    "z": 3,
+    "width": 300,
+    "height": 96,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Store Day"
+                    }
+                  },
+                  "Property": "Sales vs Target %"
+                }
+              },
+              "queryRef": "Store Day.Sales vs Target %",
+              "nativeQueryRef": "Sales vs Target %"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Sales vs Target % for the current selection'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -17,6 +17,7 @@
 | Post-promo Dip % | Sales lost in the 7 days after a promotion | Same formula over post-promotion rows with a baseline > 0 |
 | Stock-out Risk Items | Store-item pairs with an improbable zero-sale day | `COUNTROWS(SUMMARIZE('Stock-out Risk', StoreKey, ItemKey))`: distinct flagged pairs |
 | Est. Lost Units / Sales | Expected sales that did not happen on flagged days | `SUM('Stock-out Risk'[Expected Units])`, valued at unit price |
+| Est. Lost Sales (7 days) | Est. Lost Sales in the 7 days up to the last selected date (phone view) | `DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -7, DAY)` |
 
 ## Notes
 

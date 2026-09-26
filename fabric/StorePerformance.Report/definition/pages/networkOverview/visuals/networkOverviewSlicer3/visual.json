@@ -1,0 +1,54 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "networkOverviewSlicer3",
+  "position": {
+    "x": 1113.5447048042936,
+    "y": 6.03220316795392,
+    "z": 3,
+    "height": 66.354234847493117,
+    "width": 150.805079198848,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Time Calc"
+                    }
+                  },
+                  "Property": "Show As"
+                }
+              },
+              "queryRef": "Time Calc.Show As",
+              "nativeQueryRef": "Show As",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "data": [
+        {
+          "properties": {
+            "mode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Dropdown'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

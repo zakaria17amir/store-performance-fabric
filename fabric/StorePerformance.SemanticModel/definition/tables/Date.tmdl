@@ -1,4 +1,4 @@
-/// One row per calendar day, from the first to the last sales day. Marked as the date table.
+/// One row per calendar day, from the first to the last sales day. Marked as the date table. The fiscal year is the calendar year (Ecuador).
 table Date
 	lineageTag: 14a5102b-56fb-4f10-8120-4ecfd4fdb0d3
 	dataCategory: Time
@@ -31,7 +31,7 @@ table Date
 
 	column Quarter
 		dataType: int64
-		formatString: 0
+		formatString: \Q0
 		lineageTag: 976496e9-4622-451f-87b7-f242b7ddbc78
 		summarizeBy: none
 		sourceColumn: quarter
@@ -106,6 +106,26 @@ table Date
 		lineageTag: abe59858-2ceb-4db2-b929-6f1324e7d31a
 		summarizeBy: none
 		sourceColumn: is_national_holiday
+
+	/// Year → quarter → month → day, for drilling down on date axes and slicers.
+	hierarchy Calendar
+		lineageTag: 7a5f078d-8925-4fe8-8378-f3afe027fe6d
+
+		level Year
+			lineageTag: 187bb435-258e-4f0c-a807-192d38215454
+			column: Year
+
+		level Quarter
+			lineageTag: b7deabad-57e9-4d8a-9975-0fcd9a31b62c
+			column: Quarter
+
+		level Month
+			lineageTag: 7b9d8a0c-a8e6-41a5-a0ac-edf87247277e
+			column: Month
+
+		level Date
+			lineageTag: fe0361ca-d287-4f64-aede-3bdb679c3605
+			column: Date
 
 	partition Date = m
 		mode: import

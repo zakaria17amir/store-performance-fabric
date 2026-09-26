@@ -20,6 +20,12 @@ table 'Stock-out Risk'
 		displayFolder: Availability
 		lineageTag: 71fea5de-eb42-4d70-9802-9c435f78a754
 
+	/// Estimated lost sales in the 7 days up to the last selected date. The store manager's phone view uses it for "last 7 days".
+	measure 'Est. Lost Sales (7 days)' = CALCULATE([Est. Lost Sales], DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -7, DAY))
+		formatString: \$#,0
+		displayFolder: Availability
+		lineageTag: e57eb7e0-3e88-4636-8bcc-13b887916cba
+
 	column DateKey
 		dataType: int64
 		isHidden

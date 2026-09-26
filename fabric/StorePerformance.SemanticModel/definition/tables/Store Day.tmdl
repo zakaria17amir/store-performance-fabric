@@ -22,7 +22,7 @@ table 'Store Day'
 
 	/// Over or under plan: (sales value − target) ÷ target.
 	measure 'Sales vs Target %' = DIVIDE([Sales Value] - [Target], [Target])
-		formatString: #,0.0%;-#,0.0%;#,0.0%
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Target
 		lineageTag: 5d91f3cb-3c43-4f11-8940-ce12f64de068
 
@@ -45,7 +45,7 @@ table 'Store Day'
 
 	/// Like-for-like footfall growth vs. the same period last year.
 	measure 'LFL Footfall Growth %' = DIVIDE([LFL Receipts] - [LFL Receipts PY], [LFL Receipts PY])
-		formatString: #,0.0%;-#,0.0%;#,0.0%
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Like-for-like
 		lineageTag: 41d71585-293a-4687-acf4-71b2cabb0627
 
@@ -54,7 +54,7 @@ table 'Store Day'
 			VAR SalesGrowth = [LFL Growth %]
 			VAR FootfallGrowth = [LFL Footfall Growth %]
 			RETURN IF(NOT ISBLANK(SalesGrowth) && NOT ISBLANK(FootfallGrowth), DIVIDE(SalesGrowth - FootfallGrowth, 1 + FootfallGrowth))
-		formatString: #,0.0%;-#,0.0%;#,0.0%
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
 		displayFolder: Like-for-like
 		lineageTag: 3ad4e7a3-3fae-47d6-a543-6f9d80b91334
 

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "networkOverviewKpi5",
+  "position": {
+    "x": 1027,
+    "y": 72,
+    "z": 8,
+    "width": 237,
+    "height": 96,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Store Day"
+                    }
+                  },
+                  "Property": "LFL Basket Growth %"
+                }
+              },
+              "queryRef": "Store Day.LFL Basket Growth %",
+              "nativeQueryRef": "LFL Basket Growth %"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'LFL Basket Growth % for the current selection'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

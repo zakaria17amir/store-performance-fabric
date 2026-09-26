@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "networkOverviewKpi4",
+  "position": {
+    "x": 774,
+    "y": 72,
+    "z": 7,
+    "width": 237,
+    "height": 96,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Store Day"
+                    }
+                  },
+                  "Property": "LFL Footfall Growth %"
+                }
+              },
+              "queryRef": "Store Day.LFL Footfall Growth %",
+              "nativeQueryRef": "LFL Footfall Growth %"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'LFL Footfall Growth % for the current selection'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
