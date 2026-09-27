@@ -84,5 +84,6 @@ with Modeling → View as. Service checks were run on 2026-09-26 against `Retail
 | Category manager and head office see all stores and margin | Pass: all 6 stores ($341.4M); `Cost Value` $255M (screenshots: [category manager](images/security/desktop-commercial.png), [head office](images/security/desktop-head-office.png)) | Pass: category manager and head office see all 54 stores; `Cost Value` returns a value |
 | No test user can list `User Access` rows other than their own | Pass: 1 row for the store manager, 3 for the regional manager, none for Commercial users | Pass: 1 row for the store manager, 19 for the regional manager, none for Commercial users |
 | No test user is a member of both roles | Not applicable in Desktop, where View as picks the role | Pass: each user's queries run under one role; a user in both roles would get a query error |
+| Each persona sees only its audience's reports in the app | Not applicable in Desktop | Pass: app `Store Performance Cockpit` published from `Retail BI [Prod]` with 4 audiences; each test account signed in and saw only its reports (2026-09-27) |
 
-Screenshots of each test user in the published app are the remaining evidence.
+The app audiences were confirmed by signing in as each test account. Screenshots per test user can be added later.
