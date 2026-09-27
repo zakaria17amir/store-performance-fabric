@@ -53,10 +53,53 @@ Two queries miss the target. The trend chart evaluates `Sales Value` for every m
 and the capped PY item). The items-at-risk table ranks every store × perishable item pair. Both are
 the starting points for Phase 4.
 
-## Still to do (Phase 4)
+## Storage-mode comparison
 
-- Cold and warm server timings in DAX Studio. It gives storage-engine and formula-engine splits and
-  can clear the cache, which the REST API can't.
-- The storage-mode comparison from [ADR-003](decisions/ADR-003-storage-mode-by-benchmark.md):
-  Import (above) vs a composite model with aggregations vs Direct Lake.
-- Optimise the two slow queries, re-run, and record before and after here.
+Decided in [ADR-003](decisions/ADR-003-storage-mode-by-benchmark.md): **Import**.
+
+Three variants of the same model ran in `Retail BI [Test]` on full data:
+- **V1 Import:** the Prod model.
+- **V3 Direct Lake:** built from the same TMDL through the Fabric API. Its partitions read the
+  `lh_retail` Delta tables directly. `Date[Year Month]` and `Store[Store]` are left out, because
+  they are derived in Power Query.
+- **V2 composite:** facts in DirectQuery on the SQL endpoint, dimensions Import.
+
+Direct Lake returned the same 2017 answers as Import: Sales vs Target, LFL and lost sales are
+identical, and Sales Value differs by $4 on $645M from fixed-decimal rounding. The queries use
+`Store[Store Number]` in place of the store label, so they run unchanged on both models.
+
+Run on 2026-09-27, just after pausing and resuming the capacity to clear throttling. Median of 3
+warm runs, wall time including the ~555 ms round trip:
+
+| Query | V1 Import | V3 Direct Lake |
+|---|---|---|
+| Network KPIs | 591 ms | 1,647 ms |
+| Region table | 550 ms | 2,040 ms |
+| Sales trend vs last year | 749 ms | 1,244 ms |
+| Store LFL split | 734 ms | 21,503 ms (throttled) |
+| Items at risk | 785 ms | 20,826 ms (throttled) |
+| Promotions by family | 670 ms | 22,611 ms (throttled) |
+
+After subtracting the round trip, every Import query is under the 500 ms budget. The earlier
+1.8 s and 1.2 s for the trend and items-at-risk queries (in the benchmark table above) were
+measured while other work was loading the capacity.
+
+Loading the Direct Lake columns into memory for the first time used enough compute to push F2
+into throttling within minutes. Fabric then added a 20-second delay to every query, and next
+rejected queries ("capacity has exceeded its limits"). An earlier session had also throttled F2,
+when cold-cache runs in DAX Studio, a model refresh and benchmarking overlapped. Pausing and
+resuming the capacity clears throttling and bills the borrowed compute.
+
+**Lesson for F2:** run cold-cache benchmarks and first-time Direct Lake loads alone on the
+capacity, not alongside development work.
+
+The composite variant (V2) was built and refreshed but not benchmarked, because its queries scan
+the fact table through the throttled SQL endpoint. ADR-003 explains why aggregations were left out.
+
+## Cold cache (DAX Studio)
+
+`fabric/benchmark/queries.dax` holds the same 6 queries for DAX Studio. Connect to
+`powerbi://api.powerbi.com/v1.0/myorg/Retail BI [Test]`, turn on Server Timings, choose "Clear
+cache then run", and run one query at a time. First result: the full batch took 22.9 s after
+clearing the Import cache, and 0.5–0.7 s warm. Per-query storage-engine and formula-engine splits
+are still to capture.

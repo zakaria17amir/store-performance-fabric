@@ -12,8 +12,8 @@ deployment. It's built for store managers, regional managers and head office.
 > - Dev → Test → Prod deployment;
 > - row-level and object-level security, tested for four test users.
 >
-> Report v2 fixes most issues from the v1 review, and the persona walkthrough passed 6 of 6 tasks.
-> The storage-mode benchmark is next.
+> Report v2 closes the v1 review, the persona walkthrough passed 6 of 6 tasks, and the storage-mode
+> benchmark picked Import.
 > The [spec](docs/design/2026-09-24-store-performance-design.md) has the full design.
 
 ---
@@ -53,7 +53,7 @@ The design and wireframes are in [design/](design/README.md).
 | DAX | Calculation group for time intelligence, like-for-like, basket decomposition, promotion uplift | Built: 25 measures, 7 time calculations; totals match the source to the cent |
 | Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Built and tested in Desktop and in the Service (by impersonation); app published with 4 audiences, each seeing only its reports |
 | Governance and deployment | PBIP/TMDL/PBIR in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Built: Git-synced Dev, a parameter rule for the full lakehouse in Test/Prod, and a data pipeline for refreshes |
-| Performance | Benchmark of Import vs. composite aggregations vs. Direct Lake in DAX Studio | Import measured on full data: 4 of 6 page queries under 500 ms, and a 1 GB per-query failure fixed ([performance](docs/performance.md)) |
+| Performance | Benchmark of Import vs. composite vs. Direct Lake on full data | Import chosen ([ADR-003](docs/decisions/ADR-003-storage-mode-by-benchmark.md)): all 6 page queries under 500 ms; Direct Lake 2–3× slower and throttled F2; a 1 GB per-query failure fixed |
 | UX | Requirements, Figma design system, persona walkthrough with the four test accounts, v1 → v2 iteration | Figma wireframes, a colour-blind-checked theme, report v1 → v2 (5 of 6 review fixes), persona walkthrough 6 of 6 |
 
 ## Architecture
@@ -126,9 +126,9 @@ Results are added as each phase ships:
 | Data tests and CI | `pipeline/tests`, GitHub Actions, [data profile](docs/data-profile.md) | Passing on the real data |
 | RLS/OLS test matrix | [docs/security.md](docs/security.md) | Pass for all 4 test users, in Desktop (sample) and in the Service (Prod, full data); app audiences confirmed |
 | Model totals vs source | [fabric/README.md](fabric/README.md#checks-against-the-published-model) | 20 of 20 year × region cells equal |
-| Performance benchmark | [docs/performance.md](docs/performance.md) | Import measured; storage-mode comparison pending |
+| Performance benchmark | [docs/performance.md](docs/performance.md) | Storage mode decided: Import (Direct Lake and composite compared) |
 | Persona walkthrough (4 test accounts) | [docs/usability/results.md](docs/usability/results.md) | 6 of 6 tasks answered with the expected numbers in the published app |
-| Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | 5 of 6 items done in v2; performance item open |
+| Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | All 6 items closed |
 
 ## Data and attribution
 
