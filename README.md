@@ -6,15 +6,30 @@
 star-schema model with dynamic row-level security, CI quality checks and Dev → Test → Prod
 deployment. It's built for store managers, regional managers and head office.
 
-> **Status: in progress.** The whole chain runs on Microsoft Fabric with the full 125M rows:
-> - the data platform and the semantic model;
-> - five reports built from a Figma design;
-> - Dev → Test → Prod deployment;
-> - row-level and object-level security, tested for four test users.
->
-> Report v2 closes the v1 review, the persona walkthrough passed 6 of 6 tasks, and the storage-mode
-> benchmark picked Import.
-> The [spec](docs/design/2026-09-24-store-performance-design.md) has the full design.
+> **Status: complete.** The whole chain runs on Microsoft Fabric with the full 125M rows, from a
+> local data pipeline to a published Power BI app with four audiences. The
+> [spec](docs/design/2026-09-24-store-performance-design.md) has the full design, and
+> [Limits](#limits) lists what was scoped down.
+
+## Highlights
+
+- **125M sales rows, checked end to end.** The model's totals match the source to the cent (20 of
+  20 year × region cells). The full Import model refreshes in 13 minutes on an F2 capacity.
+- **Fast.** All six heaviest page queries run under the 500 ms target on full data. Import was
+  picked over Direct Lake and composite by [benchmark](docs/performance.md#storage-mode-comparison).
+- **Secure.** Dynamic row-level security from an access table, plus object-level security on cost.
+  The security matrix was verified for four test users in Desktop and in the Service, by
+  impersonating each user through the API.
+- **Governed.** The model and reports are code (TMDL and PBIR) in Git. Every pull request runs a
+  Best Practice Analyzer gate and pipeline tests. Releases go Dev → Test → Prod through a Fabric
+  deployment pipeline.
+- **Two real bugs caught by full-data checks.**
+  - The data's last day ended mid-month, so "same period last year" compared half of August 2017
+    with all of August 2016. That turned August like-for-like growth from ▲ 7.9% into ▼ 46.5%.
+  - One measure design exceeded F2's 1 GB per-query memory limit.
+
+  Both were fixed and are documented in [ADR-012](docs/decisions/ADR-012-sales-value-iterates-fact.md)
+  and the [KPI glossary](docs/kpi-glossary.md).
 
 ---
 
@@ -54,7 +69,7 @@ The design and wireframes are in [design/](design/README.md).
 | Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Built and tested in Desktop and in the Service (by impersonation); app published with 4 audiences, each seeing only its reports |
 | Governance and deployment | PBIP/TMDL/PBIR in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Built: Git-synced Dev, a parameter rule for the full lakehouse in Test/Prod, and a data pipeline for refreshes |
 | Performance | Benchmark of Import vs. composite vs. Direct Lake on full data | Import chosen ([ADR-003](docs/decisions/ADR-003-storage-mode-by-benchmark.md)): all 6 page queries under 500 ms; Direct Lake 2–3× slower and throttled F2; a 1 GB per-query failure fixed |
-| UX | Requirements, Figma design system, persona walkthrough with the four test accounts, v1 → v2 iteration | Figma wireframes, a colour-blind-checked theme, report v1 → v2 (5 of 6 review fixes), persona walkthrough 6 of 6 |
+| UX | Requirements, Figma design system, persona walkthrough with the four test accounts, v1 → v2 iteration | Figma wireframes, a colour-blind-checked theme, report v1 → v2 (all 6 review items closed), persona walkthrough 6 of 6 |
 
 ## Architecture
 
@@ -119,8 +134,6 @@ The Fabric side runs on a paid F2 capacity that is paused when idle ([ADR-011](d
 
 ## Results
 
-Results are added as each phase ships:
-
 | Evidence | Where | Status |
 |---|---|---|
 | Data tests and CI | `pipeline/tests`, GitHub Actions, [data profile](docs/data-profile.md) | Passing on the real data |
@@ -129,6 +142,37 @@ Results are added as each phase ships:
 | Performance benchmark | [docs/performance.md](docs/performance.md) | Storage mode decided: Import (Direct Lake and composite compared) |
 | Persona walkthrough (4 test accounts) | [docs/usability/results.md](docs/usability/results.md) | 6 of 6 tasks answered with the expected numbers in the published app |
 | Report v2 backlog | [docs/report-v2-backlog.md](docs/report-v2-backlog.md) | All 6 items closed |
+
+## Requirements → evidence
+
+Every user story in [docs/requirements.md](docs/requirements.md) maps to something you can see:
+
+| Requirement | Evidence |
+|---|---|
+| US-01 Store manager: yesterday's sales vs. target on the phone | [Store today](docs/images/report/store-today.png) (with a phone layout); walkthrough task 1 |
+| US-02 Store manager: fresh items most likely out of stock | [Store today](docs/images/report/store-today.png) 7-day list and [Fresh and availability](docs/images/report/fresh-and-availability.png); walkthrough task 2 |
+| US-03 Store manager: footfall and basket vs. last year | [Store today](docs/images/report/store-today.png) receipts and basket cards |
+| US-04 Regional manager: stores ranked by like-for-like growth | [Store performance](docs/images/report/store-performance.png) ranking; walkthrough task 3 |
+| US-05 Regional manager: shoppers or baskets? | [Store performance](docs/images/report/store-performance.png) split table; walkthrough task 4 |
+| US-06 Regional manager: drill from a store to its detail | Store detail drill-through page ([wireframe](design/wireframes/2a-store-detail.png)) |
+| US-07 Category manager: promotion uplift and post-promotion dip | [Promotions](docs/images/report/promotions.png); walkthrough task 5 |
+| US-08 Category manager: margin by family, hidden from store operations | [Promotions](docs/images/report/promotions.png) margin chart; OLS in [security](docs/security.md) |
+| US-09 Head office: network vs. target by region, with last year | [Network overview](docs/images/report/network-overview.png); walkthrough task 6 |
+| US-10 Everyone sees only what they're allowed to | [Security test matrix](docs/security.md): Desktop, Service and app audiences |
+| Every visual's query under 500 ms warm on full data | [Performance](docs/performance.md) |
+| WCAG AA contrast; colour never the only signal | [Design tokens](design/README.md#design-tokens-theme-v2): contrast checked, and ▲/▼ in every growth format |
+| Alt text | All 39 charts, tables and cards have alt text; slicers and page titles carry visible labels |
+
+## Limits
+
+- **Synthetic business data.** Prices, costs, targets, regions and user access are generated,
+  because the public dataset has units only.
+- **Usability.** The persona walkthrough was done by the author with the four test accounts. It
+  wasn't an independent test with outside participants.
+- **Storage modes.** The composite model was built but not benchmarked (see
+  [ADR-003](docs/decisions/ADR-003-storage-mode-by-benchmark.md)). Cold-cache timings are partial.
+- **Availability.** The Fabric capacity is paused when idle, so the app isn't publicly reachable.
+  The screenshots show it on full data.
 
 ## Data and attribution
 

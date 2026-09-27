@@ -5,7 +5,7 @@
 
 Build a governed analytics product for the store network of a discount grocery retailer. It
 covers the full lifecycle of an enterprise Power BI solution on Microsoft Fabric:
-requirements, design, data preparation, a secured semantic model, usability-tested reports
+requirements, design, data preparation, a secured semantic model, persona-tested reports
 and controlled deployment. Sales data is real (Corporación Favorita, Kaggle). ERP data that
 the public dataset lacks is synthetic and labelled as such.
 
