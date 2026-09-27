@@ -90,7 +90,8 @@ def power_bi(token: str, opener=urlopen, wait_s: float = 5):
         for attempt in range(ATTEMPTS):
             try:
                 with opener(request, timeout=600) as response:
-                    return json.load(response)
+                    text = response.read()
+                    return json.loads(text) if text else {}  # 202 Accepted (e.g. a refresh) has no body
             except HTTPError as e:
                 raise QueryError(e.read().decode(errors="replace")) from e
             except URLError:

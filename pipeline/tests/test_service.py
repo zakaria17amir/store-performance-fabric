@@ -81,3 +81,8 @@ def test_power_bi_retries_connection_errors_but_not_query_errors():
     call = power_bi("token", opener=flaky, wait_s=0)
     assert call("groups") == {"ok": True}
     assert len(attempts) == 2
+
+
+def test_power_bi_returns_an_empty_dict_for_an_empty_body():
+    call = power_bi("token", opener=lambda request, timeout: io.BytesIO(b""), wait_s=0)
+    assert call("groups/ws/datasets/ds/refreshes", {"type": "full"}) == {}

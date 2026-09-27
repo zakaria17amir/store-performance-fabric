@@ -1,0 +1,46 @@
+// Store Performance Cockpit: benchmark queries (the heaviest query behind each report page).
+// Generated from retail_pipeline.service.BENCHMARK_QUERIES. In DAX Studio: turn on Server Timings,
+// set Run → 'Clear cache then run', select one query block and press F5; repeat 5 times per query.
+
+// ---- network KPIs
+EVALUATE
+    ROW("sales", [Sales Value],
+    "vsTarget", [Sales vs Target %],
+    "lfl", [LFL Growth %],
+    "footfall", [LFL Footfall Growth %],
+    "basket", [LFL Basket Growth %])
+
+// ---- region table
+EVALUATE
+    SUMMARIZECOLUMNS('Store'[Region],
+    "sales", [Sales Value],
+    "vsTarget", [Sales vs Target %],
+    "lfl", [LFL Growth %],
+    "footfall", [LFL Footfall Growth %],
+    "basket", [LFL Basket Growth %])
+
+// ---- sales trend vs last year
+EVALUATE
+    SUMMARIZECOLUMNS('Date'[Year], 'Date'[Month], 'Time Calc'[Show As], TREATAS({"Actual",
+    "PY"}, 'Time Calc'[Show As]),
+    "sales", [Sales Value])
+
+// ---- store LFL split
+EVALUATE
+    SUMMARIZECOLUMNS('Store'[Store],
+    "lfl", [LFL Growth %],
+    "footfall", [LFL Footfall Growth %],
+    "basket", [LFL Basket Growth %])
+
+// ---- items at risk
+EVALUATE
+    TOPN(50, SUMMARIZECOLUMNS('Store'[Store], 'Item'[Item Number], 'Item'[Family], TREATAS({TRUE}, 'Item'[Is Perishable]),
+    "units", [Est. Lost Units],
+    "sales", [Est. Lost Sales]), [sales], DESC)
+
+// ---- promotions by family
+EVALUATE
+    SUMMARIZECOLUMNS('Item'[Family],
+    "uplift", [Promo Uplift %],
+    "dip", [Post-promo Dip %],
+    "margin", [Gross Margin %])
