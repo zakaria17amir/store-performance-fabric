@@ -64,7 +64,7 @@ The design and wireframes are in [design/](design/README.md).
 |---|---|---|
 | Data modelling | Star schema: 3 facts, 3 dimensions, single-direction relationships | Built: TMDL model with 8 relationships |
 | Data preparation | Python + DuckDB SQL pipeline (bronze → silver → gold) with automated data tests | Built: full 125M-row build in about 2 minutes, checks block the upload |
-| Multiple sources | Kaggle files, Azure SQL (ERP master data), REST API (weather) through Dataflow Gen2 / Power Query M | Built |
+| Multiple sources | Kaggle files, Azure SQL (ERP master data), REST API (weather) through Dataflow Gen2 / Power Query M; a Databricks SQL warehouse for the stock-out and promo deep dive ([ADR-012](docs/decisions/ADR-012-databricks-second-source.md)) | Built; the Databricks deep-dive report is new and awaits its first Service refresh |
 | DAX | Calculation group for time intelligence, like-for-like, basket decomposition, promotion uplift | Built: 25 measures, 7 time calculations; totals match the source to the cent |
 | Security | Dynamic RLS from an access table, OLS on cost, app audiences per persona | Built and tested in Desktop and in the Service (by impersonation); app published with 4 audiences, each seeing only its reports |
 | Governance and deployment | PBIP/TMDL/PBIR in Git, Best Practice Analyzer in CI, Fabric deployment pipeline Dev → Test → Prod | Built: Git-synced Dev, a parameter rule for the full lakehouse in Test/Prod, and a data pipeline for refreshes |
@@ -99,7 +99,7 @@ Tabular Editor 2 · DAX Studio · GitHub Actions · Figma
 ```
 pipeline/   Python + DuckDB data preparation and tests
 erp/        Azure SQL schema and SQL tests
-fabric/     Power BI project (semantic model + five reports) and Dataflow Gen2 queries
+fabric/     Power BI project (semantic model + six reports) and Dataflow Gen2 queries
 design/     Figma exports and Power BI theme
 docs/       architecture, design, decisions, requirements, results
 ```
@@ -173,6 +173,8 @@ Every user story in [docs/requirements.md](docs/requirements.md) maps to somethi
   [ADR-003](docs/decisions/ADR-003-storage-mode-by-benchmark.md)). Cold-cache timings are partial.
 - **Availability.** The Fabric capacity is paused when idle, so the app isn't publicly reachable.
   The screenshots show it on full data.
+- The Databricks deep-dive tables refresh with the rest of the model, so an expired token or a paused free
+  Databricks workspace fails the whole refresh ([ADR-012](docs/decisions/ADR-012-databricks-second-source.md)).
 
 ## Data and attribution
 

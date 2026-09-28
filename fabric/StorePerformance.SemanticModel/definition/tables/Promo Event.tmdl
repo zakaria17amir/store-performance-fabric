@@ -1,0 +1,104 @@
+/// Promotion events (consecutive promotion days of one store-item) from the Databricks project, with uplift, the 7-day post-promotion dip and net lift.
+table 'Promo Event'
+	lineageTag: d9f3eb11-0f6b-4be5-84b8-3a6babb85e63
+
+	/// Promotion events: runs of consecutive promotion days for one store-item.
+	measure 'Promo Events' = COUNTROWS('Promo Event')
+		formatString: #,0
+		displayFolder: Databricks deep dive
+		lineageTag: 62366f40-7e2d-4815-a1e3-81010d188df8
+
+	/// Median event uplift: units during the promotion vs. the item's normal baseline.
+	measure 'Median Uplift %' = MEDIAN('Promo Event'[Uplift])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: aba51d3e-771f-45c3-8709-4279e156ac39
+
+	/// Median event net lift: the promotion and the week after vs. the baseline for both. Events whose next week had another promotion are left out.
+	measure 'Median Net Lift %' = MEDIAN('Promo Event'[Net Lift])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: e9faa8dd-365e-44a7-b50e-2691632e358c
+
+	column StartDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 538afb66-2031-4291-9e34-49a878882bf4
+		summarizeBy: none
+		sourceColumn: start_date_key
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 0eaf0a17-4a5b-421b-b3e2-7825303f4a0d
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: b3a14c1f-260f-4a70-ab64-c037592af226
+		summarizeBy: none
+		sourceColumn: item_key
+
+	column 'Promo Days'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: fc720e12-0e82-40cb-b8c9-dfa43455e39f
+		summarizeBy: none
+		sourceColumn: promo_days
+
+	column Uplift
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 75e8c90f-781b-4f9a-9bf6-e48d05579a88
+		summarizeBy: none
+		sourceColumn: uplift
+
+	column 'Post Dip'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 10c84973-7533-4f7e-a67f-039f51893117
+		summarizeBy: none
+		sourceColumn: post_dip
+
+	column 'Net Lift'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 13c2513c-b1d7-47d7-96c8-8acf1549137f
+		summarizeBy: none
+		sourceColumn: net_lift
+
+	column 'Touches Payday Or Holiday'
+		dataType: boolean
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 4b46a7bd-f9c8-4670-9a25-e47155f88ca1
+		summarizeBy: none
+		sourceColumn: touches_payday_or_holiday
+
+	partition 'Promo Event' = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog = null, Database = null, EnableAutomaticProxyDiscovery = null]),
+				    Gold = Source{[Name = "workspace", Kind = "Database"]}[Data]{[Name = "gold", Kind = "Schema"]}[Data],
+				    Data = Gold{[Name = "fact_promo_event", Kind = "Table"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"start_date_key", "store_key", "item_key", "promo_days", "uplift", "post_dip", "net_lift", "touches_payday_or_holiday"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"uplift", Currency.Type}, {"post_dip", Currency.Type}, {"net_lift", Currency.Type}})
+				in
+				    Result

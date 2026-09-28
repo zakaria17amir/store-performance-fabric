@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["Date","Store","Item","Sales","Store Day","Stock-out Risk","User Access","SqlEndpoint","Lakehouse"]
+annotation PBI_QueryOrder = ["Date","Store","Item","Sales","Store Day","Stock-out Risk","User Access","Stock-out Run","Stock-out Store Week","Promo Event","Promo Payback","Stock-out Test","SqlEndpoint","Lakehouse","DatabricksHost","DatabricksHttpPath"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -21,6 +21,11 @@ ref table 'Store Day'
 ref table 'Stock-out Risk'
 ref table 'Time Calc'
 ref table 'User Access'
+ref table 'Stock-out Run'
+ref table 'Stock-out Store Week'
+ref table 'Promo Event'
+ref table 'Promo Payback'
+ref table 'Stock-out Test'
 
 ref role 'Store operations'
 ref role Commercial

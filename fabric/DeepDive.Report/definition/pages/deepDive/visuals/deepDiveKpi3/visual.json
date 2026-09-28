@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "deepDiveKpi3",
+  "position": {
+    "x": 648,
+    "y": 72,
+    "z": 5,
+    "width": 300,
+    "height": 96,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Promo Event"
+                    }
+                  },
+                  "Property": "Median Net Lift %"
+                }
+              },
+              "queryRef": "Promo Event.Median Net Lift %",
+              "nativeQueryRef": "Median Net Lift %"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Median promo net lift after the dip'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+/// Store × week: item-days tested and item-days inside a flagged stock-out run, from the Databricks project.
+table 'Stock-out Store Week'
+	lineageTag: 028e111d-2870-4f5a-bc41-d1e5d5fc08e1
+
+	/// Share of tested item-days that sat inside a flagged zero-sale run.
+	measure 'Stock-out Rate %' = DIVIDE(SUM('Stock-out Store Week'[Flagged Days]), SUM('Stock-out Store Week'[Item Days]))
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: 6c580fce-8781-4b42-94b7-42910b7cc38b
+
+	column WeekStartKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 4ccca2d8-5ffa-434f-9dc7-5b1c00dae159
+		summarizeBy: none
+		sourceColumn: week_start_key
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: 84407ac8-7035-41aa-8558-ec101e3c1c9d
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column 'Item Days'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: f2b90ed5-ded8-472a-af69-41e12cb1b4a2
+		summarizeBy: none
+		sourceColumn: item_days
+
+	column 'Flagged Days'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 19a8e2cc-0ef2-444e-b600-ee6c3d242708
+		summarizeBy: none
+		sourceColumn: flagged_days
+
+	partition 'Stock-out Store Week' = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog = null, Database = null, EnableAutomaticProxyDiscovery = null]),
+				    Gold = Source{[Name = "workspace", Kind = "Database"]}[Data]{[Name = "gold", Kind = "Schema"]}[Data],
+				    Data = Gold{[Name = "stockout_store_week", Kind = "Table"]}[Data],
+				    Result = Table.SelectColumns(Data, {"week_start_key", "store_key", "item_days", "flagged_days"})
+				in
+				    Result

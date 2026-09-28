@@ -30,3 +30,34 @@ relationship 35b38f72-9097-4baa-bfef-c95334424157
 	fromColumn: 'Stock-out Risk'.ItemKey
 	toColumn: Item.ItemKey
 
+relationship 8c58257c-33f8-4697-8eac-a2f571b1ffc8
+	fromColumn: 'Stock-out Run'.StartDateKey
+	toColumn: Date.DateKey
+
+relationship 803c3e15-bce4-498e-a136-7c421394efe9
+	fromColumn: 'Stock-out Run'.StoreKey
+	toColumn: Store.StoreKey
+
+relationship c945ca88-c83a-4ef6-9776-dd2026f007bc
+	fromColumn: 'Stock-out Run'.ItemKey
+	toColumn: Item.ItemKey
+
+relationship 2188ee3e-874e-4bf9-9302-df1387e0d61a
+	fromColumn: 'Stock-out Store Week'.WeekStartKey
+	toColumn: Date.DateKey
+
+relationship 6cdaf755-d5e6-47bd-b95e-def026648833
+	fromColumn: 'Stock-out Store Week'.StoreKey
+	toColumn: Store.StoreKey
+
+relationship 71f282d8-d092-467e-bc63-417c4c5944d9
+	fromColumn: 'Promo Event'.StartDateKey
+	toColumn: Date.DateKey
+
+relationship 50fc3d85-10f2-4569-9089-073fd5792954
+	fromColumn: 'Promo Event'.StoreKey
+	toColumn: Store.StoreKey
+
+relationship f78bb3b8-ebe6-4f37-8b8d-626a741125c7
+	fromColumn: 'Promo Event'.ItemKey
+	toColumn: Item.ItemKey
