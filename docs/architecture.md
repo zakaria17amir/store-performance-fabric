@@ -71,6 +71,23 @@ the model, as long as these tables keep their grain and columns.
 | `fact_store_day` | Dataflow | store × day (receipts, daily target, weather) | Model |
 | `user_access` | Dataflow | user × store | Model (RLS) |
 
+## Databricks source
+
+The deep-dive report reads five gold tables straight from the Databricks SQL warehouse of the companion project
+[favorita-stockout-promo-databricks](https://github.com/zakaria17amir/favorita-stockout-promo-databricks)
+(Azure Databricks connector, personal access token, Import). They cover 2016-08-16 → 2017-08-15
+([ADR-012](decisions/ADR-012-databricks-second-source.md)).
+
+| Databricks table | Model table | Grain | Related to |
+|---|---|---|---|
+| `workspace.gold.fact_stockout_run` (flagged only) | Stock-out Run | zero-sale run | Date, Store, Item |
+| `workspace.gold.stockout_store_week` | Stock-out Store Week | store × week | Date, Store |
+| `workspace.gold.fact_promo_event` | Promo Event | promotion event | Date, Store, Item |
+| `workspace.gold.promo_family_summary` | Promo Payback | item family (network level) | none |
+| `workspace.gold.stockout_bh_summary` | Stock-out Test | 1 row | none |
+
+`pipeline/tests/test_model_contract.py` fails if the model reads any other Databricks table or column.
+
 ## Semantic model
 
 ```mermaid
@@ -178,6 +195,8 @@ Role definitions, the RLS rule and the test matrix: [security.md](security.md).
 ## Scaling path
 
 - **More data**: move the local pipeline into a Fabric notebook or Databricks. The table contract stays the same.
+  This has been proven for Databricks: the companion project rebuilds the contract tables on Databricks and
+  reconciles them with this pipeline (identical rows, units and baselines).
 - **More sources**: add queries to the dataflow and conform them onto existing dimensions.
 - **More reports**: build thin reports on the shared semantic model instead of new models.
 - **More users**: add rows to `user_access`. No new roles are needed per region or store.

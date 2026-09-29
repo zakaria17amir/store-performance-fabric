@@ -10,3 +10,14 @@ expression Lakehouse = "lh_retail_sample" meta [IsParameterQuery=true, Type="Tex
 
 	annotation PBI_ResultType = Text
 
+/// Host of the Databricks SQL warehouse that serves the deep-dive tables (favorita-stockout-promo-databricks). Same in every stage.
+expression DatabricksHost = "dbc-ecb852ca-9ebf.cloud.databricks.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 4e5def61-0882-43c0-a226-6e857fe0860c
+
+	annotation PBI_ResultType = Text
+
+/// HTTP path of that SQL warehouse (Databricks → SQL Warehouses → Connection details).
+expression DatabricksHttpPath = "/sql/1.0/warehouses/defff331253fd850" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 3b447c19-8d5e-4030-9958-0774b9b87ce2
+
+	annotation PBI_ResultType = Text

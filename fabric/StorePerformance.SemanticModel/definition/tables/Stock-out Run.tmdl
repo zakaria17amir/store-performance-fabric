@@ -1,0 +1,97 @@
+/// Zero-sale runs flagged as stock-outs by the Databricks project (negative-binomial test, 5% false discovery rate). One row per run, 2016-08-16 to 2017-08-15.
+table 'Stock-out Run'
+	lineageTag: 686a2476-7415-499f-a77f-f7bedd5529e2
+
+	/// Zero-sale runs flagged as stock-outs (negative binomial, 5% false discovery rate).
+	measure 'Flagged Runs' = COUNTROWS('Stock-out Run')
+		formatString: #,0
+		displayFolder: Databricks deep dive
+		lineageTag: c8eed29e-364e-4f16-8889-1d37fc970d2a
+
+	/// Units the flagged runs would have sold at the item's normal rate (λ × zero days).
+	measure 'Lost Units (Runs)' = SUM('Stock-out Run'[Expected Lost Units])
+		formatString: #,0
+		displayFolder: Databricks deep dive
+		lineageTag: 6b9a06d0-3243-4996-b1b2-1cb280e4acd4
+
+	/// Median length of a flagged run, in full trading days.
+	measure 'Median Run Days' = MEDIAN('Stock-out Run'[Run Days])
+		formatString: #,0.0
+		displayFolder: Databricks deep dive
+		lineageTag: 97a77747-af34-454e-abd4-3d18c6c91eb0
+
+	column StartDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: b2423492-0556-4f9c-87c6-6bee576eed38
+		summarizeBy: none
+		sourceColumn: start_date_key
+
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: f5b74b69-1e88-46d5-83e5-ba69ef4d4fbd
+		summarizeBy: none
+		sourceColumn: store_key
+
+	column ItemKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		isAvailableInMdx: false
+		lineageTag: cb743ed0-6b38-4014-b89a-260d51f74273
+		summarizeBy: none
+		sourceColumn: item_key
+
+	column 'Run Days'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: ab5ff9a8-193e-4d62-9a8d-2a90c7989179
+		summarizeBy: none
+		sourceColumn: run_days
+
+	column 'Lambda Units'
+		dataType: decimal
+		isHidden
+		formatString: #,0.00
+		isAvailableInMdx: false
+		lineageTag: d11b3a32-e518-4c6a-a69d-c8181f1a03c4
+		summarizeBy: none
+		sourceColumn: lambda_units
+
+	column Dispersion
+		dataType: decimal
+		isHidden
+		formatString: #,0.00
+		isAvailableInMdx: false
+		lineageTag: e5aca626-11de-40f2-aede-1c13a28fdec6
+		summarizeBy: none
+		sourceColumn: dispersion
+
+	column 'Expected Lost Units'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0
+		isAvailableInMdx: false
+		lineageTag: dc601bf0-6a74-42e9-bef8-6514dacfa50b
+		summarizeBy: none
+		sourceColumn: expected_lost_units
+
+	partition 'Stock-out Run' = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog = null, Database = null, EnableAutomaticProxyDiscovery = null]),
+				    Gold = Source{[Name = "workspace", Kind = "Database"]}[Data]{[Name = "gold", Kind = "Schema"]}[Data],
+				    Data = Gold{[Name = "fact_stockout_run", Kind = "Table"]}[Data],
+				    Kept = Table.SelectRows(Data, each [is_flagged] = true),
+				    Selected = Table.SelectColumns(Kept, {"start_date_key", "store_key", "item_key", "run_days", "lambda_units", "dispersion", "expected_lost_units"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"lambda_units", Currency.Type}, {"dispersion", Currency.Type}, {"expected_lost_units", Currency.Type}})
+				in
+				    Result

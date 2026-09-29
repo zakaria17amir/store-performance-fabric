@@ -1,10 +1,14 @@
-/// Store and regional managers: only the stores listed for them in User Access; unit cost (and so margin) is hidden.
+/// Store and regional managers: only the stores listed for them in User Access; unit cost (and so margin) is hidden, and so are the network-wide Databricks results (Promo Payback, Stock-out Test).
 role 'Store operations'
 	modelPermission: read
 
 	tablePermission Store = 'Store'[StoreKey] IN CALCULATETABLE(VALUES('User Access'[StoreKey]), 'User Access'[User Principal Name] = USERPRINCIPALNAME())
 
 	tablePermission 'User Access' = 'User Access'[User Principal Name] = USERPRINCIPALNAME()
+
+	tablePermission 'Promo Payback' = FALSE()
+
+	tablePermission 'Stock-out Test' = FALSE()
 
 	tablePermission Item
 

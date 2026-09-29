@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "deepDiveKpi4",
+  "position": {
+    "x": 964,
+    "y": 72,
+    "z": 6,
+    "width": 300,
+    "height": 96,
+    "tabOrder": 6
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Promo Payback"
+                    }
+                  },
+                  "Property": "Families Paying Back"
+                }
+              },
+              "queryRef": "Promo Payback.Families Paying Back",
+              "nativeQueryRef": "Families Paying Back"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Families whose promotions pay back (whole network)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

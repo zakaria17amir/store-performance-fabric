@@ -8,7 +8,7 @@ sees; Power BI app audiences decide which **reports** they see (one report per p
 
 | Role | Row filter | Object-level security | Members |
 |---|---|---|---|
-| Store operations | Stores listed for the signed-in user in `User Access` | `'Item'[Unit Cost]` removed | Store managers, regional managers |
+| Store operations | Stores listed for the signed-in user in `User Access`; no rows from the network-level `Promo Payback` and `Stock-out Test` | `'Item'[Unit Cost]` removed | Store managers, regional managers |
 | Commercial | None | None | Category managers, head office |
 
 Each person belongs to exactly one role. Row-level and object-level security from different roles can't be combined: Power BI returns an error at query time for anyone who is a member of both roles.
@@ -33,6 +33,10 @@ Each person belongs to exactly one role. Row-level and object-level security fro
 - Object-level security removes `'Item'[Unit Cost]`. Measures built on it (`Cost Value`,
   `Gross Margin %`) are unavailable to this role, so margin visuals only go in the Promotions report, whose
   app audiences are commercial users.
+
+- The Databricks deep-dive facts (`Stock-out Run`, `Stock-out Store Week`, `Promo Event`) relate to `Store`, so
+  the same rule filters them. `Promo Payback` and `Stock-out Test` hold network-wide results with no store key,
+  so this role gets `FALSE()` on both ([ADR-012](decisions/ADR-012-databricks-second-source.md)).
 
 ### Commercial
 

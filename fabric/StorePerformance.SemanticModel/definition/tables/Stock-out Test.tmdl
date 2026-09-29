@@ -1,0 +1,69 @@
+/// One row: how many zero-sale runs the Databricks project tested and flagged, with the negative binomial and with plain Poisson.
+table 'Stock-out Test'
+	lineageTag: af289f1f-68a8-4e80-83b0-d7b7fdc6ba0a
+
+	/// Share of tested zero-sale runs flagged with the negative-binomial test (5% false discovery rate).
+	measure 'NB Flag Rate %' = DIVIDE(SUM('Stock-out Test'[NB Flagged Runs]), SUM('Stock-out Test'[Tested Runs]))
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: 65b510ed-4a7e-4ed3-b5c1-57a0de5b995b
+
+	/// Share of the same runs a plain Poisson test would flag. The gap shows why the project uses a negative binomial.
+	measure 'Poisson Flag Rate %' = DIVIDE(SUM('Stock-out Test'[Poisson Flagged Runs]), SUM('Stock-out Test'[Tested Runs]))
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: 141ea1c2-a2ac-4987-afc6-b128f9000bed
+
+	/// Upper bound on flags that chance alone would produce at the Benjamini–Hochberg cut-off.
+	measure 'Max Chance Flags' = SUM('Stock-out Test'[Max Chance Flags Value])
+		formatString: #,0
+		displayFolder: Databricks deep dive
+		lineageTag: f844a69d-7818-43d1-a9d9-5ec1a661a4ed
+
+	column 'Tested Runs'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 254c3fbd-c93e-4760-b171-66dc32111c5e
+		summarizeBy: none
+		sourceColumn: tested_runs
+
+	column 'NB Flagged Runs'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 55e60b44-296c-4d97-bd96-ca8701e5370b
+		summarizeBy: none
+		sourceColumn: flagged_runs
+
+	column 'Poisson Flagged Runs'
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 04a85292-530c-4ab3-9895-aa8416c4e787
+		summarizeBy: none
+		sourceColumn: poisson_flagged_runs
+
+	column 'Max Chance Flags Value'
+		dataType: decimal
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: 350bd31f-e35d-44ee-a2f8-a8b57247af52
+		summarizeBy: none
+		sourceColumn: max_chance_flags
+
+	partition 'Stock-out Test' = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog = null, Database = null, EnableAutomaticProxyDiscovery = null]),
+				    Gold = Source{[Name = "workspace", Kind = "Database"]}[Data]{[Name = "gold", Kind = "Schema"]}[Data],
+				    Data = Gold{[Name = "stockout_bh_summary", Kind = "Table"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"tested_runs", "flagged_runs", "poisson_flagged_runs", "max_chance_flags"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"max_chance_flags", Currency.Type}})
+				in
+				    Result

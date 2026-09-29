@@ -20,6 +20,23 @@
 | Est. Lost Units / Sales | Expected sales that did not happen on flagged days | `SUM('Stock-out Risk'[Expected Units])`, valued at unit price |
 | Est. Lost Sales (7 days) | Est. Lost Sales in the 7 days up to the last selected date (phone view) | `DATESINPERIOD('Date'[Date], MAX('Date'[Date]), -7, DAY)` |
 
+## Databricks deep dive
+
+Computed by the companion Databricks project, 2016-08-16 → 2017-08-15 ([ADR-012](decisions/ADR-012-databricks-second-source.md)).
+
+| KPI | Business meaning | Definition (DAX) |
+|---|---|---|
+| Stock-out Rate % | Share of tested item-days an item sat on an empty shelf | `DIVIDE(SUM('Stock-out Store Week'[Flagged Days]), SUM('Stock-out Store Week'[Item Days]))` |
+| Flagged Runs | Zero-sale runs judged stock-outs: a negative-binomial test at a 5% false discovery rate | `COUNTROWS('Stock-out Run')` |
+| Lost Units (Runs) | Units the flagged runs would have sold at the item's normal rate | `SUM('Stock-out Run'[Expected Lost Units])` |
+| Median Run Days | Typical length of a flagged run, in full trading days | `MEDIAN('Stock-out Run'[Run Days])` |
+| Promo Events | Runs of consecutive promotion days for one store-item | `COUNTROWS('Promo Event')` |
+| Median Uplift % | Typical extra units during a promotion vs. the normal baseline | `MEDIAN('Promo Event'[Uplift])` |
+| Median Net Lift % | Did it pay back? The promotion and the week after vs. the baseline for both | `MEDIAN('Promo Event'[Net Lift])` (events with a promotion-free week after) |
+| Family Net Lift % (+ Low / High) | A family's median net lift with its bootstrap 95% confidence interval, whole network | `MAX('Promo Payback'[Net Lift Median])` (and `[Net Lift Low]`, `[Net Lift High]`) |
+| Families Paying Back | Families whose net-lift CI is entirely above zero | `COUNTROWS(FILTER('Promo Payback', 'Promo Payback'[Net Lift Low] > 0))` |
+| NB / Poisson Flag Rate % | Share of tested runs flagged by the negative binomial vs. a plain Poisson test | `DIVIDE(SUM(flagged), SUM(tested))` on `Stock-out Test` |
+
 ## Notes
 
 - Basket Value, Sales vs Target % and LFL Basket Growth % combine Sales (which follows item/family filters) with Store Day (receipts and targets have no item grain). Under an item or family filter, only the sales side is filtered.

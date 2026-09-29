@@ -1,0 +1,68 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "deepDiveKpi1",
+  "position": {
+    "x": 16,
+    "y": 72,
+    "z": 3,
+    "width": 300,
+    "height": 96,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "drillFilterOtherVisuals": true,
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Stock-out Store Week"
+                    }
+                  },
+                  "Property": "Stock-out Rate %"
+                }
+              },
+              "queryRef": "Stock-out Store Week.Stock-out Rate %",
+              "nativeQueryRef": "Stock-out Rate %"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Share of item-days out of stock'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

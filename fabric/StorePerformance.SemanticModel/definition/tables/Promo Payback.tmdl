@@ -1,0 +1,111 @@
+/// Network-level promo payback per item family from the Databricks project: medians with bootstrap 95% confidence intervals. Not related to other tables.
+table 'Promo Payback'
+	lineageTag: 019ca000-4a9b-42cd-b036-8b4a8899d901
+
+	/// Median net lift of the family's promotion events (promotion + the week after vs. baseline), whole network.
+	measure 'Family Net Lift %' = MAX('Promo Payback'[Net Lift Median])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: f06468cc-4090-4069-91fa-30804f06a6e0
+
+	/// Lower end of the bootstrap 95% confidence interval of the family's median net lift.
+	measure 'Family Net Lift Low %' = MAX('Promo Payback'[Net Lift Low])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: 779b468e-f290-420f-8d27-db648a8cab07
+
+	/// Upper end of the bootstrap 95% confidence interval of the family's median net lift.
+	measure 'Family Net Lift High %' = MAX('Promo Payback'[Net Lift High])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: 748318b6-ee5c-433e-bf9e-605956da289e
+
+	/// Median uplift during the family's promotions, whole network.
+	measure 'Family Uplift %' = MAX('Promo Payback'[Uplift Median])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: d94aea63-a775-442f-a22d-b3f68e9fa802
+
+	/// Median change in the week after the family's promotions, whole network.
+	measure 'Family Dip %' = MAX('Promo Payback'[Dip Median])
+		formatString: ▲ #,0.0%;▼ #,0.0%;#,0.0%
+		displayFolder: Databricks deep dive
+		lineageTag: f97e033e-01aa-4cf7-bcfa-311fe09ba707
+
+	/// Families whose median net lift has a 95% confidence interval entirely above zero.
+	measure 'Families Paying Back' = COUNTROWS(FILTER('Promo Payback', 'Promo Payback'[Net Lift Low] > 0))
+		formatString: #,0
+		displayFolder: Databricks deep dive
+		lineageTag: 58c1ce3c-0370-4565-958b-d1e30a59b0d5
+
+	column Family
+		dataType: string
+		lineageTag: 6e33e512-53e4-48a5-a80e-859f9030225c
+		summarizeBy: none
+		sourceColumn: family
+
+	column Events
+		dataType: int64
+		isHidden
+		formatString: #,0
+		isAvailableInMdx: false
+		lineageTag: e5d6a8a0-7c68-45b7-9685-ef811c59d127
+		summarizeBy: none
+		sourceColumn: n_events
+
+	column 'Uplift Median'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 718ddcb1-b27a-4694-bc17-8d1e1c505852
+		summarizeBy: none
+		sourceColumn: uplift_median
+
+	column 'Dip Median'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: c09b85f7-3d07-4001-9c1f-8e59c8e9ac04
+		summarizeBy: none
+		sourceColumn: dip_median
+
+	column 'Net Lift Median'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 875c4341-d3c1-4bde-902e-6cf421de4e88
+		summarizeBy: none
+		sourceColumn: net_median
+
+	column 'Net Lift Low'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 4e744226-8628-44b7-8a92-e1fb7e0760b7
+		summarizeBy: none
+		sourceColumn: net_lo
+
+	column 'Net Lift High'
+		dataType: decimal
+		isHidden
+		formatString: #,0.0%;-#,0.0%;#,0.0%
+		isAvailableInMdx: false
+		lineageTag: 460346fe-0e9f-48ad-9ac9-b6950fff7eaf
+		summarizeBy: none
+		sourceColumn: net_hi
+
+	partition 'Promo Payback' = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs(DatabricksHost, DatabricksHttpPath, [Catalog = null, Database = null, EnableAutomaticProxyDiscovery = null]),
+				    Gold = Source{[Name = "workspace", Kind = "Database"]}[Data]{[Name = "gold", Kind = "Schema"]}[Data],
+				    Data = Gold{[Name = "promo_family_summary", Kind = "Table"]}[Data],
+				    Selected = Table.SelectColumns(Data, {"family", "n_events", "uplift_median", "dip_median", "net_median", "net_lo", "net_hi"}),
+				    Result = Table.TransformColumnTypes(Selected, {{"uplift_median", Currency.Type}, {"dip_median", Currency.Type}, {"net_median", Currency.Type}, {"net_lo", Currency.Type}, {"net_hi", Currency.Type}})
+				in
+				    Result

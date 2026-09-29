@@ -1,7 +1,7 @@
 # Power BI project
 
 `StorePerformance.SemanticModel/` is the semantic model `Store Performance`, stored as TMDL.
-Five reports, stored as PBIR, read it. There's one report per page, because Power BI app
+Six reports, stored as PBIR, read it. There's one report per page, because Power BI app
 audiences can show or hide whole reports but not individual pages:
 
 | Report | Pages | App audiences |
@@ -11,8 +11,9 @@ audiences can show or hide whole reports but not individual pages:
 | `FreshAvailability.Report` | Fresh and availability | Everyone |
 | `Promotions.Report` | Promotions (margin: Commercial role) | Category managers, head office |
 | `StoreToday.Report` | Store today, with a phone layout | Store managers, head office |
+| `DeepDive.Report` | Stock-outs & promo payback, from Databricks ([ADR-012](../docs/decisions/ADR-012-databricks-second-source.md)) | Regional managers, category managers, head office |
 
-Open any `<Report>.pbip` in Power BI Desktop. All five share the model and its data cache.
+Open any `<Report>.pbip` in Power BI Desktop. All six share the model and its data cache.
 `dataflow/` holds the Dataflow Gen2 queries.
 
 ## Model
@@ -26,6 +27,7 @@ Open any `<Report>.pbip` in Power BI Desktop. All five share the model and its d
 | Store Day | `fact_store_day` | store × day |
 | Stock-out Risk | `fact_stockout_risk` | store × item × flagged day |
 | Time Calc | calculation group | Actual, MTD, YTD, PY, PY YTD, YoY Δ, YoY % |
+| Stock-out Run, Stock-out Store Week, Promo Event, Promo Payback, Stock-out Test | Databricks `workspace.gold` ([architecture](../docs/architecture.md#databricks-source)) | see the architecture page |
 
 Import mode reads the lakehouse SQL analytics endpoint. Two parameters choose the source:
 
@@ -33,6 +35,7 @@ Import mode reads the lakehouse SQL analytics endpoint. Two parameters choose th
 |---|---|
 | `SqlEndpoint` | SQL analytics endpoint host of the `Retail Data` workspace |
 | `Lakehouse` | `lh_retail_sample` (Dev, Desktop) or `lh_retail` (Test, Prod: set by a deployment rule) |
+| `DatabricksHost`, `DatabricksHttpPath` | The Databricks SQL warehouse (same in every stage) |
 
 Measure definitions are in the [KPI glossary](../docs/kpi-glossary.md). A pytest check
 (`pipeline/tests/test_model_contract.py`) fails if the model reads a table outside the
@@ -49,6 +52,10 @@ Measure definitions are in the [KPI glossary](../docs/kpi-glossary.md). A pytest
   connections:
   - `sql-lh-retail-sample` is used by Dev.
   - `sql-lh-retail` is used by Test and Prod.
+- **Databricks connection:** in Desktop, sign in to the Databricks tables with **Personal Access Token**.
+  In the Service, create a cloud connection of type *Azure Databricks* (authentication: Key; paste the token) and
+  map it under semantic model settings → Gateway and cloud connections in each workspace. The token expires:
+  renew it in Databricks (Settings → Developer → Access tokens) and in the connection.
 - **Deployment pipeline `Store Performance release`:** Development (`Retail BI [Dev]`) → Test →
   Production. A parameter rule on the Test and Production stages sets `Lakehouse` to `lh_retail`,
   so only Dev reads the sample. Rules take effect on the next deploy. The first full Import
